@@ -1,36 +1,170 @@
-import React from 'react';
-import { 
-  Building2, 
-  Users, 
-  MessageSquare, 
-  Wrench, 
-  Calendar, 
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Building2,
+  Users,
+  MessageSquare,
+  Wrench,
+  Calendar,
   FileText,
   TrendingUp,
-  AlertTriangle 
+  AlertTriangle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-// Remove the incorrect import and add a comment for correct usage
-// import WingsFlatsPage from "./Admin/WingsFlatsPage";
-// To use WingsFlatsPage, import from the correct path or use it in your router, not directly in AdminDashboard.
-// Example: <Route path="/admin/wings-flats" element={<WingsFlatsPage />} />
-
-import Card from "../../components/UI/Card";
-import Button from "../../components/UI/Button";
+import Card from '../../components/UI/Card';
+import Button from '../../components/UI/Button';
+import { useAuth } from '../../contexts/AuthContext';
+import { apiGet } from '../../utils/api';
+import { formatCurrency, parseDate, timeAgo } from '../../utils/format';
 
 const AdminDashboard = () => {
-  const stats = [
-    { icon: Building2, label: 'Total Flats', value: '120', color: 'bg-blue-500' },
-    { icon: Users, label: 'Active Residents', value: '95', color: 'bg-green-500' },
-    { icon: MessageSquare, label: 'Open Complaints', value: '8', color: 'bg-red-500' },
-    { icon: Calendar, label: 'Amenity Bookings', value: '23', color: 'bg-purple-500' }
-  ];
+  const { user } = useAuth();
+  const [flats, setFlats] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [complaints, setComplaints] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const recentActivities = [
-    { type: 'complaint', message: 'New complaint about water supply in Wing A', time: '2 hours ago' },
-    { type: 'booking', message: 'Swimming pool booked by Flat 301', time: '4 hours ago' },
-    { type: 'maintenance', message: 'Maintenance bill generated for January', time: '6 hours ago' },
-    { type: 'resident', message: 'New resident registered in Flat 205', time: '1 day ago' }
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadDashboard = async () => {
+      setLoading(true);
+      setError('');
+
+      const results = await Promise.allSettled([
+        apiGet('/flats'),
+        apiGet('/users'),
+        apiGet('/complaints'),
+        apiGet('/bookings'),
+        apiGet('/amenities')
+      ]);
+      if (cancelled) return;
+
+      const [flatsResult, usersResult, complaintsResult, bookingsResult, amenitiesResult] = results;
+
+      if (flatsResult.status === 'fulfilled') setFlats(flatsResult.value || []);
+      if (usersResult.status === 'fulfilled') setUsers(usersResult.value || []);
+      if (complaintsResult.status === 'fulfilled') setComplaints(complaintsResult.value || []);
+      if (bookingsResult.status === 'fulfilled') setBookings(bookingsResult.value || []);
+      if (amenitiesResult.status === 'fulfilled') setAmenities(amenitiesResult.value || []);
+
+      const failure = results.find(result => result.status === 'rejected');
+      if (failure) {
+        setError(failure.reason?.message || 'Some dashboard data could not be loaded.');
+      }
+
+      setLoading(false);
+    };
+
+    loadDashboard();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const societyId = user?.societyId;
+
+  const societyFlats = useMemo(
+    () => (societyId == null
+      ? []
+      : flats.filter(flat => flat.wing?.societyId === societyId)),
+    [flats, societyId]
+  );
+
+  const flatIds = useMemo(
+    () => new Set(societyFlats.map(flat => flat.flatId)),
+    [societyFlats]
+  );
+
+  const societyResidents = useMemo(
+    () => users.filter(account => account.role === 'resident' && account.societyId === societyId),
+    [users, societyId]
+  );
+
+  const residentIds = useMemo(
+    () => new Set(societyResidents.map(account => account.userId)),
+    [societyResidents]
+  );
+
+  const societyBookings = useMemo(
+    () => bookings.filter(booking => flatIds.has(booking.flatId) || residentIds.has(booking.userId)),
+    [bookings, flatIds, residentIds]
+  );
+
+  const openComplaints = useMemo(
+    () => complaints.filter(complaint => complaint.status === 'Pending' || complaint.status === 'InProgress'),
+    [complaints]
+  );
+
+  const amenityNames = useMemo(
+    () => new Map(amenities.map(amenity => [amenity.amenityId, amenity.name])),
+    [amenities]
+  );
+
+  const recentActivities = useMemo(() => {
+    const activities = [
+      ...complaints.map(complaint => ({
+        key: `complaint-${complaint.complaintId}`,
+        type: 'complaint',
+        message: `${complaint.raisedByName || 'A resident'} raised "${complaint.title}"`,
+        timestamp: complaint.createdAt
+      })),
+      ...societyBookings.map(booking => ({
+        key: `booking-${booking.bookingId}`,
+        type: 'booking',
+        message: `${booking.userName || 'A resident'} booked ${amenityNames.get(booking.amenityId) || 'an amenity'}`,
+        timestamp: booking.createdAt || booking.startDate
+      }))
+    ];
+
+    return activities
+      .filter(activity => activity.timestamp)
+      .sort((a, b) => (parseDate(b.timestamp)?.getTime() || 0) - (parseDate(a.timestamp)?.getTime() || 0))
+      .slice(0, 5);
+  }, [complaints, societyBookings, amenityNames]);
+
+  const revenueMonths = useMemo(() => {
+    const now = new Date();
+    const months = [];
+
+    for (let offset = 5; offset >= 0; offset -= 1) {
+      const date = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+      months.push({
+        key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
+        label: date.toLocaleString('en-IN', { month: 'short' }),
+        total: 0
+      });
+    }
+
+    const byKey = new Map(months.map(month => [month.key, month]));
+
+    societyBookings.forEach(booking => {
+      if (booking.paid !== true) return;
+      const date = parseDate(booking.startDate || booking.createdAt);
+      if (!date) return;
+
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const month = byKey.get(key);
+      if (month) month.total += Number(booking.amount) || 0;
+    });
+
+    return months;
+  }, [societyBookings]);
+
+  const maxRevenue = Math.max(...revenueMonths.map(month => month.total), 0);
+  const currentRevenue = revenueMonths[revenueMonths.length - 1]?.total || 0;
+  const previousRevenue = revenueMonths[revenueMonths.length - 2]?.total || 0;
+  const revenueChange = previousRevenue > 0
+    ? Math.round(((currentRevenue - previousRevenue) / previousRevenue) * 100)
+    : null;
+
+  const stats = [
+    { icon: Building2, label: 'Total Flats', value: loading ? '—' : String(societyFlats.length), color: 'bg-blue-500' },
+    { icon: Users, label: 'Residents', value: loading ? '—' : String(societyResidents.length), color: 'bg-green-500' },
+    { icon: MessageSquare, label: 'Open Complaints', value: loading ? '—' : String(openComplaints.length), color: 'bg-red-500' },
+    { icon: Calendar, label: 'Amenity Bookings', value: loading ? '—' : String(societyBookings.length), color: 'bg-purple-500' }
   ];
 
   return (
@@ -45,6 +179,12 @@ const AdminDashboard = () => {
           <Button variant="primary">Create Announcement</Button>
         </div>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* Add Security Staff Management Link */}
       <div className="mb-6">
@@ -82,25 +222,29 @@ const AdminDashboard = () => {
             <Button variant="secondary" size="sm">View All</Button>
           </div>
           <div className="space-y-4">
-            {recentActivities.map((activity, index) => (
-              <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className={`p-2 rounded-lg ${
-                  activity.type === 'complaint' ? 'bg-red-100 text-red-600' :
-                  activity.type === 'booking' ? 'bg-purple-100 text-purple-600' :
-                  activity.type === 'maintenance' ? 'bg-yellow-100 text-yellow-600' :
-                  'bg-green-100 text-green-600'
-                }`}>
-                  {activity.type === 'complaint' && <AlertTriangle className="h-4 w-4" />}
-                  {activity.type === 'booking' && <Calendar className="h-4 w-4" />}
-                  {activity.type === 'maintenance' && <Wrench className="h-4 w-4" />}
-                  {activity.type === 'resident' && <Users className="h-4 w-4" />}
+            {loading ? (
+              <p className="text-sm text-gray-500">Loading recent activity...</p>
+            ) : recentActivities.length === 0 ? (
+              <p className="text-sm text-gray-500">No recent activity yet.</p>
+            ) : (
+              recentActivities.map(activity => (
+                <div key={activity.key} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className={`p-2 rounded-lg ${
+                    activity.type === 'complaint'
+                      ? 'bg-red-100 text-red-600'
+                      : 'bg-purple-100 text-purple-600'
+                  }`}>
+                    {activity.type === 'complaint'
+                      ? <AlertTriangle className="h-4 w-4" />
+                      : <Calendar className="h-4 w-4" />}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-800">{activity.message}</p>
+                    <p className="text-xs text-gray-500 mt-1">{timeAgo(activity.timestamp)}</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-800">{activity.message}</p>
-                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
 
@@ -128,28 +272,53 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
-      {/* Revenue Chart Placeholder */}
+      {/* Monthly Revenue */}
       <Card>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Monthly Revenue</h2>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">Monthly Revenue</h2>
+            <p className="text-sm text-gray-500 mt-1">Paid amenity bookings in your society</p>
+          </div>
           <div className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-green-600" />
-            <span className="text-sm font-medium text-green-600">+12% from last month</span>
+            <TrendingUp className={`h-5 w-5 ${revenueChange !== null && revenueChange < 0 ? 'text-red-600' : 'text-green-600'}`} />
+            {loading ? (
+              <span className="text-sm font-medium text-gray-500">Loading...</span>
+            ) : revenueChange === null ? (
+              <span className="text-sm font-medium text-gray-500">No prior month data</span>
+            ) : (
+              <span className={`text-sm font-medium ${revenueChange < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                {revenueChange >= 0 ? '+' : ''}{revenueChange}% from last month
+              </span>
+            )}
           </div>
         </div>
-        <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-          <p className="text-gray-500">Chart will be implemented here</p>
-        </div>
+
+        {loading ? (
+          <p className="text-sm text-gray-500">Loading revenue...</p>
+        ) : maxRevenue === 0 ? (
+          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+            <p className="text-gray-500">No paid bookings recorded in the last six months.</p>
+          </div>
+        ) : (
+          <div className="flex items-end gap-4 h-64">
+            {revenueMonths.map(month => (
+              <div key={month.key} className="flex-1 flex flex-col items-center justify-end h-full">
+                <span className="text-xs font-medium text-gray-600 mb-1">
+                  {month.total ? formatCurrency(month.total) : ''}
+                </span>
+                <div
+                  className="w-full rounded-t bg-blue-500"
+                  style={{ height: `${Math.max((month.total / maxRevenue) * 100, 2)}%` }}
+                  title={`${month.label}: ${formatCurrency(month.total)}`}
+                />
+                <span className="text-xs text-gray-500 mt-2">{month.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );
 };
-
-// Add route for admin wings & flats management
-// Example for React Router v6+
-// In your main App.jsx or routes file:
-// <Route path="/admin/wings-flats" element={<WingsFlatsPage />} />
-
-// If you use a sidebar or dashboard menu, add a link to /admin/wings-flats for admins.
 
 export default AdminDashboard;

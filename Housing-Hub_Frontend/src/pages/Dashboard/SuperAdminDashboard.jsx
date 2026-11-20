@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Building2, Users, Shield, CheckCircle, AlertCircle, Plus } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Building2, Users, CheckCircle, AlertCircle, Plus } from 'lucide-react';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
 import Table from '../../components/UI/Table';
 import Modal from '../../components/UI/Modal';
 import Input from '../../components/UI/Input';
+import { apiGet } from '../../utils/api';
 
 const SuperAdminDashboard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -14,19 +15,58 @@ const SuperAdminDashboard = () => {
     phone: '',
     societyId: ''
   });
+  const [societies, setSocieties] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadDashboard = async () => {
+      setLoading(true);
+      setError('');
+
+      const results = await Promise.allSettled([apiGet('/societies'), apiGet('/users')]);
+      if (cancelled) return;
+
+      const [societiesResult, usersResult] = results;
+
+      if (societiesResult.status === 'fulfilled' && Array.isArray(societiesResult.value)) {
+        setSocieties(societiesResult.value);
+      }
+      if (usersResult.status === 'fulfilled' && Array.isArray(usersResult.value)) {
+        setAdmins(usersResult.value.filter(user => user.role === 'admin'));
+      }
+
+      const failure = results.find(result => result.status === 'rejected');
+      if (failure) {
+        setError(failure.reason?.message || 'Unable to load dashboard data.');
+      }
+
+      setLoading(false);
+    };
+
+    loadDashboard();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const adminBySociety = new Map();
+  admins.forEach(admin => {
+    if (admin.societyId != null && !adminBySociety.has(admin.societyId)) {
+      adminBySociety.set(admin.societyId, admin);
+    }
+  });
+
+  const verifiedCount = societies.filter(society => society.isVerified).length;
 
   const stats = [
-    { icon: Building2, label: 'Total Societies', value: '12', color: 'bg-blue-500' },
-    { icon: CheckCircle, label: 'Verified Societies', value: '8', color: 'bg-green-500' },
-    { icon: AlertCircle, label: 'Pending Verification', value: '4', color: 'bg-yellow-500' },
-    { icon: Users, label: 'Total Admins', value: '15', color: 'bg-purple-500' }
-  ];
-
-  const societies = [
-    { id: 1, name: 'Green Valley Heights', admin: 'John Smith', city: 'Mumbai', verified: true },
-    { id: 2, name: 'Sunrise Apartments', admin: 'Jane Doe', city: 'Pune', verified: false },
-    { id: 3, name: 'Royal Gardens', admin: 'Mike Johnson', city: 'Bangalore', verified: true },
-    { id: 4, name: 'Lakeside Residency', admin: 'Sarah Wilson', city: 'Hyderabad', verified: false }
+    { icon: Building2, label: 'Total Societies', value: loading ? '—' : String(societies.length), color: 'bg-blue-500' },
+    { icon: CheckCircle, label: 'Verified Societies', value: loading ? '—' : String(verifiedCount), color: 'bg-green-500' },
+    { icon: AlertCircle, label: 'Pending Verification', value: loading ? '—' : String(societies.length - verifiedCount), color: 'bg-yellow-500' },
+    { icon: Users, label: 'Total Admins', value: loading ? '—' : String(admins.length), color: 'bg-purple-500' }
   ];
 
   return (
@@ -41,6 +81,12 @@ const SuperAdminDashboard = () => {
           Add Admin
         </Button>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -74,40 +120,53 @@ const SuperAdminDashboard = () => {
             </Button>
           </div>
         </div>
-        
+
         <Table headers={['Society Name', 'Admin', 'City', 'Status', 'Actions']}>
-          {societies.map((society) => (
-            <tr key={society.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4">
-                <div className="flex items-center">
-                  <Building2 className="h-5 w-5 text-gray-400 mr-3" />
-                  <span className="font-medium text-gray-900">{society.name}</span>
-                </div>
-              </td>
-              <td className="px-6 py-4 text-gray-600">{society.admin}</td>
-              <td className="px-6 py-4 text-gray-600">{society.city}</td>
-              <td className="px-6 py-4">
-                <span
-                  className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    society.verified
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {society.verified ? 'Verified' : 'Pending'}
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex space-x-2">
-                  <Button variant="secondary" size="sm">Edit</Button>
-                  {!society.verified && (
-                    <Button variant="success" size="sm">Verify</Button>
-                  )}
-                  <Button variant="danger" size="sm">Delete</Button>
-                </div>
-              </td>
+          {loading ? (
+            <tr>
+              <td colSpan={5} className="px-6 py-6 text-center text-gray-500">Loading societies...</td>
             </tr>
-          ))}
+          ) : societies.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="px-6 py-6 text-center text-gray-500">No societies registered yet.</td>
+            </tr>
+          ) : (
+            societies.map(society => {
+              const admin = adminBySociety.get(society.societyId);
+              return (
+                <tr key={society.societyId} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center">
+                      <Building2 className="h-5 w-5 text-gray-400 mr-3" />
+                      <span className="font-medium text-gray-900">{society.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">{admin?.name || '—'}</td>
+                  <td className="px-6 py-4 text-gray-600">{society.city || '—'}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        society.isVerified
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}
+                    >
+                      {society.isVerified ? 'Verified' : 'Pending'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex space-x-2">
+                      <Button variant="secondary" size="sm">Edit</Button>
+                      {!society.isVerified && (
+                        <Button variant="success" size="sm">Verify</Button>
+                      )}
+                      <Button variant="danger" size="sm">Delete</Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
         </Table>
       </Card>
 
@@ -121,26 +180,26 @@ const SuperAdminDashboard = () => {
           <Input
             label="Name"
             value={newAdmin.name}
-            onChange={(e) => setNewAdmin({...newAdmin, name: e.target.value})}
+            onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
             placeholder="Enter admin name"
           />
           <Input
             label="Email"
             type="email"
             value={newAdmin.email}
-            onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})}
+            onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
             placeholder="Enter admin email"
           />
           <Input
             label="Phone"
             value={newAdmin.phone}
-            onChange={(e) => setNewAdmin({...newAdmin, phone: e.target.value})}
+            onChange={(e) => setNewAdmin({ ...newAdmin, phone: e.target.value })}
             placeholder="Enter phone number"
           />
           <Input
             label="Society ID"
             value={newAdmin.societyId}
-            onChange={(e) => setNewAdmin({...newAdmin, societyId: e.target.value})}
+            onChange={(e) => setNewAdmin({ ...newAdmin, societyId: e.target.value })}
             placeholder="Enter society ID"
           />
           <div className="flex justify-end space-x-3 pt-4">
