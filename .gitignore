@@ -23,6 +23,9 @@ pnpm-debug.log*
 .env.*.local
 *.local
 
+# Local-only documentation
+*.local.md
+
 # Editor / IDE files
 .vs/
 .vscode/*
