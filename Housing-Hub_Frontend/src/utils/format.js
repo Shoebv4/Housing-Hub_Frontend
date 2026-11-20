@@ -31,6 +31,12 @@ export const formatTime = (value) => {
   return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 };
 
+export const formatDate = (value) => {
+  const date = parseDate(value);
+  if (!date) return '—';
+  return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+};
+
 export const timeAgo = (value) => {
   const date = parseDate(value);
   if (!date) return '';

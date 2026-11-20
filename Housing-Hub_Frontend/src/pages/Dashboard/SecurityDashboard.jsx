@@ -15,6 +15,7 @@ import Input from '../../components/UI/Input';
 import Table from '../../components/UI/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiGet, apiPost, apiPut } from '../../utils/api';
+import { downloadCsv } from '../../utils/export';
 import { formatDateTime, formatDuration, formatTime, isToday, parseDate } from '../../utils/format';
 
 const emptyVisitor = {
@@ -198,6 +199,26 @@ const SecurityDashboard = () => {
     }
   };
 
+  const handleExportLog = () => {
+    const rows = visitors.map(visitor => [
+      visitor.name,
+      flatNumberById.get(visitor.flatId) || '',
+      visitor.phone || '',
+      visitor.purpose || '',
+      visitor.visitorType || '',
+      visitor.vehicleNo || '',
+      formatDateTime(visitor.entryTime),
+      visitor.exitTime ? formatDateTime(visitor.exitTime) : '',
+      visitor.exitTime ? formatDuration(visitor.entryTime, visitor.exitTime) : ''
+    ]);
+
+    downloadCsv(
+      `visitor-log-${new Date().toISOString().slice(0, 10)}.csv`,
+      ['Name', 'Flat', 'Phone', 'Purpose', 'Type', 'Vehicle', 'Entry Time', 'Exit Time', 'Duration'],
+      rows
+    );
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -206,10 +227,6 @@ const SecurityDashboard = () => {
           <p className="text-gray-600 mt-2">Real-time visitor management and security monitoring</p>
         </div>
         <div className="flex space-x-3">
-          <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-green-700">Live Updates</span>
-          </div>
           <Button onClick={() => setShowVisitorModal(true)}>
             <Plus className="h-4 w-4 mr-2" />
             New Visitor Entry
@@ -266,7 +283,9 @@ const SecurityDashboard = () => {
               {loading ? '…' : insideVisitors.length} Inside
             </span>
           </div>
-          <Button variant="secondary" size="sm">Export Log</Button>
+          <Button variant="secondary" size="sm" onClick={handleExportLog} disabled={visitors.length === 0}>
+            Export Log
+          </Button>
         </div>
 
         <Table headers={['Name', 'Flat', 'Purpose', 'Entry Time', 'Vehicle', 'Type', 'Actions']}>

@@ -9,15 +9,19 @@ import {
   TrendingUp,
   AlertTriangle
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
+import Modal from '../../components/UI/Modal';
+import Table from '../../components/UI/Table';
 import { useAuth } from '../../contexts/AuthContext';
-import { apiGet } from '../../utils/api';
-import { formatCurrency, parseDate, timeAgo } from '../../utils/format';
+import { apiGet, apiPost } from '../../utils/api';
+import { downloadCsv } from '../../utils/export';
+import { formatCurrency, formatDate, parseDate, timeAgo } from '../../utils/format';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [flats, setFlats] = useState([]);
   const [users, setUsers] = useState([]);
   const [complaints, setComplaints] = useState([]);
@@ -25,6 +29,11 @@ const AdminDashboard = () => {
   const [amenities, setAmenities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAllActivities, setShowAllActivities] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [showBillsModal, setShowBillsModal] = useState(false);
+  const [bills, setBills] = useState([]);
+  const [billsLoading, setBillsLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,6 +87,12 @@ const AdminDashboard = () => {
     [societyFlats]
   );
 
+  const flatNumberById = useMemo(() => {
+    const map = new Map();
+    societyFlats.forEach(flat => map.set(flat.flatId, flat.flatNumber));
+    return map;
+  }, [societyFlats]);
+
   const societyResidents = useMemo(
     () => users.filter(account => account.role === 'resident' && account.societyId === societyId),
     [users, societyId]
@@ -121,9 +136,10 @@ const AdminDashboard = () => {
 
     return activities
       .filter(activity => activity.timestamp)
-      .sort((a, b) => (parseDate(b.timestamp)?.getTime() || 0) - (parseDate(a.timestamp)?.getTime() || 0))
-      .slice(0, 5);
+      .sort((a, b) => (parseDate(b.timestamp)?.getTime() || 0) - (parseDate(a.timestamp)?.getTime() || 0));
   }, [complaints, societyBookings, amenityNames]);
+
+  const visibleActivities = showAllActivities ? recentActivities : recentActivities.slice(0, 5);
 
   const revenueMonths = useMemo(() => {
     const now = new Date();
@@ -167,6 +183,52 @@ const AdminDashboard = () => {
     { icon: Calendar, label: 'Amenity Bookings', value: loading ? '—' : String(societyBookings.length), color: 'bg-purple-500' }
   ];
 
+  const handleExportReport = async () => {
+    setExporting(true);
+    setError('');
+
+    try {
+      const report = await apiPost('/billingreport/generate', {});
+      const rows = (Array.isArray(report) ? report : []).map(item => [
+        item.flatNumber,
+        item.name,
+        item.phone,
+        item.maintenanceCharges,
+        item.pendingMaintenanceAmount,
+        item.amenityCharges,
+        item.pendingAmenityAmount,
+        item.totalAmount,
+        item.totalPendingAmount
+      ]);
+
+      downloadCsv(
+        `billing-report-${new Date().toISOString().slice(0, 10)}.csv`,
+        ['Flat', 'Resident', 'Phone', 'Maintenance', 'Pending Maintenance', 'Amenity', 'Pending Amenity', 'Total', 'Total Pending'],
+        rows
+      );
+    } catch (err) {
+      setError(err.message || 'Failed to generate the billing report.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleOpenBills = async () => {
+    setShowBillsModal(true);
+    setBillsLoading(true);
+    setError('');
+
+    try {
+      const allBills = await apiGet('/maintenance/bills');
+      setBills((Array.isArray(allBills) ? allBills : []).filter(bill => flatIds.has(bill.flatId)));
+    } catch (err) {
+      setBills([]);
+      setError(err.message || 'Failed to load maintenance bills.');
+    } finally {
+      setBillsLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -175,8 +237,12 @@ const AdminDashboard = () => {
           <p className="text-gray-600 mt-2">Manage your society operations</p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="secondary">Export Report</Button>
-          <Button variant="primary">Create Announcement</Button>
+          <Button variant="secondary" onClick={handleExportReport} disabled={exporting}>
+            {exporting ? 'Exporting...' : 'Export Report'}
+          </Button>
+          <Button variant="primary" onClick={() => navigate('/announcements')}>
+            Create Announcement
+          </Button>
         </div>
       </div>
 
@@ -186,11 +252,10 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Add Security Staff Management Link */}
       <div className="mb-6">
-        <Link to="/security-staff" className="btn btn-primary">
+        <Button variant="primary" onClick={() => navigate('/security-staff')}>
           Manage Security Staff
-        </Link>
+        </Button>
       </div>
 
       {/* Stats Grid */}
@@ -219,15 +284,23 @@ const AdminDashboard = () => {
         <Card>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Recent Activities</h2>
-            <Button variant="secondary" size="sm">View All</Button>
+            {recentActivities.length > 5 && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowAllActivities(value => !value)}
+              >
+                {showAllActivities ? 'Show Less' : 'View All'}
+              </Button>
+            )}
           </div>
           <div className="space-y-4">
             {loading ? (
               <p className="text-sm text-gray-500">Loading recent activity...</p>
-            ) : recentActivities.length === 0 ? (
+            ) : visibleActivities.length === 0 ? (
               <p className="text-sm text-gray-500">No recent activity yet.</p>
             ) : (
-              recentActivities.map(activity => (
+              visibleActivities.map(activity => (
                 <div key={activity.key} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                   <div className={`p-2 rounded-lg ${
                     activity.type === 'complaint'
@@ -252,19 +325,24 @@ const AdminDashboard = () => {
         <Card>
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="primary" className="h-16 flex-col">
+            <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/residents')}>
               <Users className="h-5 w-5 mb-1" />
               Add Resident
             </Button>
-            <Button variant="secondary" className="h-16 flex-col">
+            <Button variant="secondary" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
               <MessageSquare className="h-5 w-5 mb-1" />
               View Complaints
             </Button>
-            <Button variant="success" className="h-16 flex-col">
+            <Button
+              variant="success"
+              className="h-16 flex-col"
+              onClick={handleExportReport}
+              disabled={exporting}
+            >
               <FileText className="h-5 w-5 mb-1" />
               Generate Bills
             </Button>
-            <Button variant="warning" className="h-16 flex-col">
+            <Button variant="warning" className="h-16 flex-col" onClick={handleOpenBills}>
               <Wrench className="h-5 w-5 mb-1" />
               Maintenance
             </Button>
@@ -317,6 +395,45 @@ const AdminDashboard = () => {
           </div>
         )}
       </Card>
+
+      {/* Maintenance Bills Modal */}
+      <Modal
+        isOpen={showBillsModal}
+        onClose={() => setShowBillsModal(false)}
+        title="Maintenance Bills"
+        size="lg"
+      >
+        {billsLoading ? (
+          <p className="text-sm text-gray-500">Loading maintenance bills...</p>
+        ) : bills.length === 0 ? (
+          <p className="text-sm text-gray-500">No maintenance bills recorded for your society yet.</p>
+        ) : (
+          <Table headers={['Flat', 'Period', 'Due Date', 'Amount', 'Status']}>
+            {bills.map(bill => (
+              <tr key={bill.mbid} className="hover:bg-gray-50">
+                <td className="px-6 py-4 font-medium text-gray-900">
+                  {flatNumberById.get(bill.flatId) || '—'}
+                </td>
+                <td className="px-6 py-4 text-gray-600">
+                  {formatDate(bill.periodStart)} – {formatDate(bill.periodEnd)}
+                </td>
+                <td className="px-6 py-4 text-gray-600">{formatDate(bill.dueDate)}</td>
+                <td className="px-6 py-4 text-gray-900">{formatCurrency(bill.amount)}</td>
+                <td className="px-6 py-4">
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    bill.paid ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {bill.paid ? 'Paid' : 'Pending'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </Table>
+        )}
+        <div className="flex justify-end pt-4">
+          <Button variant="secondary" onClick={() => setShowBillsModal(false)}>Close</Button>
+        </div>
+      </Modal>
     </div>
   );
 };

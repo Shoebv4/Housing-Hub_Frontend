@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Bell,
   MessageSquare,
   Calendar,
   FileText,
@@ -9,6 +8,7 @@ import {
   Clock,
   Plus
 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
 import Modal from '../../components/UI/Modal';
@@ -25,7 +25,9 @@ const emptyComplaint = {
 
 const ResidentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showComplaintModal, setShowComplaintModal] = useState(false);
+  const [showBillsModal, setShowBillsModal] = useState(false);
   const [newComplaint, setNewComplaint] = useState(emptyComplaint);
   const [submitting, setSubmitting] = useState(false);
   const [complaints, setComplaints] = useState([]);
@@ -195,7 +197,9 @@ const ResidentDashboard = () => {
         <Card>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Latest Announcements</h2>
-            <Bell className="h-5 w-5 text-gray-400" />
+            <Link to="/announcements" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+              View All
+            </Link>
           </div>
           <div className="space-y-4">
             {loading ? (
@@ -227,10 +231,9 @@ const ResidentDashboard = () => {
         <Card>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Recent Visitors</h2>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-600">Live Updates</span>
-            </div>
+            <Link to="/visitors" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+              View All
+            </Link>
           </div>
           <div className="space-y-4">
             {loading ? (
@@ -268,24 +271,71 @@ const ResidentDashboard = () => {
       <Card>
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button variant="primary" className="h-16 flex-col">
+          <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/amenities')}>
             <Calendar className="h-5 w-5 mb-1" />
             Book Amenity
           </Button>
-          <Button variant="secondary" className="h-16 flex-col">
+          <Button variant="secondary" className="h-16 flex-col" onClick={() => setShowBillsModal(true)}>
             <FileText className="h-5 w-5 mb-1" />
-            Pay Bills
+            View Bills
           </Button>
-          <Button variant="warning" className="h-16 flex-col">
+          <Button variant="warning" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
             <MessageSquare className="h-5 w-5 mb-1" />
             My Complaints
           </Button>
-          <Button variant="success" className="h-16 flex-col">
+          <Button variant="success" className="h-16 flex-col" onClick={() => navigate('/visitors')}>
             <Users className="h-5 w-5 mb-1" />
-            Visitor Entry
+            Visitors
           </Button>
         </div>
       </Card>
+
+      {/* Bills Modal */}
+      <Modal
+        isOpen={showBillsModal}
+        onClose={() => setShowBillsModal(false)}
+        title="My Bills"
+      >
+        {billingReport ? (
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Flat</span>
+              <span className="font-medium text-gray-900">{billingReport.flatNumber || '—'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Maintenance charges</span>
+              <span className="text-gray-900">{formatCurrency(billingReport.maintenanceCharges)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Pending maintenance</span>
+              <span className="text-gray-900">{formatCurrency(billingReport.pendingMaintenanceAmount)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Amenity charges</span>
+              <span className="text-gray-900">{formatCurrency(billingReport.amenityCharges)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Pending amenity</span>
+              <span className="text-gray-900">{formatCurrency(billingReport.pendingAmenityAmount)}</span>
+            </div>
+            <hr className="border-gray-200" />
+            <div className="flex justify-between font-semibold text-gray-900">
+              <span>Total</span>
+              <span>{formatCurrency(billingReport.totalAmount)}</span>
+            </div>
+            <div className="flex justify-between font-semibold text-red-600">
+              <span>Outstanding</span>
+              <span>{formatCurrency(billingReport.totalPendingAmount)}</span>
+            </div>
+            <p className="text-xs text-gray-500">Online payment is not available yet.</p>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">No billing information is available for your flat.</p>
+        )}
+        <div className="flex justify-end pt-4">
+          <Button variant="secondary" onClick={() => setShowBillsModal(false)}>Close</Button>
+        </div>
+      </Modal>
 
       {/* Complaint Modal */}
       <Modal

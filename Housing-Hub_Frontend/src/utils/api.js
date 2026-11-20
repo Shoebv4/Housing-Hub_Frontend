@@ -56,3 +56,5 @@ export const apiPut = (path, body) =>
     method: 'PUT',
     ...(body === undefined ? {} : { body: JSON.stringify(body) })
   });
+
+export const apiDelete = (path) => apiRequest(path, { method: 'DELETE' });
