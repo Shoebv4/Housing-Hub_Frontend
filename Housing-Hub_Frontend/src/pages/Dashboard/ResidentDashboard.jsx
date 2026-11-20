@@ -14,6 +14,7 @@ import Button from '../../components/UI/Button';
 import Modal from '../../components/UI/Modal';
 import Input from '../../components/UI/Input';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLiveEvents } from '../../hooks/useLiveEvents';
 import { apiGet, apiPost } from '../../utils/api';
 import { formatCurrency, formatTime, parseDate, timeAgo } from '../../utils/format';
 
@@ -87,6 +88,66 @@ const ResidentDashboard = () => {
       cancelled = true;
     };
   }, []);
+
+  const refreshVisitors = async () => {
+    try {
+      const data = await apiGet('/visitors');
+      setVisitors(data || []);
+    } catch {
+      // Keep the current data when a background refresh fails.
+    }
+  };
+
+  const refreshAnnouncements = async () => {
+    try {
+      const data = await apiGet('/announcements');
+      setAnnouncements(data || []);
+    } catch {
+      // Keep the current data when a background refresh fails.
+    }
+  };
+
+  const refreshBilling = async () => {
+    try {
+      const data = await apiPost('/billingreport/generate', {});
+      setBilling(data || []);
+    } catch {
+      // Keep the current data when a background refresh fails.
+    }
+  };
+
+  const handleLiveEvent = (event) => {
+    if (event.type === 'visitor.created' || event.type === 'visitor.exited') {
+      const visitor = event.data;
+      if (!visitor?.visitorId) return;
+
+      setVisitors(previous => {
+        const index = previous.findIndex(item => item.visitorId === visitor.visitorId);
+        if (index === -1) return [visitor, ...previous];
+
+        const next = previous.slice();
+        next[index] = { ...next[index], ...visitor };
+        return next;
+      });
+      return;
+    }
+
+    if (event.type === 'announcement.created') {
+      refreshAnnouncements();
+    } else if (event.type === 'bill.created') {
+      refreshBilling();
+    }
+  };
+
+  useLiveEvents({
+    eventTypes: ['visitor.created', 'visitor.exited', 'announcement.created', 'bill.created'],
+    onEvent: handleLiveEvent,
+    onReconnect: () => {
+      refreshVisitors();
+      refreshAnnouncements();
+      refreshBilling();
+    }
+  });
 
   const myComplaints = complaints.filter(complaint => complaint.raisedBy === user?.userId);
   const openComplaints = myComplaints.filter(

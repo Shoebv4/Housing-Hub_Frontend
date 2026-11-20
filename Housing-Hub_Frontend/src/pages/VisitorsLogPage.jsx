@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
+import { useLiveEvents } from '../hooks/useLiveEvents';
 import Table from '../components/UI/Table';
 
 const VisitorsLogPage = () => {
@@ -56,6 +57,26 @@ const VisitorsLogPage = () => {
     }
     setLoading(false);
   };
+
+  const handleLiveEvent = (event) => {
+    const visitor = event?.data;
+    if (!visitor?.visitorId) return;
+
+    setVisitors(previous => {
+      const index = previous.findIndex(item => item.visitorId === visitor.visitorId);
+      if (index === -1) return [visitor, ...previous];
+
+      const next = previous.slice();
+      next[index] = { ...next[index], ...visitor };
+      return next;
+    });
+  };
+
+  useLiveEvents({
+    eventTypes: ['visitor.created', 'visitor.exited'],
+    onEvent: handleLiveEvent,
+    onReconnect: fetchVisitors
+  });
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">

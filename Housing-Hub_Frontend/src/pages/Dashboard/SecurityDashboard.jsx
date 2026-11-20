@@ -14,6 +14,7 @@ import Modal from '../../components/UI/Modal';
 import Input from '../../components/UI/Input';
 import Table from '../../components/UI/Table';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLiveEvents } from '../../hooks/useLiveEvents';
 import { apiGet, apiPost, apiPut } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
 import { formatDateTime, formatDuration, formatTime, isToday, parseDate } from '../../utils/format';
@@ -45,6 +46,7 @@ const SecurityDashboard = () => {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [busyVisitorId, setBusyVisitorId] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,7 +75,33 @@ const SecurityDashboard = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [refreshKey]);
+
+  const handleLiveEvent = (event) => {
+    const visitor = event?.data;
+    if (!visitor?.visitorId) return;
+
+    setVisitors(previous => {
+      const index = previous.findIndex(item => item.visitorId === visitor.visitorId);
+      if (index === -1) return [visitor, ...previous];
+
+      const next = previous.slice();
+      next[index] = { ...next[index], ...visitor };
+      return next;
+    });
+  };
+
+  const liveStatus = useLiveEvents({
+    eventTypes: ['visitor.created', 'visitor.exited'],
+    onEvent: handleLiveEvent,
+    onReconnect: () => setRefreshKey(key => key + 1)
+  });
+
+  const liveBadge = liveStatus === 'open'
+    ? { label: 'Live updates', container: 'bg-green-50', dot: 'bg-green-500 animate-pulse', text: 'text-green-700' }
+    : liveStatus === 'unauthorized'
+      ? { label: 'Sign in again', container: 'bg-red-50', dot: 'bg-red-500', text: 'text-red-700' }
+      : { label: 'Connecting...', container: 'bg-amber-50', dot: 'bg-amber-500', text: 'text-amber-700' };
 
   const societyFlats = useMemo(
     () => (user?.societyId
@@ -227,6 +255,10 @@ const SecurityDashboard = () => {
           <p className="text-gray-600 mt-2">Real-time visitor management and security monitoring</p>
         </div>
         <div className="flex space-x-3">
+          <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${liveBadge.container}`}>
+            <div className={`w-2 h-2 rounded-full ${liveBadge.dot}`}></div>
+            <span className={`text-sm font-medium ${liveBadge.text}`}>{liveBadge.label}</span>
+          </div>
           <Button onClick={() => setShowVisitorModal(true)}>
             <Plus className="h-4 w-4 mr-2" />
             New Visitor Entry
