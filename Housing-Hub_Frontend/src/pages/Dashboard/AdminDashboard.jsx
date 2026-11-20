@@ -15,6 +15,7 @@ import Button from '../../components/UI/Button';
 import Modal from '../../components/UI/Modal';
 import Table from '../../components/UI/Table';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLiveEvents } from '../../hooks/useLiveEvents';
 import { apiGet, apiPost } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
 import { formatCurrency, formatDate, parseDate, timeAgo } from '../../utils/format';
@@ -72,6 +73,41 @@ const AdminDashboard = () => {
       cancelled = true;
     };
   }, []);
+
+  const refreshComplaints = async () => {
+    try {
+      const data = await apiGet('/complaints');
+      setComplaints(data || []);
+    } catch {
+      // Keep the current data when a background refresh fails.
+    }
+  };
+
+  const refreshBookings = async () => {
+    try {
+      const data = await apiGet('/bookings');
+      setBookings(data || []);
+    } catch {
+      // Keep the current data when a background refresh fails.
+    }
+  };
+
+  const handleLiveEvent = (event) => {
+    if (event.type.startsWith('complaint.')) {
+      refreshComplaints();
+    } else if (event.type.startsWith('booking.')) {
+      refreshBookings();
+    }
+  };
+
+  useLiveEvents({
+    eventTypes: ['complaint.created', 'complaint.updated', 'booking.created', 'booking.updated', 'booking.deleted'],
+    onEvent: handleLiveEvent,
+    onReconnect: () => {
+      refreshComplaints();
+      refreshBookings();
+    }
+  });
 
   const societyId = user?.societyId;
 
