@@ -1,69 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Building2, 
-  Users, 
-  MessageSquare, 
-  Wrench, 
-  Calendar, 
-  FileText, 
-  UserCheck, 
-  Settings,
-  LogOut,
-  Shield,
-  Bell
-} from 'lucide-react';
+import { Building2, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { getMenuItems } from '../../utils/navigation';
 import clsx from 'clsx';
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
-
-  const getMenuItems = () => {
-    switch (user?.role) {
-      case 'super_admin':
-        return [
-          { icon: Home, label: 'Dashboard', path: '/dashboard' },
-          { icon: Building2, label: 'Societies', path: '/societies' },
-          { icon: Shield, label: 'Admins', path: '/admins' }
-          //{ icon: Settings, label: 'Settings', path: '/settings' }
-        ];
-      case 'admin':
-        return [
-          { icon: Home, label: 'Dashboard', path: '/dashboard' },
-          { icon: Building2, label: 'Wings & Flats', path: '/wings-flats' },
-          { icon: Users, label: 'Residents', path: '/residents' },
-          { icon: Shield, label: 'Staff', path: '/security-staff' }, // Updated label and path
-          { icon: MessageSquare, label: 'Complaints', path: '/complaints' },
-          { icon: Bell, label: 'Announcements', path: '/announcements' },
-          //{ icon: Wrench, label: 'Maintenance', path: '/maintenance' },
-          { icon: Calendar, label: 'Amenities', path: '/amenities' },
-          { icon: UserCheck, label: 'Visitors', path: '/visitors-log' }
-        ];
-      case 'resident':
-        return [
-          { icon: Home, label: 'Dashboard', path: '/dashboard' },
-          { icon: Bell, label: 'Announcements', path: '/announcements' },
-          { icon: MessageSquare, label: 'Complaints', path: '/complaints' },
-          { icon: Calendar, label: 'Amenities', path: '/amenities' },
-          //{ icon: FileText, label: 'Bills', path: '/bills' },
-          { icon: UserCheck, label: 'Visitors', path: '/visitors' }
-        ];
-      case 'security_staff':
-        return [
-          { icon: Home, label: 'Dashboard', path: '/dashboard' },
-          { icon: UserCheck, label: 'Visitor Entry', path: '/visitor-entry' },
-          { icon: Users, label: 'Visitors Log', path: '/visitors-log' }
-        ];
-      default:
-        return [];
-    }
-  };
-
-  const menuItems = getMenuItems();
+  const menuItems = getMenuItems(user?.role);
 
   return (
     <div className="bg-white shadow-lg h-full flex flex-col">
@@ -79,12 +24,12 @@ const Sidebar = () => {
 
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
-          {menuItems.map((item, index) => {
+          {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             return (
-              <li key={index}>
+              <li key={item.path}>
                 <Link
                   to={item.path}
                   className={clsx(
