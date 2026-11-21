@@ -6,7 +6,8 @@ import {
   Users,
   CheckCircle,
   Clock,
-  Plus
+  Plus,
+  Building2
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Card from '../../components/UI/Card';
@@ -15,6 +16,7 @@ import Modal from '../../components/UI/Modal';
 import Input from '../../components/UI/Input';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
+import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost } from '../../utils/api';
 import { formatCurrency, formatTime, parseDate, timeAgo } from '../../utils/format';
 
@@ -26,6 +28,7 @@ const emptyComplaint = {
 
 const ResidentDashboard = () => {
   const { user } = useAuth();
+  const society = useSociety();
   const navigate = useNavigate();
   const [showComplaintModal, setShowComplaintModal] = useState(false);
   const [showBillsModal, setShowBillsModal] = useState(false);
@@ -218,7 +221,12 @@ const ResidentDashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back! Here's what's happening</p>
+          {society?.name && (
+            <p className="text-gray-600 mt-2 flex items-center font-medium">
+              <Building2 className="h-4 w-4 mr-1.5" />
+              {society.name}
+            </p>
+          )}
         </div>
         <Button onClick={() => setShowComplaintModal(true)}>
           <Plus className="h-4 w-4 mr-2" />

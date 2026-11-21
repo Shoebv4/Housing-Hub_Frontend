@@ -6,7 +6,8 @@ import {
   CheckCircle,
   Car,
   Search,
-  Plus
+  Plus,
+  Building2
 } from 'lucide-react';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
@@ -15,6 +16,7 @@ import Input from '../../components/UI/Input';
 import Table from '../../components/UI/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
+import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost, apiPut } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
 import { formatDateTime, formatDuration, formatTime, isToday, parseDate } from '../../utils/format';
@@ -37,6 +39,7 @@ const visitorTypeStyles = {
 
 const SecurityDashboard = () => {
   const { user } = useAuth();
+  const society = useSociety();
   const [showVisitorModal, setShowVisitorModal] = useState(false);
   const [newVisitor, setNewVisitor] = useState(emptyVisitor);
   const [visitors, setVisitors] = useState([]);
@@ -252,7 +255,12 @@ const SecurityDashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Security Dashboard</h1>
-          <p className="text-gray-600 mt-2">Real-time visitor management and security monitoring</p>
+          {society?.name && (
+            <p className="text-gray-600 mt-2 flex items-center font-medium">
+              <Building2 className="h-4 w-4 mr-1.5" />
+              {society.name}
+            </p>
+          )}
         </div>
         <div className="flex space-x-3">
           <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${liveBadge.container}`}>

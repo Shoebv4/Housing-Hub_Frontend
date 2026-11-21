@@ -16,12 +16,14 @@ import Modal from '../../components/UI/Modal';
 import Table from '../../components/UI/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
+import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
 import { formatCurrency, formatDate, parseDate, timeAgo } from '../../utils/format';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const society = useSociety();
   const navigate = useNavigate();
   const [flats, setFlats] = useState([]);
   const [users, setUsers] = useState([]);
@@ -270,7 +272,12 @@ const AdminDashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-2">Manage your society operations</p>
+          {society?.name && (
+            <p className="text-gray-600 mt-2 flex items-center font-medium">
+              <Building2 className="h-4 w-4 mr-1.5" />
+              {society.name}
+            </p>
+          )}
         </div>
         <div className="flex space-x-3">
           <Button variant="secondary" onClick={handleExportReport} disabled={exporting}>
