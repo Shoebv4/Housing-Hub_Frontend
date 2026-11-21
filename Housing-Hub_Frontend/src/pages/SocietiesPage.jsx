@@ -182,14 +182,14 @@ const SocietiesPage = () => {
                     <table className="min-w-full border text-sm">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="px-4 py-2 border">Name</th>
-                                <th className="px-4 py-2 border">Address</th>
-                                <th className="px-4 py-2 border">State</th>
-                                <th className="px-4 py-2 border">Country</th>
-                                <th className="px-4 py-2 border">City</th>
+                                <th className="px-4 py-2 border text-left">Name</th>
+                                <th className="px-4 py-2 border text-left">Address</th>
+                                <th className="px-4 py-2 border text-left">State</th>
+                                <th className="px-4 py-2 border text-left">Country</th>
+                                <th className="px-4 py-2 border text-left">City</th>
                                 <th className="px-4 py-2 border">Pincode</th>
                                 <th className="px-4 py-2 border">Created At</th>
-                                <th className="px-4 py-2 border">Admin</th>
+                                <th className="px-4 py-2 border text-left">Admin</th>
                                 <th className="px-4 py-2 border">Verified</th>
                                 <th className="px-4 py-2 border">Actions</th>
                             </tr>
@@ -202,21 +202,23 @@ const SocietiesPage = () => {
                                     <td className="border px-4 py-2">{society.state}</td>
                                     <td className="border px-4 py-2">{society.country}</td>
                                     <td className="border px-4 py-2">{society.city}</td>
-                                    <td className="border px-4 py-2">{society.pincode}</td>
-                                    <td className="border px-4 py-2">{society.createdAt ? new Date(society.createdAt + 'Z').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '-'}</td>
+                                    <td className="border px-4 py-2 text-center">{society.pincode}</td>
+                                    <td className="border px-4 py-2 text-center">{society.createdAt ? new Date(society.createdAt + 'Z').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '-'}</td>
                                     <td className="border px-4 py-2">{admins[society.societyId] || '-'}</td>
-                                    <td className="border px-4 py-2">{society.isVerified ? 'Yes' : 'No'}</td>
-                                    <td className="border px-4 py-2 space-x-2">
-                                        <Button type="button" variant="secondary" onClick={() => handleEdit(society)} size="sm">Edit</Button>
-                                        <Button type="button" variant="danger" onClick={() => handleDelete(society.societyId)} size="sm">Delete</Button>
-                                        <Button
-                                            type="button"
-                                            size="sm"
-                                            variant={society.isVerified ? 'secondary' : 'success'}
-                                            onClick={() => handleApprove(society)}
-                                        >
-                                            {society.isVerified ? 'Unverify' : 'Verify'}
-                                        </Button>
+                                    <td className="border px-4 py-2 text-center">{society.isVerified ? 'Yes' : 'No'}</td>
+                                    <td className="border px-4 py-2">
+                                        <div className="flex flex-wrap items-center justify-center gap-2">
+                                            <Button type="button" variant="secondary" onClick={() => handleEdit(society)} size="sm">Edit</Button>
+                                            <Button type="button" variant="danger" onClick={() => handleDelete(society.societyId)} size="sm">Delete</Button>
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                variant={society.isVerified ? 'secondary' : 'success'}
+                                                onClick={() => handleApprove(society)}
+                                            >
+                                                {society.isVerified ? 'Unverify' : 'Verify'}
+                                            </Button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

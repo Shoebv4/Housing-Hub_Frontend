@@ -173,16 +173,25 @@ const VisitorsEntryPage = () => {
             </Modal>
             <div className="mt-8">
                 <h2 className="text-lg font-semibold mb-4">Current Visitors</h2>
-                <Table headers={['Name', 'Flat', 'Purpose', 'Entry Time', 'Vehicle', 'Type', 'Actions', 'Recorded By']}>
+                <Table headers={[
+                    { label: 'Name', align: 'left' },
+                    { label: 'Flat', align: 'center' },
+                    { label: 'Purpose', align: 'left' },
+                    { label: 'Entry Time', align: 'left' },
+                    { label: 'Vehicle', align: 'center' },
+                    { label: 'Type', align: 'center' },
+                    { label: 'Actions', align: 'center' },
+                    { label: 'Recorded By', align: 'left' }
+                ]}>
                     {visitors.filter(v => !v.exitTime).map(visitor => (
                         <tr key={visitor.visitorId} className="hover:bg-gray-50">
                             <td className="px-6 py-4 font-medium text-gray-900">{visitor.name}</td>
-                            <td className="px-6 py-4">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
+                            <td className="px-6 py-4 text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
                             <td className="px-6 py-4">{visitor.purpose}</td>
                             <td className="px-6 py-4">{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
-                            <td className="px-6 py-4">{visitor.vehicleNo || '-'}</td>
-                            <td className="px-6 py-4">{visitor.visitorType}</td>
-                            <td className="px-6 py-4">
+                            <td className="px-6 py-4 text-center">{visitor.vehicleNo || '-'}</td>
+                            <td className="px-6 py-4 text-center">{visitor.visitorType}</td>
+                            <td className="px-6 py-4 text-center">
                                 <Button
                                     variant="danger"
                                     size="sm"

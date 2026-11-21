@@ -90,7 +90,7 @@ const BookingsTab = () => {
           <thead>
             <tr className="bg-gray-100">
               <th className="px-4 py-2 border">Booking ID</th>
-              <th className="px-4 py-2 border">Amenity</th>
+              <th className="px-4 py-2 border text-left">Amenity</th>
               <th className="px-4 py-2 border">User ID</th>
               <th className="px-4 py-2 border">Date</th>
               <th className="px-4 py-2 border">Start Time</th>
@@ -104,13 +104,13 @@ const BookingsTab = () => {
               const amenity = amenities.find(a => a.amenityId === b.amenityId);
               return (
                 <tr key={b.bookingId}>
-                  <td className="border px-4 py-2">{b.bookingId}</td>
+                  <td className="border px-4 py-2 text-center">{b.bookingId}</td>
                   <td className="border px-4 py-2">{amenity ? amenity.name : b.amenityId}</td>
-                  <td className="border px-4 py-2">{b.userId}</td>
-                  <td className="border px-4 py-2">{b.startDate}</td>
-                  <td className="border px-4 py-2">{b.startTime}</td>
-                  <td className="border px-4 py-2">{b.endTime}</td>
-                  <td className="border px-4 py-2">
+                  <td className="border px-4 py-2 text-center">{b.userId}</td>
+                  <td className="border px-4 py-2 text-center">{b.startDate}</td>
+                  <td className="border px-4 py-2 text-center">{b.startTime}</td>
+                  <td className="border px-4 py-2 text-center">{b.endTime}</td>
+                  <td className="border px-4 py-2 text-center">
                     <select
                       value={statusEdit[b.bookingId] || b.status}
                       onChange={e => handleStatusChange(b.bookingId, e.target.value)}
@@ -122,7 +122,7 @@ const BookingsTab = () => {
                       ))}
                     </select>
                   </td>
-                  <td className="border px-4 py-2">
+                  <td className="border px-4 py-2 text-center">
                     <Button
                       type="button"
                       variant="primary"

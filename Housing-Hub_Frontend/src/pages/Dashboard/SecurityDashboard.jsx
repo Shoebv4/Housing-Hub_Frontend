@@ -328,7 +328,15 @@ const SecurityDashboard = () => {
           </Button>
         </div>
 
-        <Table headers={['Name', 'Flat', 'Purpose', 'Entry Time', 'Vehicle', 'Type', 'Actions']}>
+        <Table headers={[
+          { label: 'Name', align: 'left' },
+          { label: 'Flat', align: 'center' },
+          { label: 'Purpose', align: 'left' },
+          { label: 'Entry Time', align: 'center' },
+          { label: 'Vehicle', align: 'center' },
+          { label: 'Type', align: 'center' },
+          { label: 'Actions', align: 'center' }
+        ]}>
           {loading ? (
             <tr>
               <td colSpan={7} className="px-6 py-6 text-center text-gray-500">Loading visitors...</td>
@@ -350,14 +358,14 @@ const SecurityDashboard = () => {
                     <span className="font-medium text-gray-900">{visitor.name}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 font-medium text-gray-900">
+                <td className="px-6 py-4 font-medium text-gray-900 text-center">
                   {flatNumberById.get(visitor.flatId) || '—'}
                 </td>
                 <td className="px-6 py-4 text-gray-600">{visitor.purpose}</td>
-                <td className="px-6 py-4 text-gray-600">{formatTime(visitor.entryTime)}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-600 text-center">{formatTime(visitor.entryTime)}</td>
+                <td className="px-6 py-4 text-center">
                   {visitor.vehicleNo ? (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-center space-x-2">
                       <Car className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-600">{visitor.vehicleNo}</span>
                     </div>
@@ -365,14 +373,14 @@ const SecurityDashboard = () => {
                     <span className="text-gray-400">No vehicle</span>
                   )}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                     visitorTypeStyles[visitor.visitorType] || 'bg-gray-100 text-gray-800'
                   }`}>
                     {visitor.visitorType}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <Button
                     variant="danger"
                     size="sm"

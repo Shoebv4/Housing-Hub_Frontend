@@ -273,7 +273,13 @@ const SuperAdminDashboard = () => {
           </div>
         </div>
 
-        <Table headers={['Society Name', 'Admin', 'City', 'Status', 'Actions']}>
+        <Table headers={[
+          { label: 'Society Name', align: 'left' },
+          { label: 'Admin', align: 'left' },
+          { label: 'City', align: 'left' },
+          { label: 'Status', align: 'center' },
+          { label: 'Actions', align: 'center' }
+        ]}>
           {loading ? (
             <tr>
               <td colSpan={5} className="px-6 py-6 text-center text-gray-500">Loading societies...</td>
@@ -297,7 +303,7 @@ const SuperAdminDashboard = () => {
                   </td>
                   <td className="px-6 py-4 text-gray-600">{admin?.name || '—'}</td>
                   <td className="px-6 py-4 text-gray-600">{society.city || '—'}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
                         society.isVerified
@@ -309,7 +315,7 @@ const SuperAdminDashboard = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex space-x-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
                       <Button variant="secondary" size="sm" onClick={() => openEditSociety(society)} disabled={busy}>
                         Edit
                       </Button>

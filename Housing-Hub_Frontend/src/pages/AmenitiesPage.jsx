@@ -322,9 +322,9 @@ const AmenitiesPage = () => {
                             <table className="min-w-full border text-sm">
                                 <thead>
                                     <tr className="bg-gray-100">
-                                        <th className="px-4 py-2 border">Name</th>
-                                        <th className="px-4 py-2 border">Description</th>
-                                        <th className="px-4 py-2 border">Hourly Rate</th>
+                                        <th className="px-4 py-2 border text-left">Name</th>
+                                        <th className="px-4 py-2 border text-left">Description</th>
+                                        <th className="px-4 py-2 border text-right">Hourly Rate</th>
                                         <th className="px-4 py-2 border">Max Capacity</th>
                                         <th className="px-4 py-2 border">Opening Time</th>
                                         <th className="px-4 py-2 border">Closing Time</th>
@@ -337,19 +337,23 @@ const AmenitiesPage = () => {
                                         <tr key={a.amenityId}>
                                             <td className="border px-4 py-2">{a.name}</td>
                                             <td className="border px-4 py-2">{a.description}</td>
-                                            <td className="border px-4 py-2">{a.hourlyRate}</td>
-                                            <td className="border px-4 py-2">{a.maxCapacity}</td>
-                                            <td className="border px-4 py-2">{a.openingTime}</td>
-                                            <td className="border px-4 py-2">{a.closingTime}</td>
+                                            <td className="border px-4 py-2 text-right">{a.hourlyRate}</td>
+                                            <td className="border px-4 py-2 text-center">{a.maxCapacity}</td>
+                                            <td className="border px-4 py-2 text-center">{a.openingTime}</td>
+                                            <td className="border px-4 py-2 text-center">{a.closingTime}</td>
                                             {user.role === 'admin' && (
-                                                <td className="border px-4 py-2 space-x-2">
-                                                    <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
-                                                    <Button type="button" variant="danger" onClick={() => handleDelete(a.amenityId)} size="sm">Delete</Button>
+                                                <td className="border px-4 py-2">
+                                                    <div className="flex flex-wrap items-center justify-center gap-2">
+                                                        <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
+                                                        <Button type="button" variant="danger" onClick={() => handleDelete(a.amenityId)} size="sm">Delete</Button>
+                                                    </div>
                                                 </td>
                                             )}
                                             {user.role === 'resident' && (
                                                 <td className="border px-4 py-2">
-                                                    <Button type="button" variant="primary" size="sm" onClick={() => openBooking(a.amenityId)}>Book</Button>
+                                                    <div className="flex justify-center">
+                                                        <Button type="button" variant="primary" size="sm" onClick={() => openBooking(a.amenityId)}>Book</Button>
+                                                    </div>
                                                     {showBooking === a.amenityId && (
                                                         <form onSubmit={handleBookingSubmit} className="mt-2 space-y-2 bg-gray-50 p-2 rounded-xl">
                                                             <div className="flex flex-col">
@@ -390,14 +394,14 @@ const AmenitiesPage = () => {
                                     <table className="min-w-full border text-sm">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2 border">Amenity</th>
+                                                <th className="px-4 py-2 border text-left">Amenity</th>
                                                 <th className="px-4 py-2 border">Date</th>
                                                 <th className="px-4 py-2 border">Start Time</th>
                                                 <th className="px-4 py-2 border">End Time</th>
                                                 <th className="px-4 py-2 border">Status</th>
                                                 <th className="px-4 py-2 border">Paid</th>
-                                                <th className="px-4 py-2 border">Transaction ID</th>
-                                                <th className="px-4 py-2 border">Amount</th>
+                                                <th className="px-4 py-2 border text-left">Transaction ID</th>
+                                                <th className="px-4 py-2 border text-right">Amount</th>
                                                 <th className="px-4 py-2 border">Actions</th>
                                             </tr>
                                         </thead>
@@ -407,14 +411,14 @@ const AmenitiesPage = () => {
                                                 return (
                                                     <tr key={b.bookingId}>
                                                         <td className="border px-4 py-2">{amenity ? amenity.name : b.amenityId}</td>
-                                                        <td className="border px-4 py-2">{b.startDate}</td>
-                                                        <td className="border px-4 py-2">{b.startTime}</td>
-                                                        <td className="border px-4 py-2">{b.endTime}</td>
-                                                        <td className="border px-4 py-2">{b.status}</td>
-                                                        <td className="border px-4 py-2">{b.paid ? 'Paid' : 'Unpaid'}</td>
+                                                        <td className="border px-4 py-2 text-center">{b.startDate}</td>
+                                                        <td className="border px-4 py-2 text-center">{b.startTime}</td>
+                                                        <td className="border px-4 py-2 text-center">{b.endTime}</td>
+                                                        <td className="border px-4 py-2 text-center">{b.status}</td>
+                                                        <td className="border px-4 py-2 text-center">{b.paid ? 'Paid' : 'Unpaid'}</td>
                                                         <td className="border px-4 py-2">{b.transactionId || '-'}</td>
-                                                        <td className="border px-4 py-2">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
-                                                        <td className="border px-4 py-2">
+                                                        <td className="border px-4 py-2 text-right">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
+                                                        <td className="border px-4 py-2 text-center">
                                                             {/* Cancel button for Pending bookings */}
                                                             {b.status === 'Pending' && (
                                                                 <Button
@@ -495,15 +499,15 @@ const AmenitiesPage = () => {
                                 <thead>
                                     <tr className="bg-gray-100">
                                         <th className="px-4 py-2 border">Booking ID</th>
-                                        <th className="px-4 py-2 border">Amenity</th>
-                                        <th className="px-4 py-2 border">User Name</th>
+                                        <th className="px-4 py-2 border text-left">Amenity</th>
+                                        <th className="px-4 py-2 border text-left">User Name</th>
                                         <th className="px-4 py-2 border">Date</th>
                                         <th className="px-4 py-2 border">Start Time</th>
                                         <th className="px-4 py-2 border">End Time</th>
                                         <th className="px-4 py-2 border">Status</th>
                                         <th className="px-4 py-2 border">Paid</th>
-                                        <th className="px-4 py-2 border">Transaction ID</th>
-                                        <th className="px-4 py-2 border">Amount</th>
+                                        <th className="px-4 py-2 border text-left">Transaction ID</th>
+                                        <th className="px-4 py-2 border text-right">Amount</th>
                                         <th className="px-4 py-2 border">Actions</th>
                                     </tr>
                                 </thead>
@@ -512,17 +516,17 @@ const AmenitiesPage = () => {
                                         const amenity = amenities.find(a => a.amenityId === b.amenityId);
                                         return (
                                             <tr key={b.bookingId}>
-                                                <td className="border px-4 py-2">{b.bookingId}</td>
+                                                <td className="border px-4 py-2 text-center">{b.bookingId}</td>
                                                 <td className="border px-4 py-2">{amenity ? amenity.name : b.amenityId}</td>
                                                 <td className="border px-4 py-2">{b.userName || '-'}</td>
-                                                <td className="border px-4 py-2">{b.startDate}</td>
-                                                <td className="border px-4 py-2">{b.startTime}</td>
-                                                <td className="border px-4 py-2">{b.endTime}</td>
-                                                <td className="border px-4 py-2">{b.status}</td>
-                                                <td className="border px-4 py-2">{b.paid ? 'Paid' : 'Unpaid'}</td>
+                                                <td className="border px-4 py-2 text-center">{b.startDate}</td>
+                                                <td className="border px-4 py-2 text-center">{b.startTime}</td>
+                                                <td className="border px-4 py-2 text-center">{b.endTime}</td>
+                                                <td className="border px-4 py-2 text-center">{b.status}</td>
+                                                <td className="border px-4 py-2 text-center">{b.paid ? 'Paid' : 'Unpaid'}</td>
                                                 <td className="border px-4 py-2">{b.transactionId || '-'}</td>
-                                                <td className="border px-4 py-2">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
-                                                <td className="border px-4 py-2">
+                                                <td className="border px-4 py-2 text-right">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
+                                                <td className="border px-4 py-2 text-center">
                                                     <select
                                                         value={statusEdit[b.bookingId] || b.status}
                                                         onChange={e => handleStatusChange(b.bookingId, e.target.value)}

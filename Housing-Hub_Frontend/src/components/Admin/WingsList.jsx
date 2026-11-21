@@ -176,7 +176,7 @@ const WingsList = () => {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-4 py-2 border">Wing ID</th>
-                            <th className="px-4 py-2 border">Name</th>
+                            <th className="px-4 py-2 border text-left">Name</th>
                             <th className="px-4 py-2 border">Total Floors</th>
                             <th className="px-4 py-2 border">Flats Per Floor</th>
                             <th className="px-4 py-2 border">Actions</th>
@@ -185,13 +185,15 @@ const WingsList = () => {
                     <tbody>
                         {wings.map(wing => (
                             <tr key={wing.wingId}>
-                                <td className="border px-4 py-2">{wing.wingId}</td>
+                                <td className="border px-4 py-2 text-center">{wing.wingId}</td>
                                 <td className="border px-4 py-2">{wing.name}</td>
-                                <td className="border px-4 py-2">{wing.totalFloors}</td>
-                                <td className="border px-4 py-2">{wing.flatsPerFloor}</td>
-                                <td className="border px-4 py-2 space-x-2">
-                                    <Button type="button" variant="secondary" onClick={() => handleEdit(wing)} size="sm">Edit</Button>
-                                    <Button type="button" variant="danger" onClick={() => handleDelete(wing.wingId)} size="sm">Delete</Button>
+                                <td className="border px-4 py-2 text-center">{wing.totalFloors}</td>
+                                <td className="border px-4 py-2 text-center">{wing.flatsPerFloor}</td>
+                                <td className="border px-4 py-2">
+                                    <div className="flex flex-wrap items-center justify-center gap-2">
+                                        <Button type="button" variant="secondary" onClick={() => handleEdit(wing)} size="sm">Edit</Button>
+                                        <Button type="button" variant="danger" onClick={() => handleDelete(wing.wingId)} size="sm">Delete</Button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

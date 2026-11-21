@@ -274,10 +274,10 @@ const AnnouncementsPage = () => {
                     <table className="min-w-full border text-sm">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="px-4 py-2 border">Title</th>
-                                <th className="px-4 py-2 border">Message</th>
-                                <th className="px-4 py-2 border">Wings</th>
-                                <th className="px-4 py-2 border">Flats</th>
+                                <th className="px-4 py-2 border text-left">Title</th>
+                                <th className="px-4 py-2 border text-left">Message</th>
+                                <th className="px-4 py-2 border text-left">Wings</th>
+                                <th className="px-4 py-2 border text-left">Flats</th>
                                 <th className="px-4 py-2 border">Created At</th>
                                 <th className="px-4 py-2 border">Actions</th>
                             </tr>
@@ -301,7 +301,7 @@ const AnnouncementsPage = () => {
                                                 ? a.targetFlatIds.map(id => flats.find(f => String(f.flatId) === String(id))?.flatNumber).filter(Boolean).join(', ')
                                                 : '-'
                                     }</td>
-                                    <td className="border px-4 py-2">{
+                                    <td className="border px-4 py-2 text-center">{
                                         a.createdAt ?
                                             (() => {
                                                 // Convert UTC to India time
@@ -317,13 +317,15 @@ const AnnouncementsPage = () => {
                                             })()
                                             : '-'
                                     }</td>
-                                    <td className="border px-4 py-2 space-x-2">
-                                        {user.role === 'admin' && (
-                                            <>
-                                                <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
-                                                <Button type="button" variant="danger" onClick={() => handleDelete(a.aid)} size="sm">Delete</Button>
-                                            </>
-                                        )}
+                                    <td className="border px-4 py-2">
+                                        <div className="flex flex-wrap items-center justify-center gap-2">
+                                            {user.role === 'admin' && (
+                                                <>
+                                                    <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
+                                                    <Button type="button" variant="danger" onClick={() => handleDelete(a.aid)} size="sm">Delete</Button>
+                                                </>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

@@ -220,7 +220,7 @@ const FlatsList = () => {
       </div>
       {error && <div className="text-red-600 mb-2">{error}</div>}
       <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
-        <table className="min-w-full border text-sm">
+        <table className="min-w-full border text-sm text-center">
           <thead>
             <tr className="bg-gray-100">
               <th className="px-4 py-2 border">Flat No.</th>
@@ -241,9 +241,11 @@ const FlatsList = () => {
                   <span className={`px-2 py-1 rounded-xl text-xs font-semibold ${FLAT_STATUS[flat.status] || ''}`}>{flat.status}</span>
                 </td>
                 <td className="border px-4 py-2">{wings.find(w => w.wingId === flat.wingId)?.name || '-'}</td>
-                <td className="border px-4 py-2 space-x-2">
-                  <Button type="button" variant="secondary" onClick={() => handleEdit(flat)} size="sm">Edit</Button>
-                  <Button type="button" variant="danger" onClick={() => handleDelete(flat.flatId)} size="sm">Delete</Button>
+                <td className="border px-4 py-2">
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Button type="button" variant="secondary" onClick={() => handleEdit(flat)} size="sm">Edit</Button>
+                    <Button type="button" variant="danger" onClick={() => handleDelete(flat.flatId)} size="sm">Delete</Button>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -82,24 +82,31 @@ const VisitorsLogPage = () => {
     <div className="mx-auto w-full max-w-5xl">
       <h1 className="text-2xl font-bold mb-6">Visitors Log</h1>
       {error && <div className="text-red-600 mb-4">{error}</div>}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
-        <Table headers={['Name', 'Flat', 'Purpose', 'Entry Time', 'Exit Time', 'Vehicle', 'Type', 'Recorded By']}>
+        <Table headers={[
+          { label: 'Name', align: 'left' },
+          { label: 'Flat', align: 'center' },
+          { label: 'Purpose', align: 'left' },
+          { label: 'Entry Time', align: 'left' },
+          { label: 'Exit Time', align: 'left' },
+          { label: 'Vehicle', align: 'center' },
+          { label: 'Type', align: 'center' },
+          { label: 'Recorded By', align: 'left' }
+        ]}>
           {visitors.map(visitor => (
             <tr key={visitor.visitorId} className="hover:bg-gray-50">
               <td className="px-6 py-4 font-medium text-gray-900">{visitor.name}</td>
-              <td className="px-6 py-4">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
+              <td className="px-6 py-4 text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
               <td className="px-6 py-4">{visitor.purpose}</td>
               <td className="px-6 py-4">{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
               <td className="px-6 py-4">{visitor.exitTime ? new Date(visitor.exitTime).toLocaleString() : '-'}</td>
-              <td className="px-6 py-4">{visitor.vehicleNo || '-'}</td>
-              <td className="px-6 py-4">{visitor.visitorType}</td>
+              <td className="px-6 py-4 text-center">{visitor.vehicleNo || '-'}</td>
+              <td className="px-6 py-4 text-center">{visitor.visitorType}</td>
               <td className="px-6 py-4">{visitor.recordedByName || '-'}</td>
             </tr>
           ))}
         </Table>
         {loading && <div className="text-gray-600 mt-4">Loading...</div>}
         {!loading && visitors.length === 0 && <div className="text-gray-600 mt-4">No visitors found.</div>}
-      </div>
     </div>
   );
 };

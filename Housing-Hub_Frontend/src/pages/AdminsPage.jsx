@@ -212,10 +212,10 @@ const AdminsPage = () => {
           <table className="min-w-full border text-sm">
             <thead>
               <tr className="bg-gray-100">
-                <th className="px-4 py-2 border">Name</th>
-                <th className="px-4 py-2 border">Email</th>
+                <th className="px-4 py-2 border text-left">Name</th>
+                <th className="px-4 py-2 border text-left">Email</th>
                 <th className="px-4 py-2 border">Phone</th>
-                <th className="px-4 py-2 border">Society</th>
+                <th className="px-4 py-2 border text-left">Society</th>
                 <th className="px-4 py-2 border">Verified</th>
                 <th className="px-4 py-2 border">Actions</th>
               </tr>
@@ -225,13 +225,15 @@ const AdminsPage = () => {
                 <tr key={admin.userId}>
                   <td className="border px-4 py-2">{admin.name}</td>
                   <td className="border px-4 py-2">{admin.email}</td>
-                  <td className="border px-4 py-2">{admin.phone}</td>
+                  <td className="border px-4 py-2 text-center">{admin.phone}</td>
                   <td className="border px-4 py-2">{societies.find(s => s.societyId === admin.societyId)?.name || '-'}</td>
-                  <td className="border px-4 py-2">{admin.isVerified ? 'Yes' : 'No'}</td>
-                  <td className="border px-4 py-2 space-x-2">
-                    <Button type="button" variant="secondary" onClick={() => handleEdit(admin)} size="sm">Edit</Button>
-                    <Button type="button" variant="danger" onClick={() => handleDelete(admin.userId)} size="sm">Delete</Button>
-                    <Button type="button" size="sm" variant={admin.isVerified ? 'secondary' : 'success'} onClick={() => handleVerify(admin)}>{admin.isVerified ? 'Unverify' : 'Verify'}</Button>
+                  <td className="border px-4 py-2 text-center">{admin.isVerified ? 'Yes' : 'No'}</td>
+                  <td className="border px-4 py-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <Button type="button" variant="secondary" onClick={() => handleEdit(admin)} size="sm">Edit</Button>
+                      <Button type="button" variant="danger" onClick={() => handleDelete(admin.userId)} size="sm">Delete</Button>
+                      <Button type="button" size="sm" variant={admin.isVerified ? 'secondary' : 'success'} onClick={() => handleVerify(admin)}>{admin.isVerified ? 'Unverify' : 'Verify'}</Button>
+                    </div>
                   </td>
                 </tr>
               ))}

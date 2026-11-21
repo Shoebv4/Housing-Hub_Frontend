@@ -279,8 +279,8 @@ const ResidentsList = () => {
         <table className="min-w-full border text-sm">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-4 py-2 border">Name</th>
-              <th className="px-4 py-2 border">Email</th>
+              <th className="px-4 py-2 border text-left">Name</th>
+              <th className="px-4 py-2 border text-left">Email</th>
               <th className="px-4 py-2 border">Phone</th>
               <th className="px-4 py-2 border">Flat</th>
               <th className="px-4 py-2 border">Verified</th>
@@ -292,27 +292,29 @@ const ResidentsList = () => {
               <tr key={resident.userId}>
                 <td className="border px-4 py-2">{resident.name}</td>
                 <td className="border px-4 py-2">{resident.email}</td>
-                <td className="border px-4 py-2">{resident.phone}</td>
-                <td className="border px-4 py-2">{flats.find(f => f.flatId === resident.flatId)?.flatNumber || '-'}</td>
-                <td className="border px-4 py-2">{resident.isVerified ? 'Yes' : 'No'}</td>
-                <td className="border px-4 py-2 space-x-2">
-                  <Button type="button" variant="secondary" onClick={() => handleEdit(resident)} size="sm">Edit</Button>
-                  <Button type="button" variant="danger" onClick={() => handleDelete(resident.userId)} size="sm">Delete</Button>
-                  <Button type="button" size="sm" variant={resident.isVerified ? 'secondary' : 'success'} onClick={async () => {
-                    setLoading(true);
-                    try {
-                      const payload = { ...resident, isVerified: !resident.isVerified };
-                      await fetch(`${API_BASE_URL}/users/${resident.userId}`, {
-                        method: 'PUT',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify(payload)
-                      });
-                      fetchResidents();
-                    } catch {
-                      setError('Failed to update verification status');
-                    }
-                    setLoading(false);
-                  }}>{resident.isVerified ? 'Unverify' : 'Verify'}</Button>
+                <td className="border px-4 py-2 text-center">{resident.phone}</td>
+                <td className="border px-4 py-2 text-center">{flats.find(f => f.flatId === resident.flatId)?.flatNumber || '-'}</td>
+                <td className="border px-4 py-2 text-center">{resident.isVerified ? 'Yes' : 'No'}</td>
+                <td className="border px-4 py-2">
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Button type="button" variant="secondary" onClick={() => handleEdit(resident)} size="sm">Edit</Button>
+                    <Button type="button" variant="danger" onClick={() => handleDelete(resident.userId)} size="sm">Delete</Button>
+                    <Button type="button" size="sm" variant={resident.isVerified ? 'secondary' : 'success'} onClick={async () => {
+                      setLoading(true);
+                      try {
+                        const payload = { ...resident, isVerified: !resident.isVerified };
+                        await fetch(`${API_BASE_URL}/users/${resident.userId}`, {
+                          method: 'PUT',
+                          headers: getAuthHeaders(),
+                          body: JSON.stringify(payload)
+                        });
+                        fetchResidents();
+                      } catch {
+                        setError('Failed to update verification status');
+                      }
+                      setLoading(false);
+                    }}>{resident.isVerified ? 'Unverify' : 'Verify'}</Button>
+                  </div>
                 </td>
               </tr>
             ))}

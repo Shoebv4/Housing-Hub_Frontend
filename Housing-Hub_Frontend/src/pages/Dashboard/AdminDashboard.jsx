@@ -455,18 +455,24 @@ const AdminDashboard = () => {
         ) : bills.length === 0 ? (
           <p className="text-sm text-gray-500">No maintenance bills recorded for your society yet.</p>
         ) : (
-          <Table headers={['Flat', 'Period', 'Due Date', 'Amount', 'Status']}>
+          <Table headers={[
+            { label: 'Flat', align: 'center' },
+            { label: 'Period', align: 'left' },
+            { label: 'Due Date', align: 'center' },
+            { label: 'Amount', align: 'right' },
+            { label: 'Status', align: 'center' }
+          ]}>
             {bills.map(bill => (
               <tr key={bill.mbid} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-900">
+                <td className="px-6 py-4 font-medium text-gray-900 text-center">
                   {flatNumberById.get(bill.flatId) || '—'}
                 </td>
                 <td className="px-6 py-4 text-gray-600">
                   {formatDate(bill.periodStart)} – {formatDate(bill.periodEnd)}
                 </td>
-                <td className="px-6 py-4 text-gray-600">{formatDate(bill.dueDate)}</td>
-                <td className="px-6 py-4 text-gray-900">{formatCurrency(bill.amount)}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-600 text-center">{formatDate(bill.dueDate)}</td>
+                <td className="px-6 py-4 text-gray-900 text-right">{formatCurrency(bill.amount)}</td>
+                <td className="px-6 py-4 text-center">
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                     bill.paid ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                   }`}>

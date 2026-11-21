@@ -192,15 +192,15 @@ const ComplaintsList = () => {
                 <table className="min-w-full border text-sm">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="px-4 py-2 border">Title</th>
+                            <th className="px-4 py-2 border text-left">Title</th>
                             <th className="px-4 py-2 border">Category</th>
-                            <th className="px-4 py-2 border">Description</th>
+                            <th className="px-4 py-2 border text-left">Description</th>
                             {user.role === 'admin' && <th className="px-4 py-2 border">Flat</th>}
                             {user.role === 'admin' && <th className="px-4 py-2 border">Wing</th>}
                             <th className="px-4 py-2 border">Status</th>
                             <th className="px-4 py-2 border">Created At</th>
                             <th className="px-4 py-2 border">Closed At</th>
-                            {user.role === 'admin' && <th className="px-4 py-2 border">Raised By</th>}
+                            {user.role === 'admin' && <th className="px-4 py-2 border text-left">Raised By</th>}
                             {user.role === 'admin' && <th className="px-4 py-2 border">Actions</th>}
                         </tr>
                     </thead>
@@ -210,12 +210,12 @@ const ComplaintsList = () => {
                             return (
                                 <tr key={complaint.complaintId}>
                                     <td className="border px-4 py-2">{complaint.title}</td>
-                                    <td className="border px-4 py-2">{complaint.category}</td>
+                                    <td className="border px-4 py-2 text-center">{complaint.category}</td>
                                     <td className="border px-4 py-2">{complaint.description}</td>
-                                    {user.role === 'admin' && <td className="border px-4 py-2">{flat?.flatNumber || '-'}</td>}
-                                    {user.role === 'admin' && <td className="border px-4 py-2">{flat?.wing?.name || '-'}</td>}
-                                    <td className={`border px-4 py-2 font-semibold rounded-xl ${getStatusColor(complaint.status)}`}>{complaint.status}</td>
-                                    <td className="border px-4 py-2">{
+                                    {user.role === 'admin' && <td className="border px-4 py-2 text-center">{flat?.flatNumber || '-'}</td>}
+                                    {user.role === 'admin' && <td className="border px-4 py-2 text-center">{flat?.wing?.name || '-'}</td>}
+                                    <td className={`border px-4 py-2 text-center font-semibold rounded-xl ${getStatusColor(complaint.status)}`}>{complaint.status}</td>
+                                    <td className="border px-4 py-2 text-center">{
                                         complaint.createdAt ? (() => {
                                             const d = new Date(complaint.createdAt);
                                             const day = String(d.getDate()).padStart(2, '0');
@@ -225,7 +225,7 @@ const ComplaintsList = () => {
                                             return `${day}/${month}/${year} ${time}`;
                                         })() : '-'
                                     }</td>
-                                    <td className="border px-4 py-2">{
+                                    <td className="border px-4 py-2 text-center">{
                                         complaint.resolvedAt ? (() => {
                                             const d = new Date(complaint.resolvedAt);
                                             const day = String(d.getDate()).padStart(2, '0');
@@ -237,7 +237,7 @@ const ComplaintsList = () => {
                                     }</td>
                                     {user.role === 'admin' && <td className="border px-4 py-2">{complaint.raisedByName || '-'}</td>}
                                     {user.role === 'admin' && (
-                                        <td className="border px-4 py-2 space-x-2">
+                                        <td className="border px-4 py-2 text-center">
                                             <select
                                                 value={complaint.status}
                                                 onChange={e => handleStatusUpdate(complaint.complaintId, e.target.value)}
