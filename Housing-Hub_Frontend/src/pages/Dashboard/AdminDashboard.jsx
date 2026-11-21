@@ -7,7 +7,9 @@ import {
   Calendar,
   FileText,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../../components/UI/Card';
@@ -295,12 +297,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      <div className="mb-6">
-        <Button variant="primary" onClick={() => navigate('/security-staff')}>
-          Manage Security Staff
-        </Button>
-      </div>
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
@@ -372,9 +368,17 @@ const AdminDashboard = () => {
               <Users className="h-5 w-5 mb-1" />
               Add Resident
             </Button>
+            <Button variant="secondary" className="h-16 flex-col" onClick={() => navigate('/security-staff')}>
+              <ShieldCheck className="h-5 w-5 mb-1" />
+              Manage Staff
+            </Button>
             <Button variant="secondary" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
               <MessageSquare className="h-5 w-5 mb-1" />
               View Complaints
+            </Button>
+            <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/visitors')}>
+              <UserCheck className="h-5 w-5 mb-1" />
+              Visitors
             </Button>
             <Button
               variant="success"
