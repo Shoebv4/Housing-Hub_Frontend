@@ -223,8 +223,8 @@ const FlatsList = () => {
         <table className="min-w-full border text-sm">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-4 py-2 border">Flat Number</th>
-              <th className="px-4 py-2 border">Floor</th>
+              <th className="px-4 py-2 border">Flat No.</th>
+              <th className="px-4 py-2 border">Floor No.</th>
               <th className="px-4 py-2 border">Area</th>
               <th className="px-4 py-2 border">Status</th>
               <th className="px-4 py-2 border">Wing</th>
