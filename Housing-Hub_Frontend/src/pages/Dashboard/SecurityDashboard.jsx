@@ -258,8 +258,8 @@ const SecurityDashboard = () => {
         ) : undefined}
         actions={(
           <>
-            <Badge tone={liveBadge.tone} className="gap-2 px-3 py-2 text-sm">
-              <span className={`h-2 w-2 rounded-full ${liveBadge.dot}`} />
+            <Badge tone={liveBadge.tone}>
+              <span aria-hidden="true" className={`h-2 w-2 rounded-full ${liveBadge.dot}`} />
               {liveBadge.label}
             </Badge>
             <Button onClick={() => setShowVisitorModal(true)}>
