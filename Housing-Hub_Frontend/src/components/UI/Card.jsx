@@ -5,14 +5,14 @@ import clsx from 'clsx';
 const Card = ({ children, className, padding = 'md' }) => {
   const paddingClasses = {
     sm: 'p-4',
-    md: 'p-4 sm:p-6',
+    md: 'p-5 sm:p-6',
     lg: 'p-8'
   };
 
   return (
     <div
       className={clsx(
-        'bg-white rounded-2xl shadow-sm border border-gray-200',
+        'rounded-2xl border border-line bg-surface shadow-card',
         paddingClasses[padding],
         className
       )}

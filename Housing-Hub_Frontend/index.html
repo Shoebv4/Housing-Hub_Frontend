@@ -4,7 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>HousingHub - Society Management System</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('housinghub-theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = stored ? stored === 'dark' : prefersDark;
+          document.documentElement.classList.toggle('dark', isDark);
+        } catch (e) {
+          // Ignore storage access errors and fall back to the light theme.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

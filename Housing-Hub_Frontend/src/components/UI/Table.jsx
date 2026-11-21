@@ -10,9 +10,9 @@ const ALIGN_CLASSES = {
 
 const Table = ({ headers, children, className }) => {
   return (
-    <div className={clsx('overflow-x-auto rounded-xl border border-gray-200', className)}>
-      <table className="min-w-full bg-white">
-        <thead className="bg-gray-50 border-b border-gray-200">
+    <div className={clsx('table-frame', className)}>
+      <table>
+        <thead>
           <tr>
             {headers.map((header, index) => {
               const isObject = typeof header === 'object' && header !== null;
@@ -24,10 +24,8 @@ const Table = ({ headers, children, className }) => {
               return (
                 <th
                   key={index}
-                  className={clsx(
-                    'px-4 py-3 text-sm font-semibold text-gray-800 uppercase tracking-wide sm:px-6 sm:py-4',
-                    ALIGN_CLASSES[align]
-                  )}
+                  scope="col"
+                  className={ALIGN_CLASSES[align]}
                 >
                   {label}
                 </th>
@@ -35,7 +33,7 @@ const Table = ({ headers, children, className }) => {
             })}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody>
           {children}
         </tbody>
       </table>
