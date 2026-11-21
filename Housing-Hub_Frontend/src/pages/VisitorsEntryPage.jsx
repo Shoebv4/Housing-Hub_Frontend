@@ -161,7 +161,7 @@ const VisitorsEntryPage = () => {
                     </div>
                 </form>
             </Modal>
-            <Card className="mt-6">
+            <Card>
                 <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Current Visitors</h2>
                 <Table headers={[
                     { label: 'Name', align: 'left' },

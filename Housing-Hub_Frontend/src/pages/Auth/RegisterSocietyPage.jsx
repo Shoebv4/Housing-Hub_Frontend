@@ -180,7 +180,7 @@ const RegisterSocietyPage = () => {
             <div className="space-y-4">
               <div className="relative flex flex-col">
                 <label htmlFor="society-societyName" className="field-label">Society Name</label>
-                <Building2 className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <Building2 className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-societyName"
                   name="societyName"
@@ -195,7 +195,7 @@ const RegisterSocietyPage = () => {
 
               <div className="relative flex flex-col">
                 <label htmlFor="society-address" className="field-label">Full Address</label>
-                <MapPin className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <MapPin className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-address"
                   name="address"
@@ -272,7 +272,7 @@ const RegisterSocietyPage = () => {
             <div className="space-y-4">
               <div className="relative flex flex-col">
                 <label htmlFor="society-adminName" className="field-label">Admin Full Name</label>
-                <User className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <User className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminName"
                   name="adminName"
@@ -287,7 +287,7 @@ const RegisterSocietyPage = () => {
 
               <div className="relative flex flex-col">
                 <label htmlFor="society-adminEmail" className="field-label">Admin Email</label>
-                <Mail className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <Mail className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminEmail"
                   name="adminEmail"
@@ -303,7 +303,7 @@ const RegisterSocietyPage = () => {
 
               <div className="relative flex flex-col">
                 <label htmlFor="society-adminPhone" className="field-label">Admin Phone</label>
-                <Phone className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <Phone className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminPhone"
                   name="adminPhone"
@@ -321,7 +321,7 @@ const RegisterSocietyPage = () => {
 
               <div className="relative flex flex-col">
                 <label htmlFor="society-adminPassword" className="field-label">Admin Password</label>
-                <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminPassword"
                   name="adminPassword"
@@ -337,7 +337,7 @@ const RegisterSocietyPage = () => {
 
               <div className="relative flex flex-col">
                 <label htmlFor="society-confirmPassword" className="field-label">Confirm Password</label>
-                <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
+                <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-confirmPassword"
                   name="confirmPassword"

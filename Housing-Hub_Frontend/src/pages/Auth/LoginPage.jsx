@@ -47,7 +47,7 @@ const LoginPage = () => {
 
           <div className="relative flex flex-col">
             <label htmlFor="login-email" className="field-label">Email</label>
-            <Mail className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <Mail className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="login-email"
               type="email"
@@ -61,7 +61,7 @@ const LoginPage = () => {
 
           <div className="relative flex flex-col">
             <label htmlFor="login-password" className="field-label">Password</label>
-            <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="login-password"
               type="password"

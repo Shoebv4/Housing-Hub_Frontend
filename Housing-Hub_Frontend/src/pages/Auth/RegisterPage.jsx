@@ -139,7 +139,7 @@ const RegisterPage = () => {
           {error && <Alert tone="danger">{error}</Alert>}
           <div className="relative flex flex-col">
             <label htmlFor="register-name" className="field-label">Full Name</label>
-            <User className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <User className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-name"
               name="name"
@@ -154,7 +154,7 @@ const RegisterPage = () => {
 
           <div className="relative flex flex-col">
             <label htmlFor="register-email" className="field-label">Email Address</label>
-            <Mail className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <Mail className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-email"
               name="email"
@@ -170,7 +170,7 @@ const RegisterPage = () => {
 
           <div className="relative flex flex-col">
             <label htmlFor="register-phone" className="field-label">Phone Number</label>
-            <Phone className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <Phone className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-phone"
               name="phone"
@@ -220,7 +220,7 @@ const RegisterPage = () => {
 
           <div className="relative flex flex-col">
             <label htmlFor="register-password" className="field-label">Password</label>
-            <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-password"
               name="password"
@@ -236,7 +236,7 @@ const RegisterPage = () => {
 
           <div className="relative flex flex-col">
             <label htmlFor="register-confirmPassword" className="field-label">Confirm Password</label>
-            <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
+            <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-confirmPassword"
               name="confirmPassword"

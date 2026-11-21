@@ -93,7 +93,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
         )}
       >
         <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-line px-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 px-4">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft">
               <Building2 className="h-5 w-5 text-accent" />
             </span>
