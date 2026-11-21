@@ -11,6 +11,10 @@ export default {
           muted: 'rgb(var(--surface-muted) / <alpha-value>)',
           hover: 'rgb(var(--surface-hover) / <alpha-value>)'
         },
+        control: {
+          DEFAULT: 'rgb(var(--control) / <alpha-value>)',
+          hover: 'rgb(var(--control-hover) / <alpha-value>)'
+        },
         line: {
           DEFAULT: 'rgb(var(--line) / <alpha-value>)',
           strong: 'rgb(var(--line-strong) / <alpha-value>)'

@@ -8,6 +8,8 @@
     --surface: 255 255 255;
     --surface-muted: 249 250 251;
     --surface-hover: 243 244 246;
+    --control: 229 231 235;
+    --control-hover: 209 213 219;
     --line: 229 231 235;
     --line-strong: 209 213 219;
     --ink: 17 24 39;
@@ -26,6 +28,8 @@
     --surface: 17 24 39;
     --surface-muted: 31 41 55;
     --surface-hover: 55 65 81;
+    --control: 55 65 81;
+    --control-hover: 75 85 99;
     --line: 31 41 55;
     --line-strong: 55 65 81;
     --ink: 243 244 246;
