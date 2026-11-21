@@ -1,15 +1,16 @@
 import React from 'react';
-import ComplaintsList from '../components/ComplaintsList';
+import ComplaintsList from '../components/Complaints/ComplaintsList';
 import ProtectedRoute from '../components/ProtectedRoute';
+import { Card, PageHeader } from '../components/UI';
 
 const ComplaintsPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin', 'resident']}>
-      <div className="mx-auto w-full max-w-5xl">
-        <h1 className="text-2xl font-bold mb-6">Complaints</h1>
-        <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
+      <div className="page-container">
+        <PageHeader title="Complaints" subtitle="Track and resolve resident complaints" />
+        <Card>
           <ComplaintsList />
-        </div>
+        </Card>
       </div>
     </ProtectedRoute>
   );

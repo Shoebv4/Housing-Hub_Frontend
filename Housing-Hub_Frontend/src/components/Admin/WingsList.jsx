@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../config';
-import Button from '../UI/Button';
-import Input from '../UI/Input';
+import { Alert, Button, Input, Table } from '../UI';
 import { useAuth } from '../../contexts/AuthContext';
 
 const WingsList = () => {
@@ -142,25 +141,16 @@ const WingsList = () => {
 
     return (
         <div>
-            <h2 className="text-lg font-semibold mb-4">Wings</h2>
+            <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Wings</h2>
             {society && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-2xl border text-gray-700">
+                <div className="mb-4 rounded-xl border border-line bg-surface-muted p-3 text-ink">
                     <span className="font-medium">Society:</span> {society.name}
                 </div>
             )}
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
-                <div className="flex flex-col">
-                    <label htmlFor="wing-name" className="font-semibold mb-1">Wing Name</label>
-                    <Input id="wing-name" name="name" value={form.name} onChange={handleChange} placeholder="Wing Name" required />
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="wing-totalFloors" className="font-semibold mb-1">Total Floors</label>
-                    <Input id="wing-totalFloors" name="totalFloors" value={form.totalFloors} onChange={handleChange} placeholder="Total Floors" type="number" min="1" required />
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="wing-flatsPerFloor" className="font-semibold mb-1">Flats Per Floor</label>
-                    <Input id="wing-flatsPerFloor" name="flatsPerFloor" value={form.flatsPerFloor} onChange={handleChange} placeholder="Flats Per Floor" type="number" min="1" required />
-                </div>
+            <form onSubmit={handleSubmit} className="form-row">
+                <Input label="Wing Name" id="wing-name" name="name" value={form.name} onChange={handleChange} placeholder="Wing Name" required />
+                <Input label="Total Floors" id="wing-totalFloors" name="totalFloors" value={form.totalFloors} onChange={handleChange} placeholder="Total Floors" type="number" min="1" required />
+                <Input label="Flats Per Floor" id="wing-flatsPerFloor" name="flatsPerFloor" value={form.flatsPerFloor} onChange={handleChange} placeholder="Flats Per Floor" type="number" min="1" required />
                 <Button type="submit" variant="primary" disabled={loading}>
                     {editingId ? 'Update' : 'Add'}
                 </Button>
@@ -170,39 +160,32 @@ const WingsList = () => {
                     </Button>
                 )}
             </form>
-            {error && <div className="text-red-600 mb-2">{error}</div>}
-            <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
-                <table className="min-w-full border text-sm">
-                    <thead>
-                        <tr className="bg-gray-100">
-                            <th className="px-4 py-2 border">Wing ID</th>
-                            <th className="px-4 py-2 border text-left">Name</th>
-                            <th className="px-4 py-2 border">Total Floors</th>
-                            <th className="px-4 py-2 border">Flats Per Floor</th>
-                            <th className="px-4 py-2 border">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {wings.map(wing => (
-                            <tr key={wing.wingId}>
-                                <td className="border px-4 py-2 text-center">{wing.wingId}</td>
-                                <td className="border px-4 py-2">{wing.name}</td>
-                                <td className="border px-4 py-2 text-center">{wing.totalFloors}</td>
-                                <td className="border px-4 py-2 text-center">{wing.flatsPerFloor}</td>
-                                <td className="border px-4 py-2">
-                                    <div className="flex flex-wrap items-center justify-center gap-2">
-                                        <Button type="button" variant="secondary" onClick={() => handleEdit(wing)} size="sm">Edit</Button>
-                                        <Button type="button" variant="danger" onClick={() => handleDelete(wing.wingId)} size="sm">Delete</Button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {wings.length === 0 && (
-                            <tr><td colSpan={5} className="text-center py-4">No wings found.</td></tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+            <Table headers={[
+                { label: 'Wing ID', align: 'center' },
+                { label: 'Name', align: 'left' },
+                { label: 'Total Floors', align: 'center' },
+                { label: 'Flats Per Floor', align: 'center' },
+                { label: 'Actions', align: 'center' }
+            ]}>
+                {wings.map(wing => (
+                    <tr key={wing.wingId}>
+                        <td className="text-center">{wing.wingId}</td>
+                        <td className="font-medium text-ink">{wing.name}</td>
+                        <td className="text-center">{wing.totalFloors}</td>
+                        <td className="text-center">{wing.flatsPerFloor}</td>
+                        <td>
+                            <div className="flex flex-wrap items-center justify-center gap-2">
+                                <Button type="button" variant="secondary" onClick={() => handleEdit(wing)} size="sm">Edit</Button>
+                                <Button type="button" variant="danger" onClick={() => handleDelete(wing.wingId)} size="sm">Delete</Button>
+                            </div>
+                        </td>
+                    </tr>
+                ))}
+                {wings.length === 0 && (
+                    <tr><td colSpan={5} className="text-center text-muted">No wings found.</td></tr>
+                )}
+            </Table>
         </div>
     );
 };

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../config';
-import Button from '../UI/Button';
-import Input from '../UI/Input';
+import { Alert, Button, Input, Table } from '../UI';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SecurityStaffList = () => {
@@ -141,28 +140,13 @@ const SecurityStaffList = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Security Staff</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
-        <div className="flex flex-col">
-          <label htmlFor="staff-name" className="font-semibold mb-1">Name</label>
-          <Input id="staff-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="staff-email" className="font-semibold mb-1">Email</label>
-          <Input id="staff-email" name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" required />
-          {emailError && <span className="text-red-600 text-xs mt-1">{emailError}</span>}
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="staff-phone" className="font-semibold mb-1">Phone</label>
-          <Input id="staff-phone" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" required />
-          {phoneError && <span className="text-red-600 text-xs mt-1">{phoneError}</span>}
-        </div>
+      <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Security Staff</h2>
+      <form onSubmit={handleSubmit} className="form-row">
+        <Input label="Name" id="staff-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
+        <Input label="Email" id="staff-email" name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" error={emailError} required />
+        <Input label="Phone" id="staff-phone" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" error={phoneError} required />
         {!editingId && (
-          <div className="flex flex-col">
-            <label htmlFor="staff-password" className="font-semibold mb-1">Password</label>
-            <Input id="staff-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" required />
-            {passwordError && <span className="text-red-600 text-xs mt-1">{passwordError}</span>}
-          </div>
+          <Input label="Password" id="staff-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" error={passwordError} required />
         )}
         <Button type="submit" variant="primary" disabled={loading}>
           {editingId ? 'Update' : 'Add'}
@@ -173,37 +157,30 @@ const SecurityStaffList = () => {
           </Button>
         )}
       </form>
-      {error && <div className="text-red-600 mb-2">{error}</div>}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
-        <table className="min-w-full border text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 border text-left">Name</th>
-              <th className="px-4 py-2 border text-left">Email</th>
-              <th className="px-4 py-2 border">Phone</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {staff.map(s => (
-              <tr key={s.userId}>
-                <td className="border px-4 py-2">{s.name}</td>
-                <td className="border px-4 py-2">{s.email}</td>
-                <td className="border px-4 py-2 text-center">{s.phone}</td>
-                <td className="border px-4 py-2">
-                  <div className="flex flex-wrap items-center justify-center gap-2">
-                    <Button type="button" variant="secondary" onClick={() => handleEdit(s)} size="sm">Edit</Button>
-                    <Button type="button" variant="danger" onClick={() => handleDelete(s.userId)} size="sm">Delete</Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {staff.length === 0 && (
-              <tr><td colSpan={4} className="text-center py-4">No security staff found.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+      <Table headers={[
+        { label: 'Name', align: 'left' },
+        { label: 'Email', align: 'left' },
+        { label: 'Phone', align: 'center' },
+        { label: 'Actions', align: 'center' }
+      ]}>
+        {staff.map(s => (
+          <tr key={s.userId}>
+            <td className="font-medium text-ink">{s.name}</td>
+            <td className="text-muted">{s.email}</td>
+            <td className="text-center">{s.phone}</td>
+            <td>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Button type="button" variant="secondary" onClick={() => handleEdit(s)} size="sm">Edit</Button>
+                <Button type="button" variant="danger" onClick={() => handleDelete(s.userId)} size="sm">Delete</Button>
+              </div>
+            </td>
+          </tr>
+        ))}
+        {staff.length === 0 && (
+          <tr><td colSpan={4} className="text-center text-muted">No security staff found.</td></tr>
+        )}
+      </Table>
     </div>
   );
 };

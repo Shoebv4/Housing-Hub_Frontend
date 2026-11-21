@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../config';
-import Button from '../UI/Button';
-import Input from '../UI/Input';
+import { Alert, Badge, Button, Input, Select, Table } from '../UI';
 import { useAuth } from '../../contexts/AuthContext';
 
-const FLAT_STATUS = {
-  Registered: 'bg-green-100 text-green-800',
-  Pending: 'bg-yellow-100 text-yellow-800'
+const FLAT_STATUS_TONES = {
+  Registered: 'success',
+  Pending: 'warning'
 };
 
 const FlatsList = () => {
@@ -165,41 +164,26 @@ const FlatsList = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Flats</h2>
+      <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Flats</h2>
       {society && (
-        <div className="mb-4 p-3 bg-gray-50 rounded-2xl border text-gray-700">
+        <div className="mb-4 rounded-xl border border-line bg-surface-muted p-3 text-ink">
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
-        <div className="flex flex-col">
-          <label htmlFor="flat-flatNumber" className="font-semibold mb-1">Flat Number</label>
-          <Input id="flat-flatNumber" name="flatNumber" value={form.flatNumber} onChange={handleChange} placeholder="Flat Number" required />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="flat-floorNumber" className="font-semibold mb-1">Floor Number</label>
-          <Input id="flat-floorNumber" name="floorNumber" value={form.floorNumber} onChange={handleChange} placeholder="Floor Number" type="text" required />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="flat-area" className="font-semibold mb-1">Area (sq ft)</label>
-          <Input id="flat-area" name="area" value={form.area} onChange={handleChange} placeholder="Area (sq ft)" type="number" min="0" step="0.01" required />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="flat-status" className="font-semibold mb-1">Status</label>
-          <select id="flat-status" name="status" value={form.status} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
-            <option value="Pending">Pending</option>
-            <option value="Registered">Registered</option>
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="flat-wingId" className="font-semibold mb-1">Wing</label>
-          <select id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
-            <option value="">Select Wing</option>
-            {wings.map(w => (
-              <option key={w.wingId} value={w.wingId}>{w.name}</option>
-            ))}
-          </select>
-        </div>
+      <form onSubmit={handleSubmit} className="form-row">
+        <Input label="Flat Number" id="flat-flatNumber" name="flatNumber" value={form.flatNumber} onChange={handleChange} placeholder="Flat Number" required />
+        <Input label="Floor Number" id="flat-floorNumber" name="floorNumber" value={form.floorNumber} onChange={handleChange} placeholder="Floor Number" required />
+        <Input label="Area (sq ft)" id="flat-area" name="area" value={form.area} onChange={handleChange} placeholder="Area (sq ft)" type="number" min="0" step="0.01" required />
+        <Select label="Status" id="flat-status" name="status" value={form.status} onChange={handleChange} required>
+          <option value="Pending">Pending</option>
+          <option value="Registered">Registered</option>
+        </Select>
+        <Select label="Wing" id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} required>
+          <option value="">Select Wing</option>
+          {wings.map(w => (
+            <option key={w.wingId} value={w.wingId}>{w.name}</option>
+          ))}
+        </Select>
         <Button type="submit" variant="primary" disabled={loading}>
           {editingId ? 'Update' : 'Add'}
         </Button>
@@ -209,52 +193,47 @@ const FlatsList = () => {
           </Button>
         )}
       </form>
-      <div className="flex flex-wrap gap-2 mb-4 items-center">
-        <label className="font-medium">Filter by Wing:</label>
-        <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded-xl px-2 py-1">
+      <div className="mb-4 w-full sm:w-56">
+        <Select label="Filter by Wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
           <option value="">All Wings</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
           ))}
-        </select>
+        </Select>
       </div>
-      {error && <div className="text-red-600 mb-2">{error}</div>}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
-        <table className="min-w-full border text-sm text-center">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 border">Flat No.</th>
-              <th className="px-4 py-2 border">Floor No.</th>
-              <th className="px-4 py-2 border">Area</th>
-              <th className="px-4 py-2 border">Status</th>
-              <th className="px-4 py-2 border">Wing</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredFlats.map(flat => (
-              <tr key={flat.flatId}>
-                <td className="border px-4 py-2">{flat.flatNumber}</td>
-                <td className="border px-4 py-2">{flat.floorNumber}</td>
-                <td className="border px-4 py-2">{flat.area}</td>
-                <td className="border px-4 py-2">
-                  <span className={`px-2 py-1 rounded-xl text-xs font-semibold ${FLAT_STATUS[flat.status] || ''}`}>{flat.status}</span>
-                </td>
-                <td className="border px-4 py-2">{wings.find(w => w.wingId === flat.wingId)?.name || '-'}</td>
-                <td className="border px-4 py-2">
-                  <div className="flex flex-wrap items-center justify-center gap-2">
-                    <Button type="button" variant="secondary" onClick={() => handleEdit(flat)} size="sm">Edit</Button>
-                    <Button type="button" variant="danger" onClick={() => handleDelete(flat.flatId)} size="sm">Delete</Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {filteredFlats.length === 0 && (
-              <tr><td colSpan={6} className="text-center py-4">No flats found.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+      <Table
+        className="text-center"
+        headers={[
+          { label: 'Flat No.', align: 'center' },
+          { label: 'Floor No.', align: 'center' },
+          { label: 'Area', align: 'center' },
+          { label: 'Status', align: 'center' },
+          { label: 'Wing', align: 'center' },
+          { label: 'Actions', align: 'center' }
+        ]}
+      >
+        {filteredFlats.map(flat => (
+          <tr key={flat.flatId}>
+            <td className="font-medium text-ink">{flat.flatNumber}</td>
+            <td>{flat.floorNumber}</td>
+            <td>{flat.area}</td>
+            <td>
+              <Badge tone={FLAT_STATUS_TONES[flat.status] || 'neutral'}>{flat.status}</Badge>
+            </td>
+            <td>{wings.find(w => w.wingId === flat.wingId)?.name || '-'}</td>
+            <td>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Button type="button" variant="secondary" onClick={() => handleEdit(flat)} size="sm">Edit</Button>
+                <Button type="button" variant="danger" onClick={() => handleDelete(flat.flatId)} size="sm">Delete</Button>
+              </div>
+            </td>
+          </tr>
+        ))}
+        {filteredFlats.length === 0 && (
+          <tr><td colSpan={6} className="text-center text-muted">No flats found.</td></tr>
+        )}
+      </Table>
     </div>
   );
 };

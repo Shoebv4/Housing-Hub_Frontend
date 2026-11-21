@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import ResidentsList from '../../components/Admin/ResidentsList';
+import { Card, PageHeader } from '../../components/UI';
 
 const ResidentsPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin']}>
-      <div className="mx-auto w-full max-w-5xl">
-        <h1 className="text-2xl font-bold mb-6">Residents Management</h1>
-        <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
+      <div className="page-container">
+        <PageHeader title="Residents Management" subtitle="Manage residents and flat assignments" />
+        <Card>
           <ResidentsList />
-        </div>
+        </Card>
       </div>
     </ProtectedRoute>
   );

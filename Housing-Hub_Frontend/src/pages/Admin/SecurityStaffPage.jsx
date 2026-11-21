@@ -1,15 +1,16 @@
 import React from 'react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import SecurityStaffList from '../../components/Admin/SecurityStaffList';
+import { Card, PageHeader } from '../../components/UI';
 
 const SecurityStaffPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin']}>
-      <div className="mx-auto w-full max-w-5xl">
-        <h1 className="text-2xl font-bold mb-6">Security Staff Management</h1>
-        <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
+      <div className="page-container">
+        <PageHeader title="Security Staff Management" subtitle="Manage guard accounts for your society" />
+        <Card>
           <SecurityStaffList />
-        </div>
+        </Card>
       </div>
     </ProtectedRoute>
   );

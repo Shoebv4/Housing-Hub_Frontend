@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
 import { useLiveEvents } from '../hooks/useLiveEvents';
-import Table from '../components/UI/Table';
+import { Alert, Badge, PageHeader, Table } from '../components/UI';
 
 const VisitorsLogPage = () => {
   const { user } = useAuth();
@@ -79,9 +79,9 @@ const VisitorsLogPage = () => {
   });
 
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <h1 className="text-2xl font-bold mb-6">Visitors Log</h1>
-      {error && <div className="text-red-600 mb-4">{error}</div>}
+    <div className="page-container">
+      <PageHeader title="Visitors Log" subtitle="Browse the visitor history for your society" />
+      {error && <Alert tone="danger">{error}</Alert>}
         <Table headers={[
           { label: 'Name', align: 'left' },
           { label: 'Flat', align: 'center' },
@@ -93,20 +93,22 @@ const VisitorsLogPage = () => {
           { label: 'Recorded By', align: 'left' }
         ]}>
           {visitors.map(visitor => (
-            <tr key={visitor.visitorId} className="hover:bg-gray-50">
-              <td className="px-6 py-4 font-medium text-gray-900">{visitor.name}</td>
-              <td className="px-6 py-4 text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
-              <td className="px-6 py-4">{visitor.purpose}</td>
-              <td className="px-6 py-4">{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
-              <td className="px-6 py-4">{visitor.exitTime ? new Date(visitor.exitTime).toLocaleString() : '-'}</td>
-              <td className="px-6 py-4 text-center">{visitor.vehicleNo || '-'}</td>
-              <td className="px-6 py-4 text-center">{visitor.visitorType}</td>
-              <td className="px-6 py-4">{visitor.recordedByName || '-'}</td>
+            <tr key={visitor.visitorId}>
+              <td className="font-medium text-ink">{visitor.name}</td>
+              <td className="text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
+              <td>{visitor.purpose}</td>
+              <td>{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
+              <td>{visitor.exitTime ? new Date(visitor.exitTime).toLocaleString() : '-'}</td>
+              <td className="text-center">{visitor.vehicleNo || '-'}</td>
+              <td className="text-center">
+                <Badge tone="neutral">{visitor.visitorType}</Badge>
+              </td>
+              <td>{visitor.recordedByName || '-'}</td>
             </tr>
           ))}
         </Table>
-        {loading && <div className="text-gray-600 mt-4">Loading...</div>}
-        {!loading && visitors.length === 0 && <div className="text-gray-600 mt-4">No visitors found.</div>}
+        {loading && <div className="text-muted">Loading...</div>}
+        {!loading && visitors.length === 0 && <div className="text-muted">No visitors found.</div>}
     </div>
   );
 };

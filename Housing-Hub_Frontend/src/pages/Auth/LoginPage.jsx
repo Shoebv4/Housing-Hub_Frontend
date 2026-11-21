@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Building2, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import Input from '../../components/UI/Input';
-import Button from '../../components/UI/Button';
+import { Alert, Button, Input, ThemeToggle } from '../../components/UI';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -29,26 +28,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Building2 className="h-12 w-12 text-blue-600" />
+    <div className="relative flex min-h-screen items-center justify-center bg-canvas p-4">
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-accent-soft blur-3xl" />
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
+      <div className="relative w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-card sm:p-8">
+        <div className="mb-8 text-center">
+          <div className="mb-4 flex items-center justify-center">
+            <Building2 className="h-12 w-12 text-accent" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">HousingHub</h2>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">HousingHub</h2>
+          <p className="mt-2 text-sm text-muted">Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
-              {error}
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {error && <Alert tone="danger">{error}</Alert>}
 
           <div className="relative flex flex-col">
-            <label htmlFor="login-email" className="font-semibold mb-1">Email</label>
-            <Mail className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="login-email" className="field-label">Email</label>
+            <Mail className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="login-email"
               type="email"
@@ -61,8 +60,8 @@ const LoginPage = () => {
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="login-password" className="font-semibold mb-1">Password</label>
-            <Lock className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="login-password" className="field-label">Password</label>
+            <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="login-password"
               type="password"
@@ -79,16 +78,16 @@ const LoginPage = () => {
           </Button>
         </form>
 
-        <div className="mt-8 text-center space-y-4">
-          <p className="text-sm text-gray-600">
+        <div className="mt-8 space-y-4 text-center">
+          <p className="text-sm text-muted">
             Don't have an account?{' '}
-            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link to="/register" className="font-medium text-accent hover:text-accent">
               Register here
             </Link>
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted">
             New Society?{' '}
-            <Link to="/register-society" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link to="/register-society" className="font-medium text-accent hover:text-accent">
               Register Society
             </Link>
           </p>

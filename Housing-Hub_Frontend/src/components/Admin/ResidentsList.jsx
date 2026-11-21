@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../config';
-import Button from '../UI/Button';
-import Input from '../UI/Input';
+import { Alert, Badge, Button, Input, Select, Table } from '../UI';
 import { useAuth } from '../../contexts/AuthContext';
 
 const ResidentsList = () => {
@@ -219,43 +218,25 @@ const ResidentsList = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Residents</h2>
+      <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Residents</h2>
       {society && (
-        <div className="mb-4 p-3 bg-gray-50 rounded-2xl border text-gray-700">
+        <div className="mb-4 rounded-xl border border-line bg-surface-muted p-3 text-ink">
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
-        <div className="flex flex-col">
-          <label htmlFor="resident-name" className="font-semibold mb-1">Name</label>
-          <Input id="resident-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="resident-email" className="font-semibold mb-1">Email</label>
-          <Input id="resident-email" name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" required />
-          {emailError && <span className="text-red-600 text-xs mt-1">{emailError}</span>}
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="resident-phone" className="font-semibold mb-1">Phone</label>
-          <Input id="resident-phone" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" required />
-          {phoneError && <span className="text-red-600 text-xs mt-1">{phoneError}</span>}
-        </div>
+      <form onSubmit={handleSubmit} className="form-row">
+        <Input label="Name" id="resident-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
+        <Input label="Email" id="resident-email" name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" error={emailError} required />
+        <Input label="Phone" id="resident-phone" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" error={phoneError} required />
         {!editingId && (
-          <div className="flex flex-col">
-            <label htmlFor="resident-password" className="font-semibold mb-1">Password</label>
-            <Input id="resident-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" required />
-            {passwordError && <span className="text-red-600 text-xs mt-1">{passwordError}</span>}
-          </div>
+          <Input label="Password" id="resident-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" error={passwordError} required />
         )}
-        <div className="flex flex-col">
-          <label htmlFor="resident-flatId" className="font-semibold mb-1">Flat</label>
-          <select id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
-            <option value="">Select Flat</option>
-            {flats.filter(f => f.status === 'Vacant').map(f => (
-              <option key={f.flatId} value={f.flatId}>{f.flatNumber} ({f.floorNumber})</option>
-            ))}
-          </select>
-        </div>
+        <Select label="Flat" id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} required>
+          <option value="">Select Flat</option>
+          {flats.filter(f => f.status === 'Vacant').map(f => (
+            <option key={f.flatId} value={f.flatId}>{f.flatNumber} ({f.floorNumber})</option>
+          ))}
+        </Select>
         <Button type="submit" variant="primary" disabled={loading}>
           {editingId ? 'Update' : 'Add'}
         </Button>
@@ -265,65 +246,59 @@ const ResidentsList = () => {
           </Button>
         )}
       </form>
-      <div className="flex flex-wrap gap-2 mb-4 items-center">
-        <label className="font-medium">Filter by Wing:</label>
-        <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded-xl px-2 py-1">
+      <div className="mb-4 w-full sm:w-56">
+        <Select label="Filter by Wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
           <option value="">All Wings</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
           ))}
-        </select>
+        </Select>
       </div>
-      {error && <div className="text-red-600 mb-2">{error}</div>}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
-        <table className="min-w-full border text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 border text-left">Name</th>
-              <th className="px-4 py-2 border text-left">Email</th>
-              <th className="px-4 py-2 border">Phone</th>
-              <th className="px-4 py-2 border">Flat</th>
-              <th className="px-4 py-2 border">Verified</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredResidents.map(resident => (
-              <tr key={resident.userId}>
-                <td className="border px-4 py-2">{resident.name}</td>
-                <td className="border px-4 py-2">{resident.email}</td>
-                <td className="border px-4 py-2 text-center">{resident.phone}</td>
-                <td className="border px-4 py-2 text-center">{flats.find(f => f.flatId === resident.flatId)?.flatNumber || '-'}</td>
-                <td className="border px-4 py-2 text-center">{resident.isVerified ? 'Yes' : 'No'}</td>
-                <td className="border px-4 py-2">
-                  <div className="flex flex-wrap items-center justify-center gap-2">
-                    <Button type="button" variant="secondary" onClick={() => handleEdit(resident)} size="sm">Edit</Button>
-                    <Button type="button" variant="danger" onClick={() => handleDelete(resident.userId)} size="sm">Delete</Button>
-                    <Button type="button" size="sm" variant={resident.isVerified ? 'secondary' : 'success'} onClick={async () => {
-                      setLoading(true);
-                      try {
-                        const payload = { ...resident, isVerified: !resident.isVerified };
-                        await fetch(`${API_BASE_URL}/users/${resident.userId}`, {
-                          method: 'PUT',
-                          headers: getAuthHeaders(),
-                          body: JSON.stringify(payload)
-                        });
-                        fetchResidents();
-                      } catch {
-                        setError('Failed to update verification status');
-                      }
-                      setLoading(false);
-                    }}>{resident.isVerified ? 'Unverify' : 'Verify'}</Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {filteredResidents.length === 0 && (
-              <tr><td colSpan={6} className="text-center py-4">No residents found.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+      <Table headers={[
+        { label: 'Name', align: 'left' },
+        { label: 'Email', align: 'left' },
+        { label: 'Phone', align: 'center' },
+        { label: 'Flat', align: 'center' },
+        { label: 'Verified', align: 'center' },
+        { label: 'Actions', align: 'center' }
+      ]}>
+        {filteredResidents.map(resident => (
+          <tr key={resident.userId}>
+            <td className="font-medium text-ink">{resident.name}</td>
+            <td className="text-muted">{resident.email}</td>
+            <td className="text-center">{resident.phone}</td>
+            <td className="text-center">{flats.find(f => f.flatId === resident.flatId)?.flatNumber || '-'}</td>
+            <td className="text-center">
+              <Badge tone={resident.isVerified ? 'success' : 'warning'}>{resident.isVerified ? 'Yes' : 'No'}</Badge>
+            </td>
+            <td>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Button type="button" variant="secondary" onClick={() => handleEdit(resident)} size="sm">Edit</Button>
+                <Button type="button" variant="danger" onClick={() => handleDelete(resident.userId)} size="sm">Delete</Button>
+                <Button type="button" size="sm" variant={resident.isVerified ? 'secondary' : 'success'} onClick={async () => {
+                  setLoading(true);
+                  try {
+                    const payload = { ...resident, isVerified: !resident.isVerified };
+                    await fetch(`${API_BASE_URL}/users/${resident.userId}`, {
+                      method: 'PUT',
+                      headers: getAuthHeaders(),
+                      body: JSON.stringify(payload)
+                    });
+                    fetchResidents();
+                  } catch {
+                    setError('Failed to update verification status');
+                  }
+                  setLoading(false);
+                }}>{resident.isVerified ? 'Unverify' : 'Verify'}</Button>
+              </div>
+            </td>
+          </tr>
+        ))}
+        {filteredResidents.length === 0 && (
+          <tr><td colSpan={6} className="text-center text-muted">No residents found.</td></tr>
+        )}
+      </Table>
     </div>
   );
 };

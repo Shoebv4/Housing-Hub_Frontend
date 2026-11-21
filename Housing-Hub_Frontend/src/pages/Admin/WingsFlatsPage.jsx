@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import WingsList from '../../components/Admin/WingsList';
 import FlatsList from '../../components/Admin/FlatsList';
-// import BookingsTab from '../../components/Admin/BookingsTab';
+import { Card, PageHeader, Tabs } from '../../components/UI';
 
 const TABS = [
   { label: 'Wings', value: 'wings' },
   { label: 'Flats', value: 'flats' }
-  // Bookings tab removed
 ];
 
 const WingsFlatsPage = () => {
@@ -15,23 +14,13 @@ const WingsFlatsPage = () => {
 
   return (
     <ProtectedRoute requiredRoles={['admin']}>
-      <div className="mx-auto w-full max-w-5xl">
-        <h1 className="text-2xl font-bold mb-6">Wings & Flats Management</h1>
-        <div className="flex space-x-4 mb-6">
-          {TABS.map(t => (
-            <button
-              key={t.value}
-              className={`px-4 py-2 rounded-t-xl font-semibold border-b-2 ${tab === t.value ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
-              onClick={() => setTab(t.value)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
+      <div className="page-container">
+        <PageHeader title="Wings & Flats Management" subtitle="Manage wings and flats for your society" />
+        <Tabs tabs={TABS} value={tab} onChange={setTab} ariaLabel="Wings and flats views" />
+        <Card>
           {tab === 'wings' && <WingsList />}
           {tab === 'flats' && <FlatsList />}
-        </div>
+        </Card>
       </div>
     </ProtectedRoute>
   );

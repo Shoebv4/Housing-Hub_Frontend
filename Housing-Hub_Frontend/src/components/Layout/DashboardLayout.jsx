@@ -13,7 +13,7 @@ const DashboardLayout = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-surface-muted">
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
       {isSidebarOpen && (
@@ -26,18 +26,18 @@ const DashboardLayout = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="lg:hidden flex items-center h-14 px-4 flex-shrink-0 bg-white border-b border-gray-200">
+        <div className="lg:hidden flex items-center h-14 px-4 flex-shrink-0 bg-white border-b border-line">
           <button
             type="button"
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 -ml-2 rounded-xl text-gray-600 hover:bg-gray-100"
+            className="p-2 -ml-2 rounded-xl text-muted hover:bg-surface-hover"
             aria-label="Open navigation"
           >
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center ml-3 space-x-2">
-            <Building2 className="h-5 w-5 text-blue-600" />
-            <span className="font-semibold text-gray-800">HousingHub</span>
+            <Building2 className="h-5 w-5 text-accent" />
+            <span className="font-semibold text-ink">HousingHub</span>
           </div>
         </div>
 

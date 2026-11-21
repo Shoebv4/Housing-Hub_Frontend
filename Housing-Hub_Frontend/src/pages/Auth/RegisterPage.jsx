@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, User, Mail, Phone, Lock, Home } from 'lucide-react';
-import Input from '../../components/UI/Input';
-import Button from '../../components/UI/Button';
+import { Building2, User, Mail, Phone, Lock } from 'lucide-react';
+import { Alert, Button, Input, Select, ThemeToggle } from '../../components/UI';
 import { useAuth } from '../../contexts/AuthContext';
 import { API_BASE_URL } from '../../config';
 
@@ -122,25 +121,25 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Building2 className="h-12 w-12 text-green-600" />
+    <div className="relative flex min-h-screen items-center justify-center bg-canvas p-4">
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-accent-soft blur-3xl" />
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
+      <div className="relative w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-card sm:p-8">
+        <div className="mb-8 text-center">
+          <div className="mb-4 flex items-center justify-center">
+            <Building2 className="h-12 w-12 text-accent" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Register Resident</h2>
-          <p className="text-gray-600 mt-2">Join your society community</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">Register Resident</h2>
+          <p className="mt-2 text-sm text-muted">Join your society community</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
-              {error}
-            </div>
-          )}
+          {error && <Alert tone="danger">{error}</Alert>}
           <div className="relative flex flex-col">
-            <label htmlFor="register-name" className="font-semibold mb-1">Full Name</label>
-            <User className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="register-name" className="field-label">Full Name</label>
+            <User className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="register-name"
               name="name"
@@ -154,8 +153,8 @@ const RegisterPage = () => {
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-email" className="font-semibold mb-1">Email Address</label>
-            <Mail className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="register-email" className="field-label">Email Address</label>
+            <Mail className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="register-email"
               name="email"
@@ -164,14 +163,14 @@ const RegisterPage = () => {
               value={formData.email}
               onChange={handleChange}
               className="pl-10"
+              error={emailError}
               required
             />
-            {emailError && <span className="text-red-600 text-xs mt-1">{emailError}</span>}
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-phone" className="font-semibold mb-1">Phone Number</label>
-            <Phone className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="register-phone" className="field-label">Phone Number</label>
+            <Phone className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="register-phone"
               name="phone"
@@ -180,54 +179,48 @@ const RegisterPage = () => {
               value={formData.phone}
               onChange={handleChange}
               className="pl-10"
+              error={phoneError}
               required
               maxLength={10}
               pattern="\d{10}"
             />
-            {phoneError && <span className="text-red-600 text-xs mt-1">{phoneError}</span>}
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="flex flex-col">
-              <label htmlFor="register-societyId" className="font-semibold mb-1">Society Name</label>
-              <select
-                id="register-societyId"
-                name="societyId"
-                value={formData.societyId}
-                onChange={handleChange}
-                className="w-full border rounded-xl px-2 py-1"
-                required
-              >
-                <option value="">Select Society</option>
-                {societies.map(s => (
-                  <option key={s.societyId} value={s.societyId}>{s.name}</option>
+            <Select
+              label="Society Name"
+              id="register-societyId"
+              name="societyId"
+              value={formData.societyId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Society</option>
+              {societies.map(s => (
+                <option key={s.societyId} value={s.societyId}>{s.name}</option>
+              ))}
+            </Select>
+            <Select
+              label="Flat Number"
+              id="register-flatId"
+              name="flatId"
+              value={formData.flatId}
+              onChange={handleChange}
+              required
+              disabled={!formData.societyId}
+            >
+              <option value="">Select Flat</option>
+              {flats
+                .filter(f => f.status === 'Pending')
+                .map(f => (
+                  <option key={f.flatId} value={f.flatId}>{f.flatNumber}</option>
                 ))}
-              </select>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="register-flatId" className="font-semibold mb-1">Flat Number</label>
-              <select
-                id="register-flatId"
-                name="flatId"
-                value={formData.flatId}
-                onChange={handleChange}
-                className="w-full border rounded-xl px-2 py-1"
-                required
-                disabled={!formData.societyId}
-              >
-                <option value="">Select Flat</option>
-                {flats
-                  .filter(f => f.status === 'Pending')
-                  .map(f => (
-                    <option key={f.flatId} value={f.flatId}>{f.flatNumber}</option>
-                  ))}
-              </select>
-            </div>
+            </Select>
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-password" className="font-semibold mb-1">Password</label>
-            <Lock className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="register-password" className="field-label">Password</label>
+            <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="register-password"
               name="password"
@@ -236,14 +229,14 @@ const RegisterPage = () => {
               value={formData.password}
               onChange={handleChange}
               className="pl-10"
+              error={passwordError}
               required
             />
-            {passwordError && <span className="text-red-600 text-xs mt-1">{passwordError}</span>}
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-confirmPassword" className="font-semibold mb-1">Confirm Password</label>
-            <Lock className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+            <label htmlFor="register-confirmPassword" className="field-label">Confirm Password</label>
+            <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
             <Input
               id="register-confirmPassword"
               name="confirmPassword"
@@ -256,15 +249,15 @@ const RegisterPage = () => {
             />
           </div>
 
-          <Button type="submit" variant="success" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted">
             Already have an account?{' '}
-            <Link to="/login" className="text-green-600 hover:text-green-700 font-medium">
+            <Link to="/login" className="font-medium text-accent hover:text-accent">
               Sign in here
             </Link>
           </p>

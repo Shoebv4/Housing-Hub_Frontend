@@ -56,20 +56,20 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
     <>
       <aside
         className={clsx(
-          'fixed inset-y-0 left-0 z-40 flex h-full w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white shadow-xl transition-transform duration-200 ease-in-out',
+          'fixed inset-y-0 left-0 z-40 flex h-full w-64 flex-shrink-0 flex-col border-r border-line bg-white shadow-xl transition-transform duration-200 ease-in-out',
           'lg:static lg:z-auto lg:translate-x-0 lg:shadow-none lg:transition-none',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="flex items-center justify-between border-b border-gray-200 p-5 flex-shrink-0">
+        <div className="flex items-center justify-between border-b border-line p-5 flex-shrink-0">
           <div className="flex items-center space-x-3">
-            <Building2 className="h-8 w-8 text-blue-600" />
-            <h2 className="text-xl font-bold text-gray-800">HousingHub</h2>
+            <Building2 className="h-8 w-8 text-accent" />
+            <h2 className="text-xl font-bold text-ink">HousingHub</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl p-1.5 text-gray-500 hover:bg-gray-100 lg:hidden"
+            className="rounded-xl p-1.5 text-faint hover:bg-surface-hover lg:hidden"
             aria-label="Close navigation"
           >
             <X className="h-5 w-5" />
@@ -91,8 +91,8 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
                     className={clsx(
                       'flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors duration-200',
                       isActive
-                        ? 'bg-blue-50 text-blue-700 border-r-4 border-blue-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                        ? 'bg-accent-soft text-accent border-r-4 border-blue-700'
+                        : 'text-muted hover:bg-surface-hover hover:text-ink'
                     )}
                   >
                     <Icon className="h-5 w-5" />
@@ -104,22 +104,22 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
           </ul>
         </nav>
 
-        <div className="border-t border-gray-200 p-4 flex-shrink-0">
+        <div className="border-t border-line p-4 flex-shrink-0">
           <button
             type="button"
             onClick={openProfile}
-            className="mb-4 flex w-full items-center space-x-3 rounded-xl bg-gray-50 p-3 text-left transition-colors hover:bg-gray-100"
+            className="mb-4 flex w-full items-center space-x-3 rounded-xl bg-surface-muted p-3 text-left transition-colors hover:bg-surface-hover"
             aria-label="View personal details"
           >
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-              <User className="h-4 w-4 text-blue-600" />
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-soft">
+              <User className="h-4 w-4 text-accent" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-gray-800">{user?.name}</p>
-              <p className="truncate text-xs capitalize text-gray-600">{roleLabel || '—'}</p>
-              {/* <p className="truncate text-xs text-gray-400">{user?.email}</p> */}
+              <p className="truncate text-sm font-medium text-ink">{user?.name}</p>
+              <p className="truncate text-xs capitalize text-muted">{roleLabel || '—'}</p>
+              {/* <p className="truncate text-xs text-faint">{user?.email}</p> */}
             </div>
-            <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-400" />
+            <ChevronRight className="h-4 w-4 flex-shrink-0 text-faint" />
           </button>
 
           <button
@@ -141,44 +141,44 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
         >
           <div className="space-y-5">
             <div className="flex items-center space-x-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <User className="h-6 w-6 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft">
+                <User className="h-6 w-6 text-accent" />
               </div>
               <div>
-                <p className="text-lg font-semibold text-gray-900">{user?.name}</p>
-                <p className="text-sm capitalize text-gray-500">{roleLabel || '—'}</p>
+                <p className="text-lg font-semibold text-ink">{user?.name}</p>
+                <p className="text-sm capitalize text-faint">{roleLabel || '—'}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Email</p>
-                <p className="mt-1 break-all text-sm text-gray-900">{user?.email || '—'}</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-faint">Email</p>
+                <p className="mt-1 break-all text-sm text-ink">{user?.email || '—'}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Phone</p>
-                <p className="mt-1 text-sm text-gray-900">{user?.phone || '—'}</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-faint">Phone</p>
+                <p className="mt-1 text-sm text-ink">{user?.phone || '—'}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Role</p>
-                <p className="mt-1 text-sm capitalize text-gray-900">{roleLabel || '—'}</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-faint">Role</p>
+                <p className="mt-1 text-sm capitalize text-ink">{roleLabel || '—'}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Society</p>
-                <p className="mt-1 text-sm text-gray-900">
+                <p className="text-xs font-medium uppercase tracking-wide text-faint">Society</p>
+                <p className="mt-1 text-sm text-ink">
                   {profile.society?.name || (profileLoading ? 'Loading...' : 'Not assigned')}
                 </p>
               </div>
             </div>
 
             {profileLoading ? (
-              <p className="text-sm text-gray-500">Loading assigned details...</p>
+              <p className="text-sm text-faint">Loading assigned details...</p>
             ) : (
               <div className="space-y-4">
                 {profile.society && (
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Society Address</p>
-                    <p className="mt-1 text-sm text-gray-900">
+                    <p className="text-xs font-medium uppercase tracking-wide text-faint">Society Address</p>
+                    <p className="mt-1 text-sm text-ink">
                       {[
                         profile.society.address,
                         profile.society.city,
@@ -190,36 +190,36 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
                 )}
 
                 {profile.flat ? (
-                  <div className="rounded-xl border border-gray-200 p-4">
+                  <div className="rounded-xl border border-line p-4">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold text-gray-900">Assigned Flat</p>
-                      <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+                      <p className="text-sm font-semibold text-ink">Assigned Flat</p>
+                      <span className="rounded-full bg-accent-soft px-2 py-1 text-xs font-medium text-accent">
                         {profile.flat.status || 'Assigned'}
                       </span>
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <p className="text-xs text-gray-500">Flat No.</p>
-                        <p className="mt-0.5 font-medium text-gray-900">{profile.flat.flatNumber || '—'}</p>
+                        <p className="text-xs text-faint">Flat No.</p>
+                        <p className="mt-0.5 font-medium text-ink">{profile.flat.flatNumber || '—'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Wing</p>
-                        <p className="mt-0.5 font-medium text-gray-900">{profile.flat.wing?.name || '—'}</p>
+                        <p className="text-xs text-faint">Wing</p>
+                        <p className="mt-0.5 font-medium text-ink">{profile.flat.wing?.name || '—'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Floor No.</p>
-                        <p className="mt-0.5 font-medium text-gray-900">{profile.flat.floorNumber || '—'}</p>
+                        <p className="text-xs text-faint">Floor No.</p>
+                        <p className="mt-0.5 font-medium text-ink">{profile.flat.floorNumber || '—'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Area</p>
-                        <p className="mt-0.5 font-medium text-gray-900">
+                        <p className="text-xs text-faint">Area</p>
+                        <p className="mt-0.5 font-medium text-ink">
                           {profile.flat.area ? `${profile.flat.area} sq ft` : '—'}
                         </p>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">No flat assigned.</p>
+                  <p className="text-sm text-faint">No flat assigned.</p>
                 )}
               </div>
             )}

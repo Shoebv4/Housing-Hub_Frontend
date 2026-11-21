@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
-import Modal from '../components/UI/Modal';
-import Table from '../components/UI/Table';
+import { Alert, Badge, Button, Card, Input, Modal, PageHeader, Select, Table } from '../components/UI';
 
 const emptyVisitor = {
     name: '',
@@ -91,13 +88,12 @@ const VisitorsEntryPage = () => {
     };
 
     return (
-        <div className="mx-auto w-full max-w-5xl">
-            <h1 className="text-2xl font-bold mb-6">Visitor Entry</h1>
-            <div className="mb-4 flex justify-end">
-                <Button onClick={() => setShowModal(true)}>
-                    New Visitor Entry
-                </Button>
-            </div>
+        <div className="page-container">
+            <PageHeader
+                title="Visitor Entry"
+                subtitle="Register and track visitor entries"
+                actions={<Button onClick={() => setShowModal(true)}>New Visitor Entry</Button>}
+            />
             <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="New Visitor Entry" size="lg">
                 <form onSubmit={handleVisitorEntry} className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -117,34 +113,28 @@ const VisitorsEntryPage = () => {
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Flat</label>
-                            <select
-                                value={newVisitor.flatId}
-                                onChange={e => setNewVisitor({ ...newVisitor, flatId: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                required
-                            >
-                                <option value="">Select Flat</option>
-                                {flats.map(f => (
-                                    <option key={f.flatId} value={f.flatId}>{f.flatNumber}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Visitor Type</label>
-                            <select
-                                value={newVisitor.visitorType}
-                                onChange={e => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                required
-                            >
-                                <option value="guest">Guest</option>
-                                <option value="delivery">Delivery</option>
-                                <option value="maintenance">Maintenance</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
+                        <Select
+                            label="Flat"
+                            value={newVisitor.flatId}
+                            onChange={e => setNewVisitor({ ...newVisitor, flatId: e.target.value })}
+                            required
+                        >
+                            <option value="">Select Flat</option>
+                            {flats.map(f => (
+                                <option key={f.flatId} value={f.flatId}>{f.flatNumber}</option>
+                            ))}
+                        </Select>
+                        <Select
+                            label="Visitor Type"
+                            value={newVisitor.visitorType}
+                            onChange={e => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
+                            required
+                        >
+                            <option value="guest">Guest</option>
+                            <option value="delivery">Delivery</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="other">Other</option>
+                        </Select>
                     </div>
                     <Input
                         label="Purpose of Visit"
@@ -160,8 +150,8 @@ const VisitorsEntryPage = () => {
                         placeholder="e.g., MH01AB1234"
                         required={false}
                     />
-                    {error && <div className="text-red-600 text-sm">{error}</div>}
-                    <div className="flex justify-end space-x-3 pt-4">
+                    {error && <Alert tone="danger">{error}</Alert>}
+                    <div className="flex flex-wrap justify-end gap-3 pt-4">
                         <Button variant="secondary" onClick={() => setShowModal(false)} type="button">
                             Cancel
                         </Button>
@@ -171,8 +161,8 @@ const VisitorsEntryPage = () => {
                     </div>
                 </form>
             </Modal>
-            <div className="mt-8">
-                <h2 className="text-lg font-semibold mb-4">Current Visitors</h2>
+            <Card className="mt-6">
+                <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Current Visitors</h2>
                 <Table headers={[
                     { label: 'Name', align: 'left' },
                     { label: 'Flat', align: 'center' },
@@ -184,14 +174,16 @@ const VisitorsEntryPage = () => {
                     { label: 'Recorded By', align: 'left' }
                 ]}>
                     {visitors.filter(v => !v.exitTime).map(visitor => (
-                        <tr key={visitor.visitorId} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 font-medium text-gray-900">{visitor.name}</td>
-                            <td className="px-6 py-4 text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
-                            <td className="px-6 py-4">{visitor.purpose}</td>
-                            <td className="px-6 py-4">{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
-                            <td className="px-6 py-4 text-center">{visitor.vehicleNo || '-'}</td>
-                            <td className="px-6 py-4 text-center">{visitor.visitorType}</td>
-                            <td className="px-6 py-4 text-center">
+                        <tr key={visitor.visitorId}>
+                            <td className="font-medium text-ink">{visitor.name}</td>
+                            <td className="text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
+                            <td>{visitor.purpose}</td>
+                            <td>{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
+                            <td className="text-center">{visitor.vehicleNo || '-'}</td>
+                            <td className="text-center">
+                                <Badge tone="neutral">{visitor.visitorType}</Badge>
+                            </td>
+                            <td className="text-center">
                                 <Button
                                     variant="danger"
                                     size="sm"
@@ -210,11 +202,11 @@ const VisitorsEntryPage = () => {
                                     Mark Exit
                                 </Button>
                             </td>
-                            <td className="px-6 py-4">{visitor.recordedByName || '-'}</td>
+                            <td>{visitor.recordedByName || '-'}</td>
                         </tr>
                     ))}
                 </Table>
-            </div>
+            </Card>
         </div>
     );
 };

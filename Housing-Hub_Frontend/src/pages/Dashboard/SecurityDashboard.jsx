@@ -9,11 +9,7 @@ import {
   Plus,
   Building2
 } from 'lucide-react';
-import Card from '../../components/UI/Card';
-import Button from '../../components/UI/Button';
-import Modal from '../../components/UI/Modal';
-import Input from '../../components/UI/Input';
-import Table from '../../components/UI/Table';
+import { Alert, Badge, Button, Card, Input, Modal, PageHeader, Select, Table } from '../../components/UI';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
 import { useSociety } from '../../hooks/useSociety';
@@ -30,11 +26,11 @@ const emptyVisitor = {
   visitorType: 'guest'
 };
 
-const visitorTypeStyles = {
-  guest: 'bg-green-100 text-green-800',
-  delivery: 'bg-yellow-100 text-yellow-800',
-  service: 'bg-purple-100 text-purple-800',
-  vendor: 'bg-blue-100 text-blue-800'
+const VISITOR_TYPE_TONES = {
+  guest: 'success',
+  delivery: 'warning',
+  service: 'brand',
+  vendor: 'neutral'
 };
 
 const SecurityDashboard = () => {
@@ -101,10 +97,10 @@ const SecurityDashboard = () => {
   });
 
   const liveBadge = liveStatus === 'open'
-    ? { label: 'Live updates', container: 'bg-green-50', dot: 'bg-green-500 animate-pulse', text: 'text-green-700' }
+    ? { label: 'Live updates', tone: 'success', dot: 'bg-green-500 animate-pulse' }
     : liveStatus === 'unauthorized'
-      ? { label: 'Sign in again', container: 'bg-red-50', dot: 'bg-red-500', text: 'text-red-700' }
-      : { label: 'Connecting...', container: 'bg-amber-50', dot: 'bg-amber-500', text: 'text-amber-700' };
+      ? { label: 'Sign in again', tone: 'danger', dot: 'bg-red-500' }
+      : { label: 'Connecting...', tone: 'warning', dot: 'bg-amber-500' };
 
   const societyFlats = useMemo(
     () => (user?.societyId
@@ -251,34 +247,30 @@ const SecurityDashboard = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Security Dashboard</h1>
-          {society?.name && (
-            <p className="text-gray-600 mt-2 flex items-center font-medium">
-              <Building2 className="h-4 w-4 mr-1.5" />
-              {society.name}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className={`flex items-center space-x-2 px-3 py-2 rounded-xl ${liveBadge.container}`}>
-            <div className={`w-2 h-2 rounded-full ${liveBadge.dot}`}></div>
-            <span className={`text-sm font-medium ${liveBadge.text}`}>{liveBadge.label}</span>
-          </div>
-          <Button onClick={() => setShowVisitorModal(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            New Visitor Entry
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Security Dashboard"
+        subtitle={society?.name ? (
+          <span className="flex items-center">
+            <Building2 className="mr-1.5 h-4 w-4" />
+            {society.name}
+          </span>
+        ) : undefined}
+        actions={(
+          <>
+            <Badge tone={liveBadge.tone} className="gap-2 px-3 py-2 text-sm">
+              <span className={`h-2 w-2 rounded-full ${liveBadge.dot}`} />
+              {liveBadge.label}
+            </Badge>
+            <Button onClick={() => setShowVisitorModal(true)}>
+              <Plus className="h-4 w-4" />
+              New Visitor Entry
+            </Button>
+          </>
+        )}
+      />
 
-      {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
+      {error && <Alert tone="danger">{error}</Alert>}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -291,8 +283,8 @@ const SecurityDashboard = () => {
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-medium text-muted">{stat.label}</p>
+                  <p className="text-2xl font-semibold tracking-tight text-ink tabular-nums">{stat.value}</p>
                 </div>
               </div>
             </Card>
@@ -303,13 +295,13 @@ const SecurityDashboard = () => {
       {/* Search Bar */}
       <Card padding="sm">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-faint h-4 w-4" />
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search visitors by name, flat number, or purpose..."
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full rounded-xl border border-line-strong bg-surface py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-faint transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
       </Card>
@@ -318,10 +310,8 @@ const SecurityDashboard = () => {
       <Card>
         <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-xl font-semibold text-gray-900">Current Visitors</h2>
-            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
-              {loading ? '…' : insideVisitors.length} Inside
-            </span>
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Current Visitors</h2>
+            <Badge tone="brand">{loading ? '…' : insideVisitors.length} Inside</Badge>
           </div>
           <Button variant="secondary" size="sm" onClick={handleExportLog} disabled={visitors.length === 0}>
             Export Log
@@ -339,46 +329,44 @@ const SecurityDashboard = () => {
         ]}>
           {loading ? (
             <tr>
-              <td colSpan={7} className="px-6 py-6 text-center text-gray-500">Loading visitors...</td>
+              <td colSpan={7} className="px-6 py-6 text-center text-faint">Loading visitors...</td>
             </tr>
           ) : visibleInsideVisitors.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-6 py-6 text-center text-gray-500">
+              <td colSpan={7} className="px-6 py-6 text-center text-faint">
                 {search ? 'No visitors match your search.' : 'No visitors currently inside.'}
               </td>
             </tr>
           ) : (
             visibleInsideVisitors.map(visitor => (
-              <tr key={visitor.visitorId} className="hover:bg-gray-50">
+              <tr key={visitor.visitorId}>
                 <td className="px-6 py-4">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                      <Users className="h-4 w-4 text-blue-600" />
+                    <div className="w-8 h-8 bg-accent-soft rounded-full flex items-center justify-center mr-3">
+                      <Users className="h-4 w-4 text-accent" />
                     </div>
-                    <span className="font-medium text-gray-900">{visitor.name}</span>
+                    <span className="font-medium text-ink">{visitor.name}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 font-medium text-gray-900 text-center">
+                <td className="px-6 py-4 font-medium text-ink text-center">
                   {flatNumberById.get(visitor.flatId) || '—'}
                 </td>
-                <td className="px-6 py-4 text-gray-600">{visitor.purpose}</td>
-                <td className="px-6 py-4 text-gray-600 text-center">{formatTime(visitor.entryTime)}</td>
+                <td className="px-6 py-4 text-muted">{visitor.purpose}</td>
+                <td className="px-6 py-4 text-muted text-center">{formatTime(visitor.entryTime)}</td>
                 <td className="px-6 py-4 text-center">
                   {visitor.vehicleNo ? (
                     <div className="flex items-center justify-center space-x-2">
-                      <Car className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-600">{visitor.vehicleNo}</span>
+                      <Car className="h-4 w-4 text-faint" />
+                      <span className="text-muted">{visitor.vehicleNo}</span>
                     </div>
                   ) : (
-                    <span className="text-gray-400">No vehicle</span>
+                    <span className="text-faint">No vehicle</span>
                   )}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    visitorTypeStyles[visitor.visitorType] || 'bg-gray-100 text-gray-800'
-                  }`}>
+                  <Badge tone={VISITOR_TYPE_TONES[visitor.visitorType] || 'neutral'}>
                     {visitor.visitorType}
-                  </span>
+                  </Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button
@@ -398,29 +386,29 @@ const SecurityDashboard = () => {
 
       {/* Recent Exits */}
       <Card>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Exits</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-ink mb-6">Recent Exits</h2>
         <div className="space-y-4">
           {loading ? (
-            <p className="text-sm text-gray-500">Loading exits...</p>
+            <p className="text-sm text-faint">Loading exits...</p>
           ) : recentExits.length === 0 ? (
-            <p className="text-sm text-gray-500">No visitor exits recorded yet.</p>
+            <p className="text-sm text-faint">No visitor exits recorded yet.</p>
           ) : (
             recentExits.map(exit => (
-              <div key={exit.visitorId} className="flex flex-col gap-3 p-4 bg-gray-50 rounded-xl sm:flex-row sm:items-center sm:justify-between">
+              <div key={exit.visitorId} className="flex flex-col gap-3 p-4 bg-surface-muted rounded-xl sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-4 w-4 text-gray-600" />
+                  <div className="w-8 h-8 bg-surface-hover rounded-full flex items-center justify-center">
+                    <CheckCircle className="h-4 w-4 text-muted" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{exit.name}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-ink">{exit.name}</p>
+                    <p className="text-sm text-muted">
                       Flat: {flatNumberById.get(exit.flatId) || '—'}
                     </p>
                   </div>
                 </div>
                 <div className="sm:text-right">
-                  <p className="font-medium text-gray-900">{formatDateTime(exit.exitTime)}</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-medium text-ink">{formatDateTime(exit.exitTime)}</p>
+                  <p className="text-sm text-muted">
                     Duration: {formatDuration(exit.entryTime, exit.exitTime)}
                   </p>
                 </div>
@@ -456,38 +444,30 @@ const SecurityDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Flat</label>
-              <select
-                value={newVisitor.flatId}
-                onChange={(e) => setNewVisitor({ ...newVisitor, flatId: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              >
-                <option value="">Select a flat</option>
-                {societyFlats.map(flat => (
-                  <option key={flat.flatId} value={flat.flatId}>
-                    {flat.flatNumber}{flat.wing?.name ? ` — ${flat.wing.name}` : ''}
-                  </option>
-                ))}
-              </select>
-              {!loading && societyFlats.length === 0 && (
-                <p className="text-xs text-gray-500">No flats are available for your society.</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Visitor Type</label>
-              <select
-                value={newVisitor.visitorType}
-                onChange={(e) => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="guest">Guest</option>
-                <option value="delivery">Delivery</option>
-                <option value="service">Service</option>
-                <option value="vendor">Vendor</option>
-              </select>
-            </div>
+            <Select
+              label="Flat"
+              value={newVisitor.flatId}
+              onChange={(e) => setNewVisitor({ ...newVisitor, flatId: e.target.value })}
+              helperText={!loading && societyFlats.length === 0 ? 'No flats are available for your society.' : undefined}
+              required
+            >
+              <option value="">Select a flat</option>
+              {societyFlats.map(flat => (
+                <option key={flat.flatId} value={flat.flatId}>
+                  {flat.flatNumber}{flat.wing?.name ? ` — ${flat.wing.name}` : ''}
+                </option>
+              ))}
+            </Select>
+            <Select
+              label="Visitor Type"
+              value={newVisitor.visitorType}
+              onChange={(e) => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
+            >
+              <option value="guest">Guest</option>
+              <option value="delivery">Delivery</option>
+              <option value="service">Service</option>
+              <option value="vendor">Vendor</option>
+            </Select>
           </div>
 
           <Input
@@ -505,7 +485,7 @@ const SecurityDashboard = () => {
             placeholder="e.g., MH01AB1234"
           />
 
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex flex-wrap justify-end gap-3 pt-4">
             <Button type="button" variant="secondary" onClick={() => setShowVisitorModal(false)}>
               Cancel
             </Button>

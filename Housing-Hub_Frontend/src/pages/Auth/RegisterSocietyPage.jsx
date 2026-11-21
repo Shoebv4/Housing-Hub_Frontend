@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, User, Mail, Phone, Lock, MapPin } from 'lucide-react';
-import Input from '../../components/UI/Input';
-import Button from '../../components/UI/Button';
+import { Alert, Button, Input, ThemeToggle } from '../../components/UI';
 import { API_BASE_URL } from '../../config';
 
 const RegisterSocietyPage = () => {
@@ -156,34 +155,32 @@ const RegisterSocietyPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-violet-100 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Building2 className="h-12 w-12 text-purple-600" />
+    <div className="relative flex min-h-screen items-center justify-center bg-canvas p-4">
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-accent-soft blur-3xl" />
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
+      <div className="relative w-full max-w-2xl rounded-2xl border border-line bg-surface p-6 shadow-card sm:p-8">
+        <div className="mb-8 text-center">
+          <div className="mb-4 flex items-center justify-center">
+            <Building2 className="h-12 w-12 text-accent" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Register New Society</h2>
-          <p className="text-gray-600 mt-2">Create your society account with admin details</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">Register New Society</h2>
+          <p className="mt-2 text-sm text-muted">Create your society account with admin details</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
-              {error}
-            </div>
-          )}
+          {error && <Alert tone="danger">{error}</Alert>}
           {success && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl">
-              Society registered successfully!
-            </div>
+            <Alert tone="success">Society registered successfully!</Alert>
           )}
           {/* Society Information */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Society Information</h3>
+            <h3 className="text-lg font-semibold text-ink mb-4">Society Information</h3>
             <div className="space-y-4">
               <div className="relative flex flex-col">
-                <label htmlFor="society-societyName" className="font-semibold mb-1">Society Name</label>
-                <Building2 className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-societyName" className="field-label">Society Name</label>
+                <Building2 className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-societyName"
                   name="societyName"
@@ -197,8 +194,8 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-address" className="font-semibold mb-1">Full Address</label>
-                <MapPin className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-address" className="field-label">Full Address</label>
+                <MapPin className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-address"
                   name="address"
@@ -213,7 +210,7 @@ const RegisterSocietyPage = () => {
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col">
-                  <label htmlFor="society-city" className="font-semibold mb-1">City</label>
+                  <label htmlFor="society-city" className="field-label">City</label>
                   <Input
                     id="society-city"
                     name="city"
@@ -225,7 +222,7 @@ const RegisterSocietyPage = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="society-state" className="font-semibold mb-1">State</label>
+                  <label htmlFor="society-state" className="field-label">State</label>
                   <Input
                     id="society-state"
                     name="state"
@@ -239,7 +236,7 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="society-country" className="font-semibold mb-1">Country</label>
+                <label htmlFor="society-country" className="field-label">Country</label>
                 <Input
                   id="society-country"
                   name="country"
@@ -252,7 +249,7 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="society-pincode" className="font-semibold mb-1">Pincode</label>
+                <label htmlFor="society-pincode" className="field-label">Pincode</label>
                 <Input
                   id="society-pincode"
                   name="pincode"
@@ -260,22 +257,22 @@ const RegisterSocietyPage = () => {
                   placeholder="Pincode"
                   value={formData.pincode}
                   onChange={handleChange}
+                  error={pincodeError}
                   required
                   maxLength={10}
                   pattern="\d{1,10}"
                 />
-                {pincodeError && <span className="text-red-600 text-xs mt-1">{pincodeError}</span>}
               </div>
             </div>
           </div>
 
           {/* Admin Information */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Admin Details</h3>
+            <h3 className="text-lg font-semibold text-ink mb-4">Admin Details</h3>
             <div className="space-y-4">
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminName" className="font-semibold mb-1">Admin Full Name</label>
-                <User className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-adminName" className="field-label">Admin Full Name</label>
+                <User className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminName"
                   name="adminName"
@@ -289,8 +286,8 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminEmail" className="font-semibold mb-1">Admin Email</label>
-                <Mail className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-adminEmail" className="field-label">Admin Email</label>
+                <Mail className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminEmail"
                   name="adminEmail"
@@ -299,14 +296,14 @@ const RegisterSocietyPage = () => {
                   value={formData.adminEmail}
                   onChange={handleChange}
                   className="pl-10"
+                  error={emailError}
                   required
                 />
-                {emailError && <span className="text-red-600 text-xs mt-1">{emailError}</span>}
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminPhone" className="font-semibold mb-1">Admin Phone</label>
-                <Phone className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-adminPhone" className="field-label">Admin Phone</label>
+                <Phone className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminPhone"
                   name="adminPhone"
@@ -315,16 +312,16 @@ const RegisterSocietyPage = () => {
                   value={formData.adminPhone}
                   onChange={handleChange}
                   className="pl-10"
+                  error={phoneError}
                   required
                   maxLength={10}
                   pattern="\d{10}"
                 />
-                {phoneError && <span className="text-red-600 text-xs mt-1">{phoneError}</span>}
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminPassword" className="font-semibold mb-1">Admin Password</label>
-                <Lock className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-adminPassword" className="field-label">Admin Password</label>
+                <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminPassword"
                   name="adminPassword"
@@ -333,14 +330,14 @@ const RegisterSocietyPage = () => {
                   value={formData.adminPassword}
                   onChange={handleChange}
                   className="pl-10"
+                  error={passwordError}
                   required
                 />
-                {passwordError && <span className="text-red-600 text-xs mt-1">{passwordError}</span>}
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-confirmPassword" className="font-semibold mb-1">Confirm Password</label>
-                <Lock className="absolute left-3 top-10 h-4 w-4 text-gray-400" />
+                <label htmlFor="society-confirmPassword" className="field-label">Confirm Password</label>
+                <Lock className="absolute left-3 top-11 h-4 w-4 text-faint" />
                 <Input
                   id="society-confirmPassword"
                   name="confirmPassword"
@@ -361,9 +358,9 @@ const RegisterSocietyPage = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted">
             Already have an account?{' '}
-            <Link to="/login" className="text-purple-600 hover:text-purple-700 font-medium">
+            <Link to="/login" className="text-accent hover:text-accent font-medium">
               Sign in here
             </Link>
           </p>
