@@ -316,8 +316,8 @@ const SecurityDashboard = () => {
 
       {/* Current Visitors */}
       <Card>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-xl font-semibold text-gray-900">Current Visitors</h2>
             <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
               {loading ? '…' : insideVisitors.length} Inside
@@ -398,7 +398,7 @@ const SecurityDashboard = () => {
             <p className="text-sm text-gray-500">No visitor exits recorded yet.</p>
           ) : (
             recentExits.map(exit => (
-              <div key={exit.visitorId} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div key={exit.visitorId} className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                     <CheckCircle className="h-4 w-4 text-gray-600" />
@@ -410,7 +410,7 @@ const SecurityDashboard = () => {
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="sm:text-right">
                   <p className="font-medium text-gray-900">{formatDateTime(exit.exitTime)}</p>
                   <p className="text-sm text-gray-600">
                     Duration: {formatDuration(exit.entryTime, exit.exitTime)}
@@ -430,7 +430,7 @@ const SecurityDashboard = () => {
         size="lg"
       >
         <form onSubmit={handleVisitorEntry} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
               label="Visitor Name"
               value={newVisitor.name}
@@ -447,7 +447,7 @@ const SecurityDashboard = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Flat</label>
               <select

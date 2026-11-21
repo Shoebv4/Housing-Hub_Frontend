@@ -395,7 +395,7 @@ const AdminDashboard = () => {
 
       {/* Monthly Revenue */}
       <Card>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Monthly Revenue</h2>
             <p className="text-sm text-gray-500 mt-1">Paid amenity bookings in your society</p>
@@ -421,7 +421,7 @@ const AdminDashboard = () => {
             <p className="text-gray-500">No paid bookings recorded in the last six months.</p>
           </div>
         ) : (
-          <div className="flex items-end gap-4 h-64">
+          <div className="flex items-end gap-2 h-64 sm:gap-4">
             {revenueMonths.map(month => (
               <div key={month.key} className="flex-1 flex flex-col items-center justify-end h-full">
                 <span className="text-xs font-medium text-gray-600 mb-1">

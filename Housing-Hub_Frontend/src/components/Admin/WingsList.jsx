@@ -148,7 +148,7 @@ const WingsList = () => {
                     <span className="font-medium">Society:</span> {society.name}
                 </div>
             )}
-            <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
                 <div className="flex flex-col">
                     <label htmlFor="wing-name" className="font-semibold mb-1">Wing Name</label>
                     <Input id="wing-name" name="name" value={form.name} onChange={handleChange} placeholder="Wing Name" required />

@@ -156,7 +156,7 @@ const ComplaintsList = () => {
         <div>
             <h2 className="text-lg font-semibold mb-4">Complaints</h2>
             {user.role === 'admin' && (
-                <div className="flex gap-2 mb-4 items-center">
+                <div className="flex flex-wrap gap-2 mb-4 items-center">
                     <label className="font-medium">Filter by Wing:</label>
                     <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded px-2 py-1">
                         <option value="">All Wings</option>
@@ -167,14 +167,14 @@ const ComplaintsList = () => {
                 </div>
             )}
             {user.role === 'resident' && (
-                <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
                     <div className="flex flex-col">
                         <label htmlFor="complaint-title" className="font-semibold mb-1">Title</label>
                         <Input id="complaint-title" name="title" value={form.title} onChange={handleChange} placeholder="Title" required />
                     </div>
                     <div className="flex flex-col">
                         <label htmlFor="complaint-category" className="font-semibold mb-1">Category</label>
-                        <select id="complaint-category" name="category" value={form.category} onChange={handleChange} className="border rounded px-2 py-1" required>
+                        <select id="complaint-category" name="category" value={form.category} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
                             {CATEGORIES.map(cat => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}

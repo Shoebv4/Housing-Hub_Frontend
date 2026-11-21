@@ -144,10 +144,10 @@ const SocietiesPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4">
+        <div className="mx-auto w-full max-w-5xl">
             <h1 className="text-2xl font-bold mb-6">Societies Management</h1>
-            <div className="bg-white rounded-lg shadow p-6">
-                <form onSubmit={editingId ? handleUpdate : handleAdd} className="flex flex-wrap gap-2 mb-4 items-end">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+                <form onSubmit={editingId ? handleUpdate : handleAdd} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
                     <div className="flex flex-col">
                         <label htmlFor="society-name" className="font-semibold mb-1">Name</label>
                         <Input id="society-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />

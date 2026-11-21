@@ -171,7 +171,7 @@ const FlatsList = () => {
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
         <div className="flex flex-col">
           <label htmlFor="flat-flatNumber" className="font-semibold mb-1">Flat Number</label>
           <Input id="flat-flatNumber" name="flatNumber" value={form.flatNumber} onChange={handleChange} placeholder="Flat Number" required />
@@ -186,14 +186,14 @@ const FlatsList = () => {
         </div>
         <div className="flex flex-col">
           <label htmlFor="flat-status" className="font-semibold mb-1">Status</label>
-          <select id="flat-status" name="status" value={form.status} onChange={handleChange} className="border rounded px-2 py-1" required>
+          <select id="flat-status" name="status" value={form.status} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
             <option value="Pending">Pending</option>
             <option value="Registered">Registered</option>
           </select>
         </div>
         <div className="flex flex-col">
           <label htmlFor="flat-wingId" className="font-semibold mb-1">Wing</label>
-          <select id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} className="border rounded px-2 py-1" required>
+          <select id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
             <option value="">Select Wing</option>
             {wings.map(w => (
               <option key={w.wingId} value={w.wingId}>{w.name}</option>
@@ -209,7 +209,7 @@ const FlatsList = () => {
           </Button>
         )}
       </form>
-      <div className="flex gap-2 mb-4 items-center">
+      <div className="flex flex-wrap gap-2 mb-4 items-center">
         <label className="font-medium">Filter by Wing:</label>
         <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded px-2 py-1">
           <option value="">All Wings</option>

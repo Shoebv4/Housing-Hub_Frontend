@@ -5,9 +5,9 @@ import ProtectedRoute from '../components/ProtectedRoute';
 const ComplaintsPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin', 'resident']}>
-      <div className="max-w-5xl mx-auto py-8 px-4">
+      <div className="mx-auto w-full max-w-5xl">
         <h1 className="text-2xl font-bold mb-6">Complaints</h1>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <ComplaintsList />
         </div>
       </div>

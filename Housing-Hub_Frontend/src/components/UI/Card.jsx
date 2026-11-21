@@ -5,7 +5,7 @@ import clsx from 'clsx';
 const Card = ({ children, className, padding = 'md' }) => {
   const paddingClasses = {
     sm: 'p-4',
-    md: 'p-6',
+    md: 'p-4 sm:p-6',
     lg: 'p-8'
   };
 

@@ -123,7 +123,7 @@ const RegisterPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Building2 className="h-12 w-12 text-green-600" />
@@ -187,7 +187,7 @@ const RegisterPage = () => {
             {phoneError && <span className="text-red-600 text-xs mt-1">{phoneError}</span>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col">
               <label htmlFor="register-societyId" className="font-semibold mb-1">Society Name</label>
               <select
@@ -195,7 +195,7 @@ const RegisterPage = () => {
                 name="societyId"
                 value={formData.societyId}
                 onChange={handleChange}
-                className="border rounded px-2 py-1"
+                className="w-full border rounded px-2 py-1"
                 required
               >
                 <option value="">Select Society</option>
@@ -211,7 +211,7 @@ const RegisterPage = () => {
                 name="flatId"
                 value={formData.flatId}
                 onChange={handleChange}
-                className="border rounded px-2 py-1"
+                className="w-full border rounded px-2 py-1"
                 required
                 disabled={!formData.societyId}
               >

@@ -278,9 +278,9 @@ const ResidentDashboard = () => {
             ) : (
               visibleAnnouncements.map(announcement => (
                 <div key={announcement.aid} className="p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-start justify-between gap-2 mb-2">
                     <h3 className="font-medium text-gray-900">{announcement.title}</h3>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    <span className={`flex-shrink-0 px-2 py-1 text-xs font-medium rounded-full ${
                       announcement.isGlobal
                         ? 'bg-blue-100 text-blue-800'
                         : 'bg-gray-100 text-gray-800'
@@ -311,15 +311,15 @@ const ResidentDashboard = () => {
               <p className="text-sm text-gray-500">No visitors recorded for your flat yet.</p>
             ) : (
               recentVisitors.map(visitor => (
-                <div key={visitor.visitorId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
+                <div key={visitor.visitorId} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex min-w-0 items-center space-x-3">
                     <Users className="h-5 w-5 text-gray-400" />
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-gray-900">{visitor.name}</p>
                       <p className="text-sm text-gray-600">{visitor.purpose}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="flex-shrink-0 text-right">
                     <p className="text-sm text-gray-900">{formatTime(visitor.entryTime)}</p>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                       visitor.exitTime

@@ -168,10 +168,10 @@ const AdminsPage = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4">
+    <div className="mx-auto w-full max-w-5xl">
       <h1 className="text-2xl font-bold mb-6">Admins Management</h1>
-      <div className="bg-white rounded-lg shadow p-6">
-        <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
           <div className="flex flex-col">
             <label htmlFor="admin-name" className="font-semibold mb-1">Name</label>
             <Input id="admin-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
@@ -195,7 +195,7 @@ const AdminsPage = () => {
           )}
           <div className="flex flex-col">
             <label htmlFor="admin-societyId" className="font-semibold mb-1">Society</label>
-            <select id="admin-societyId" name="societyId" value={form.societyId} onChange={handleChange} className="border rounded px-2 py-1" required>
+            <select id="admin-societyId" name="societyId" value={form.societyId} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
               <option value="">Select Society</option>
               {societies.map(s => (
                 <option key={s.societyId} value={s.societyId}>{s.name}</option>

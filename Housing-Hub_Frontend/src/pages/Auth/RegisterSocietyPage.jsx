@@ -157,7 +157,7 @@ const RegisterSocietyPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-violet-100 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8">
+      <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Building2 className="h-12 w-12 text-purple-600" />
@@ -211,7 +211,7 @@ const RegisterSocietyPage = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col">
                   <label htmlFor="society-city" className="font-semibold mb-1">City</label>
                   <Input

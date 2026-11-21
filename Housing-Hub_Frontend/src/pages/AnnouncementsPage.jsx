@@ -27,7 +27,7 @@ const DropdownCheckbox = ({ options, selected, onChange, label, disabled }) => {
     }, []);
 
     return (
-        <div className="relative inline-block w-64" ref={ref}>
+        <div className="relative w-full sm:inline-block sm:w-64" ref={ref}>
             <button type="button" className={`border rounded px-2 py-1 w-full text-left bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`} onClick={() => setOpen(!open)} disabled={disabled}>
                 <span className="truncate block">{selected.length > 0 ? selected.map(id => options.find(o => o.value === id)?.label).filter(Boolean).join(', ') : `Select ${label}`}</span>
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -230,11 +230,11 @@ const AnnouncementsPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4">
+        <div className="mx-auto w-full max-w-5xl">
             <h1 className="text-2xl font-bold mb-6">Announcements Management</h1>
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
                 {user.role === 'admin' && (
-                    <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+                    <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
                         <div className="flex flex-col">
                             <label htmlFor="title" className="font-semibold mb-1">Title</label>
                             <Input name="title" id="title" value={form.title} onChange={handleChange} placeholder="Title" required />
@@ -243,7 +243,7 @@ const AnnouncementsPage = () => {
                             <label htmlFor="content" className="font-semibold mb-1">Message</label>
                             <Input name="content" id="content" value={form.content} onChange={handleChange} placeholder="Message" required />
                         </div>
-                        <div className="w-full flex gap-2 mt-2">
+                        <div className="w-full flex flex-col gap-2 mt-2 sm:flex-row">
                             <DropdownCheckbox
                                 options={wings.map(w => ({ value: String(w.wingId), label: w.name }))}
                                 selected={form.targetWingIds}

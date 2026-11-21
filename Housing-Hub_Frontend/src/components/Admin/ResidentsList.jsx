@@ -225,7 +225,7 @@ const ResidentsList = () => {
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
         <div className="flex flex-col">
           <label htmlFor="resident-name" className="font-semibold mb-1">Name</label>
           <Input id="resident-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
@@ -249,7 +249,7 @@ const ResidentsList = () => {
         )}
         <div className="flex flex-col">
           <label htmlFor="resident-flatId" className="font-semibold mb-1">Flat</label>
-          <select id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} className="border rounded px-2 py-1" required>
+          <select id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
             <option value="">Select Flat</option>
             {flats.filter(f => f.status === 'Vacant').map(f => (
               <option key={f.flatId} value={f.flatId}>{f.flatNumber} ({f.floorNumber})</option>
@@ -265,7 +265,7 @@ const ResidentsList = () => {
           </Button>
         )}
       </form>
-      <div className="flex gap-2 mb-4 items-center">
+      <div className="flex flex-wrap gap-2 mb-4 items-center">
         <label className="font-medium">Filter by Wing:</label>
         <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded px-2 py-1">
           <option value="">All Wings</option>

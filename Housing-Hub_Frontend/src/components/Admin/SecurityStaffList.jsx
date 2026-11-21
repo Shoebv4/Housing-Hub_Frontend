@@ -142,7 +142,7 @@ const SecurityStaffList = () => {
   return (
     <div>
       <h2 className="text-lg font-semibold mb-4">Security Staff</h2>
-      <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
         <div className="flex flex-col">
           <label htmlFor="staff-name" className="font-semibold mb-1">Name</label>
           <Input id="staff-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />

@@ -21,7 +21,7 @@ const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-screen items-start justify-center p-4 sm:items-center">
         <div
           className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
           onClick={onClose}
@@ -32,16 +32,16 @@ const Modal = ({
             sizeClasses[size]
           )}
         >
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <div className="flex items-center justify-between gap-3 p-4 border-b border-gray-200 sm:p-6">
+            <h3 className="min-w-0 truncate text-lg font-semibold text-gray-900">{title}</h3>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
-          <div className="p-6">{children}</div>
+          <div className="p-4 sm:p-6">{children}</div>
         </div>
       </div>
     </div>

@@ -260,9 +260,9 @@ const SuperAdminDashboard = () => {
 
       {/* Societies Table */}
       <Card>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-xl font-semibold text-gray-900">All Societies</h2>
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="secondary" size="sm" onClick={handleExport} disabled={societies.length === 0}>
               Export
             </Button>
@@ -423,7 +423,7 @@ const SuperAdminDashboard = () => {
             placeholder="Enter street address"
             required
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
               label="City"
               value={societyForm.city}
@@ -439,7 +439,7 @@ const SuperAdminDashboard = () => {
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
               label="Country"
               value={societyForm.country}

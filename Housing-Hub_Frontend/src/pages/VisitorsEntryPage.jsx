@@ -91,7 +91,7 @@ const VisitorsEntryPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4">
+        <div className="mx-auto w-full max-w-5xl">
             <h1 className="text-2xl font-bold mb-6">Visitor Entry</h1>
             <div className="mb-4 flex justify-end">
                 <Button onClick={() => setShowModal(true)}>
@@ -100,7 +100,7 @@ const VisitorsEntryPage = () => {
             </div>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="New Visitor Entry" size="lg">
                 <form onSubmit={handleVisitorEntry} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
                             label="Visitor Name"
                             value={newVisitor.name}
@@ -116,7 +116,7 @@ const VisitorsEntryPage = () => {
                             required
                         />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">Flat</label>
                             <select
