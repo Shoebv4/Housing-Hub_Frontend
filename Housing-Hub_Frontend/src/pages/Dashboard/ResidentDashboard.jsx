@@ -218,7 +218,7 @@ const ResidentDashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
           {society?.name && (
@@ -228,7 +228,7 @@ const ResidentDashboard = () => {
             </p>
           )}
         </div>
-        <Button onClick={() => setShowComplaintModal(true)}>
+        <Button className="self-start" onClick={() => setShowComplaintModal(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Raise Complaint
         </Button>

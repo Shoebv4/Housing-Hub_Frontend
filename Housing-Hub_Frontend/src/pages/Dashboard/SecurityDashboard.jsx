@@ -252,7 +252,7 @@ const SecurityDashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Security Dashboard</h1>
           {society?.name && (
@@ -262,7 +262,7 @@ const SecurityDashboard = () => {
             </p>
           )}
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${liveBadge.container}`}>
             <div className={`w-2 h-2 rounded-full ${liveBadge.dot}`}></div>
             <span className={`text-sm font-medium ${liveBadge.text}`}>{liveBadge.label}</span>

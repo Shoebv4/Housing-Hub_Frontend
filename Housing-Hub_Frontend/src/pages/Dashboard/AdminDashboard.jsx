@@ -269,7 +269,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
           {society?.name && (
@@ -279,7 +279,7 @@ const AdminDashboard = () => {
             </p>
           )}
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-wrap gap-3">
           <Button variant="secondary" onClick={handleExportReport} disabled={exporting}>
             {exporting ? 'Exporting...' : 'Export Report'}
           </Button>
