@@ -457,15 +457,15 @@ const AdminDashboard = () => {
           ]}>
             {bills.map(bill => (
               <tr key={bill.mbid}>
-                <td className="px-6 py-4 font-medium text-ink text-center">
+                <td className="font-medium text-ink text-center">
                   {flatNumberById.get(bill.flatId) || '—'}
                 </td>
-                <td className="px-6 py-4 text-muted">
+                <td className="text-muted">
                   {formatDate(bill.periodStart)} – {formatDate(bill.periodEnd)}
                 </td>
-                <td className="px-6 py-4 text-muted text-center">{formatDate(bill.dueDate)}</td>
-                <td className="px-6 py-4 text-ink text-right">{formatCurrency(bill.amount)}</td>
-                <td className="px-6 py-4 text-center">
+                <td className="text-muted text-center">{formatDate(bill.dueDate)}</td>
+                <td className="text-ink text-right">{formatCurrency(bill.amount)}</td>
+                <td className="text-center">
                   <Badge tone={bill.paid ? 'success' : 'warning'}>
                     {bill.paid ? 'Paid' : 'Pending'}
                   </Badge>

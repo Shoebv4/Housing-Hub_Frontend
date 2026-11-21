@@ -329,18 +329,18 @@ const SecurityDashboard = () => {
         ]}>
           {loading ? (
             <tr>
-              <td colSpan={7} className="px-6 py-6 text-center text-faint">Loading visitors...</td>
+              <td colSpan={7} className="text-center text-faint">Loading visitors...</td>
             </tr>
           ) : visibleInsideVisitors.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-6 py-6 text-center text-faint">
+              <td colSpan={7} className="text-center text-faint">
                 {search ? 'No visitors match your search.' : 'No visitors currently inside.'}
               </td>
             </tr>
           ) : (
             visibleInsideVisitors.map(visitor => (
               <tr key={visitor.visitorId}>
-                <td className="px-6 py-4">
+                <td>
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-accent-soft rounded-full flex items-center justify-center mr-3">
                       <Users className="h-4 w-4 text-accent" />
@@ -348,12 +348,12 @@ const SecurityDashboard = () => {
                     <span className="font-medium text-ink">{visitor.name}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 font-medium text-ink text-center">
+                <td className="font-medium text-ink text-center">
                   {flatNumberById.get(visitor.flatId) || '—'}
                 </td>
-                <td className="px-6 py-4 text-muted">{visitor.purpose}</td>
-                <td className="px-6 py-4 text-muted text-center">{formatTime(visitor.entryTime)}</td>
-                <td className="px-6 py-4 text-center">
+                <td className="text-muted">{visitor.purpose}</td>
+                <td className="text-muted text-center">{formatTime(visitor.entryTime)}</td>
+                <td className="text-center">
                   {visitor.vehicleNo ? (
                     <div className="flex items-center justify-center space-x-2">
                       <Car className="h-4 w-4 text-faint" />
@@ -363,12 +363,12 @@ const SecurityDashboard = () => {
                     <span className="text-faint">No vehicle</span>
                   )}
                 </td>
-                <td className="px-6 py-4 text-center">
+                <td className="text-center">
                   <Badge tone={VISITOR_TYPE_TONES[visitor.visitorType] || 'neutral'}>
                     {visitor.visitorType}
                   </Badge>
                 </td>
-                <td className="px-6 py-4 text-center">
+                <td className="text-center">
                   <Button
                     variant="danger"
                     size="sm"

@@ -274,11 +274,11 @@ const SuperAdminDashboard = () => {
         ]}>
           {loading ? (
             <tr>
-              <td colSpan={5} className="px-6 py-6 text-center text-faint">Loading societies...</td>
+              <td colSpan={5} className="text-center text-faint">Loading societies...</td>
             </tr>
           ) : societies.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-6 py-6 text-center text-faint">No societies registered yet.</td>
+              <td colSpan={5} className="text-center text-faint">No societies registered yet.</td>
             </tr>
           ) : (
             societies.map(society => {
@@ -287,20 +287,20 @@ const SuperAdminDashboard = () => {
 
               return (
                 <tr key={society.societyId}>
-                  <td className="px-6 py-4">
+                  <td>
                     <div className="flex items-center">
                       <Building2 className="h-5 w-5 text-faint mr-3" />
                       <span className="font-medium text-ink">{society.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-muted">{admin?.name || '—'}</td>
-                  <td className="px-6 py-4 text-muted">{society.city || '—'}</td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="text-muted">{admin?.name || '—'}</td>
+                  <td className="text-muted">{society.city || '—'}</td>
+                  <td className="text-center">
                     <Badge tone={society.isVerified ? 'success' : 'warning'}>
                       {society.isVerified ? 'Verified' : 'Pending'}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     <div className="flex flex-wrap items-center justify-center gap-2">
                       <Button variant="secondary" size="sm" onClick={() => openEditSociety(society)} disabled={busy}>
                         Edit
