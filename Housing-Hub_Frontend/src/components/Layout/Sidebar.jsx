@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { Building2, ChevronRight, LogOut, User } from 'lucide-react';
+import { Building2, ChevronRight, LogOut, User, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getMenuItems } from '../../utils/navigation';
 import { apiGet } from '../../utils/api';
@@ -9,7 +9,7 @@ import Modal from '../UI/Modal';
 import Button from '../UI/Button';
 import clsx from 'clsx';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const menuItems = getMenuItems(user?.role);
@@ -21,6 +21,7 @@ const Sidebar = () => {
   const roleLabel = (user?.role || '').replace(/_/g, ' ');
 
   const openProfile = async () => {
+    onClose();
     setShowProfile(true);
     setProfileLoading(true);
     setProfileError('');
@@ -53,18 +54,29 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="bg-white shadow-lg h-full flex flex-col">
-        <div className="p-6 border-b border-gray-200">
+      <aside
+        className={clsx(
+          'fixed inset-y-0 left-0 z-40 flex h-full w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white shadow-xl transition-transform duration-200 ease-in-out',
+          'lg:static lg:z-auto lg:translate-x-0 lg:shadow-none lg:transition-none',
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        <div className="flex items-center justify-between border-b border-gray-200 p-5 flex-shrink-0">
           <div className="flex items-center space-x-3">
             <Building2 className="h-8 w-8 text-blue-600" />
-            <div>
-              <h2 className="text-xl font-bold text-gray-800">HousingHub</h2>
-              <p className="text-sm text-gray-500 capitalize">{user?.role?.replace('_', ' ')}</p>
-            </div>
+            <h2 className="text-xl font-bold text-gray-800">HousingHub</h2>
           </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 lg:hidden"
+            aria-label="Close navigation"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
-        <nav className="flex-1 p-4">
+        <nav className="flex-1 overflow-y-auto p-4" aria-label="Main navigation">
           <ul className="space-y-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -74,6 +86,8 @@ const Sidebar = () => {
                 <li key={item.path}>
                   <Link
                     to={item.path}
+                    onClick={onClose}
+                    aria-current={isActive ? 'page' : undefined}
                     className={clsx(
                       'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200',
                       isActive
@@ -90,7 +104,7 @@ const Sidebar = () => {
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-gray-200">
+        <div className="border-t border-gray-200 p-4 flex-shrink-0">
           <button
             type="button"
             onClick={openProfile}
@@ -116,7 +130,7 @@ const Sidebar = () => {
             <span className="font-medium">Logout</span>
           </button>
         </div>
-      </div>
+      </aside>
 
       {showProfile && createPortal(
         <Modal
