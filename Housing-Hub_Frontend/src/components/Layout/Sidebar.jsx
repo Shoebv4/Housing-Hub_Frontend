@@ -92,7 +92,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
           isOpen ? 'translate-x-0' : '-translate-x-full invisible lg:visible'
         )}
       >
-        <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-line px-4">
+        <div className="flex h-16 flex-shrink-0 items-center justify-between px-4">
           <div className="flex items-center gap-3 px-4">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft">
               <Building2 className="h-5 w-5 text-accent" />
@@ -109,8 +109,9 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
             <X className="h-5 w-5" />
           </button>
         </div>
+        <div className="mx-4 border-b border-line" aria-hidden="true" />
 
-        <nav className="flex-1 overflow-y-auto px-4 py-4" aria-label="Main navigation">
+        <nav className="scrollbar-slim flex-1 overflow-y-auto px-4 py-4" aria-label="Main navigation">
           <ul className="space-y-1">
             {menuItems.map((item, index) => {
               const Icon = item.icon;
@@ -156,7 +157,8 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
           </ul>
         </nav>
 
-        <div className="flex-shrink-0 space-y-2 border-t border-line p-4">
+        <div className="mx-4 border-t border-line" aria-hidden="true" />
+        <div className="flex-shrink-0 space-y-2 p-4">
           <div className="flex items-center justify-between px-4 pb-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-faint">Preferences</span>
             <ThemeToggle />
