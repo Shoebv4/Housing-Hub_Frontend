@@ -268,21 +268,21 @@ const AmenitiesPage = () => {
             <h1 className="text-2xl font-bold mb-6">Amenities & Bookings</h1>
             <div className="mb-6 flex space-x-4">
                 <button
-                    className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 ${tab === 'amenities' ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
+                    className={`px-4 py-2 rounded-t-xl font-semibold border-b-2 ${tab === 'amenities' ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
                     onClick={() => setTab('amenities')}
                 >
                     Amenities
                 </button>
                 {user.role === 'admin' && (
                     <button
-                        className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 ${tab === 'bookings' ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
+                        className={`px-4 py-2 rounded-t-xl font-semibold border-b-2 ${tab === 'bookings' ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
                         onClick={() => setTab('bookings')}
                     >
                         Bookings
                     </button>
                 )}
             </div>
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
                 {tab === 'amenities' && (
                     <>
                         {user.role === 'admin' && (
@@ -318,7 +318,7 @@ const AmenitiesPage = () => {
                             </form>
                         )}
                         {error && <div className="text-red-600 mb-2">{error}</div>}
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
                             <table className="min-w-full border text-sm">
                                 <thead>
                                     <tr className="bg-gray-100">
@@ -351,7 +351,7 @@ const AmenitiesPage = () => {
                                                 <td className="border px-4 py-2">
                                                     <Button type="button" variant="primary" size="sm" onClick={() => openBooking(a.amenityId)}>Book</Button>
                                                     {showBooking === a.amenityId && (
-                                                        <form onSubmit={handleBookingSubmit} className="mt-2 space-y-2 bg-gray-50 p-2 rounded">
+                                                        <form onSubmit={handleBookingSubmit} className="mt-2 space-y-2 bg-gray-50 p-2 rounded-xl">
                                                             <div className="flex flex-col">
                                                                 <label htmlFor="date" className="font-semibold mb-1">Date</label>
                                                                 <Input name="date" id="date" type="date" value={bookingForm.date} onChange={handleBookingChange} required />
@@ -386,7 +386,7 @@ const AmenitiesPage = () => {
                             <div className="mt-8">
                                 <h2 className="text-lg font-semibold mb-2">My Amenity Bookings</h2>
                                 {bookingError && <div className="text-red-600 mb-2">{bookingError}</div>}
-                                <div className="overflow-x-auto">
+                                <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
                                     <table className="min-w-full border text-sm">
                                         <thead>
                                             <tr className="bg-gray-100">
@@ -459,7 +459,7 @@ const AmenitiesPage = () => {
                                                                         placeholder="Enter Transaction ID"
                                                                         value={transactionInputs[b.bookingId] || ''}
                                                                         onChange={e => handleTransactionInputChange(b.bookingId, e.target.value)}
-                                                                        className="border rounded px-2 py-1 text-sm placeholder-gray-900"
+                                                                        className="border rounded-xl px-2 py-1 text-sm placeholder-gray-900"
                                                                     />
                                                                     <Button
                                                                         type="button"
@@ -490,7 +490,7 @@ const AmenitiesPage = () => {
                     <div>
                         <h2 className="text-lg font-semibold mb-4">Amenity Bookings</h2>
                         {bookingError && <div className="text-red-600 mb-2">{bookingError}</div>}
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
                             <table className="min-w-full border text-sm">
                                 <thead>
                                     <tr className="bg-gray-100">
@@ -526,7 +526,7 @@ const AmenitiesPage = () => {
                                                     <select
                                                         value={statusEdit[b.bookingId] || b.status}
                                                         onChange={e => handleStatusChange(b.bookingId, e.target.value)}
-                                                        className="border rounded px-2 py-1"
+                                                        className="border rounded-xl px-2 py-1"
                                                         disabled={b.status === 'Cancelled'}
                                                     >
                                                         {STATUS_OPTIONS.map(opt => (

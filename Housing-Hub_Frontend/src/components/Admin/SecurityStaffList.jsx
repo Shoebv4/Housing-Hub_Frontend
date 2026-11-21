@@ -174,7 +174,7 @@ const SecurityStaffList = () => {
         )}
       </form>
       {error && <div className="text-red-600 mb-2">{error}</div>}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
         <table className="min-w-full border text-sm">
           <thead>
             <tr className="bg-gray-100">

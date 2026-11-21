@@ -158,7 +158,7 @@ const ComplaintsList = () => {
             {user.role === 'admin' && (
                 <div className="flex flex-wrap gap-2 mb-4 items-center">
                     <label className="font-medium">Filter by Wing:</label>
-                    <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded px-2 py-1">
+                    <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded-xl px-2 py-1">
                         <option value="">All Wings</option>
                         {wings.map(w => (
                             <option key={w.wingId} value={w.wingId}>{w.name}</option>
@@ -174,7 +174,7 @@ const ComplaintsList = () => {
                     </div>
                     <div className="flex flex-col">
                         <label htmlFor="complaint-category" className="font-semibold mb-1">Category</label>
-                        <select id="complaint-category" name="category" value={form.category} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
+                        <select id="complaint-category" name="category" value={form.category} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
                             {CATEGORIES.map(cat => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
@@ -188,7 +188,7 @@ const ComplaintsList = () => {
                 </form>
             )}
             {error && <div className="text-red-600 mb-2">{error}</div>}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
                 <table className="min-w-full border text-sm">
                     <thead>
                         <tr className="bg-gray-100">
@@ -214,7 +214,7 @@ const ComplaintsList = () => {
                                     <td className="border px-4 py-2">{complaint.description}</td>
                                     {user.role === 'admin' && <td className="border px-4 py-2">{flat?.flatNumber || '-'}</td>}
                                     {user.role === 'admin' && <td className="border px-4 py-2">{flat?.wing?.name || '-'}</td>}
-                                    <td className={`border px-4 py-2 font-semibold rounded ${getStatusColor(complaint.status)}`}>{complaint.status}</td>
+                                    <td className={`border px-4 py-2 font-semibold rounded-xl ${getStatusColor(complaint.status)}`}>{complaint.status}</td>
                                     <td className="border px-4 py-2">{
                                         complaint.createdAt ? (() => {
                                             const d = new Date(complaint.createdAt);
@@ -241,7 +241,7 @@ const ComplaintsList = () => {
                                             <select
                                                 value={complaint.status}
                                                 onChange={e => handleStatusUpdate(complaint.complaintId, e.target.value)}
-                                                className="border rounded px-2 py-1"
+                                                className="border rounded-xl px-2 py-1"
                                             >
                                                 <option value="Pending">Pending</option>
                                                 <option value="InProgress">InProgress</option>

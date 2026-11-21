@@ -146,7 +146,7 @@ const SocietiesPage = () => {
     return (
         <div className="mx-auto w-full max-w-5xl">
             <h1 className="text-2xl font-bold mb-6">Societies Management</h1>
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
                 <form onSubmit={editingId ? handleUpdate : handleAdd} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
                     <div className="flex flex-col">
                         <label htmlFor="society-name" className="font-semibold mb-1">Name</label>
@@ -178,7 +178,7 @@ const SocietiesPage = () => {
                     )}
                 </form>
                 {error && <div className="text-red-600 mb-2">{error}</div>}
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
                     <table className="min-w-full border text-sm">
                         <thead>
                             <tr className="bg-gray-100">

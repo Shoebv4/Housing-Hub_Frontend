@@ -263,7 +263,7 @@ const SecurityDashboard = () => {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${liveBadge.container}`}>
+          <div className={`flex items-center space-x-2 px-3 py-2 rounded-xl ${liveBadge.container}`}>
             <div className={`w-2 h-2 rounded-full ${liveBadge.dot}`}></div>
             <span className={`text-sm font-medium ${liveBadge.text}`}>{liveBadge.label}</span>
           </div>
@@ -275,7 +275,7 @@ const SecurityDashboard = () => {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -287,7 +287,7 @@ const SecurityDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
@@ -309,7 +309,7 @@ const SecurityDashboard = () => {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search visitors by name, flat number, or purpose..."
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </Card>
@@ -398,7 +398,7 @@ const SecurityDashboard = () => {
             <p className="text-sm text-gray-500">No visitor exits recorded yet.</p>
           ) : (
             recentExits.map(exit => (
-              <div key={exit.visitorId} className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg sm:flex-row sm:items-center sm:justify-between">
+              <div key={exit.visitorId} className="flex flex-col gap-3 p-4 bg-gray-50 rounded-xl sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                     <CheckCircle className="h-4 w-4 text-gray-600" />
@@ -453,7 +453,7 @@ const SecurityDashboard = () => {
               <select
                 value={newVisitor.flatId}
                 onChange={(e) => setNewVisitor({ ...newVisitor, flatId: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select a flat</option>
@@ -472,7 +472,7 @@ const SecurityDashboard = () => {
               <select
                 value={newVisitor.visitorType}
                 onChange={(e) => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="guest">Guest</option>
                 <option value="delivery">Delivery</option>

@@ -157,7 +157,7 @@ const RegisterSocietyPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-violet-100 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 sm:p-8">
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-lg p-6 sm:p-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Building2 className="h-12 w-12 text-purple-600" />
@@ -168,12 +168,12 @@ const RegisterSocietyPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
               {error}
             </div>
           )}
           {success && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl">
               Society registered successfully!
             </div>
           )}

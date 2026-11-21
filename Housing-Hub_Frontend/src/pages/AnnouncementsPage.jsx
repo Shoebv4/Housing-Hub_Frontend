@@ -28,14 +28,14 @@ const DropdownCheckbox = ({ options, selected, onChange, label, disabled }) => {
 
     return (
         <div className="relative w-full sm:inline-block sm:w-64" ref={ref}>
-            <button type="button" className={`border rounded px-2 py-1 w-full text-left bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`} onClick={() => setOpen(!open)} disabled={disabled}>
+            <button type="button" className={`border rounded-xl px-2 py-1 w-full text-left bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`} onClick={() => setOpen(!open)} disabled={disabled}>
                 <span className="truncate block">{selected.length > 0 ? selected.map(id => options.find(o => o.value === id)?.label).filter(Boolean).join(', ') : `Select ${label}`}</span>
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </span>
             </button>
             {open && !disabled && (
-                <div className="absolute z-10 bg-white border rounded shadow w-full max-h-56 overflow-auto mt-1">
+                <div className="absolute z-10 bg-white border rounded-xl shadow w-full max-h-56 overflow-auto mt-1">
                     <div className="flex justify-end p-1 border-b">
                         <button type="button" className="text-xs text-blue-600 underline" onClick={() => onChange([])}>Clear Selection</button>
                     </div>
@@ -232,7 +232,7 @@ const AnnouncementsPage = () => {
     return (
         <div className="mx-auto w-full max-w-5xl">
             <h1 className="text-2xl font-bold mb-6">Announcements Management</h1>
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
                 {user.role === 'admin' && (
                     <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
                         <div className="flex flex-col">
@@ -270,7 +270,7 @@ const AnnouncementsPage = () => {
                     </form>
                 )}
                 {error && <div className="text-red-600 mb-2">{error}</div>}
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
                     <table className="min-w-full border text-sm">
                         <thead>
                             <tr className="bg-gray-100">

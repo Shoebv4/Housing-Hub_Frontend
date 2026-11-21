@@ -4,8 +4,8 @@ import clsx from 'clsx';
 
 const Table = ({ headers, children, className }) => {
   return (
-    <div className={clsx('overflow-x-auto', className)}>
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+    <div className={clsx('overflow-x-auto rounded-xl border border-gray-200', className)}>
+      <table className="min-w-full bg-white">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
             {headers.map((header, index) => (

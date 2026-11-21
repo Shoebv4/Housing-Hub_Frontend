@@ -221,7 +221,7 @@ const ResidentsList = () => {
     <div>
       <h2 className="text-lg font-semibold mb-4">Residents</h2>
       {society && (
-        <div className="mb-4 p-3 bg-gray-50 rounded border text-gray-700">
+        <div className="mb-4 p-3 bg-gray-50 rounded-2xl border text-gray-700">
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
@@ -249,7 +249,7 @@ const ResidentsList = () => {
         )}
         <div className="flex flex-col">
           <label htmlFor="resident-flatId" className="font-semibold mb-1">Flat</label>
-          <select id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
+          <select id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
             <option value="">Select Flat</option>
             {flats.filter(f => f.status === 'Vacant').map(f => (
               <option key={f.flatId} value={f.flatId}>{f.flatNumber} ({f.floorNumber})</option>
@@ -267,7 +267,7 @@ const ResidentsList = () => {
       </form>
       <div className="flex flex-wrap gap-2 mb-4 items-center">
         <label className="font-medium">Filter by Wing:</label>
-        <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded px-2 py-1">
+        <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded-xl px-2 py-1">
           <option value="">All Wings</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
@@ -275,7 +275,7 @@ const ResidentsList = () => {
         </select>
       </div>
       {error && <div className="text-red-600 mb-2">{error}</div>}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
         <table className="min-w-full border text-sm">
           <thead>
             <tr className="bg-gray-100">

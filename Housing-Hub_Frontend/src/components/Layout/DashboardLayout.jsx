@@ -30,7 +30,7 @@ const DashboardLayout = () => {
           <button
             type="button"
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100"
+            className="p-2 -ml-2 rounded-xl text-gray-600 hover:bg-gray-100"
             aria-label="Open navigation"
           >
             <Menu className="h-5 w-5" />

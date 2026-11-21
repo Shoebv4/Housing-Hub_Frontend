@@ -233,7 +233,7 @@ const SuperAdminDashboard = () => {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -245,7 +245,7 @@ const SuperAdminDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
@@ -338,7 +338,7 @@ const SuperAdminDashboard = () => {
       >
         <form className="space-y-4" onSubmit={handleAdminSubmit}>
           {modalError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
               {modalError}
             </div>
           )}
@@ -377,7 +377,7 @@ const SuperAdminDashboard = () => {
             <select
               value={adminForm.societyId}
               onChange={(e) => setAdminForm({ ...adminForm, societyId: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="">Select a society</option>
@@ -405,7 +405,7 @@ const SuperAdminDashboard = () => {
       >
         <form className="space-y-4" onSubmit={handleSocietySubmit}>
           {modalError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
               {modalError}
             </div>
           )}

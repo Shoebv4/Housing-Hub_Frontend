@@ -167,7 +167,7 @@ const FlatsList = () => {
     <div>
       <h2 className="text-lg font-semibold mb-4">Flats</h2>
       {society && (
-        <div className="mb-4 p-3 bg-gray-50 rounded border text-gray-700">
+        <div className="mb-4 p-3 bg-gray-50 rounded-2xl border text-gray-700">
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
@@ -186,14 +186,14 @@ const FlatsList = () => {
         </div>
         <div className="flex flex-col">
           <label htmlFor="flat-status" className="font-semibold mb-1">Status</label>
-          <select id="flat-status" name="status" value={form.status} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
+          <select id="flat-status" name="status" value={form.status} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
             <option value="Pending">Pending</option>
             <option value="Registered">Registered</option>
           </select>
         </div>
         <div className="flex flex-col">
           <label htmlFor="flat-wingId" className="font-semibold mb-1">Wing</label>
-          <select id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
+          <select id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
             <option value="">Select Wing</option>
             {wings.map(w => (
               <option key={w.wingId} value={w.wingId}>{w.name}</option>
@@ -211,7 +211,7 @@ const FlatsList = () => {
       </form>
       <div className="flex flex-wrap gap-2 mb-4 items-center">
         <label className="font-medium">Filter by Wing:</label>
-        <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded px-2 py-1">
+        <select value={filterWing} onChange={e => setFilterWing(e.target.value)} className="border rounded-xl px-2 py-1">
           <option value="">All Wings</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
@@ -219,7 +219,7 @@ const FlatsList = () => {
         </select>
       </div>
       {error && <div className="text-red-600 mb-2">{error}</div>}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
         <table className="min-w-full border text-sm">
           <thead>
             <tr className="bg-gray-100">
@@ -238,7 +238,7 @@ const FlatsList = () => {
                 <td className="border px-4 py-2">{flat.floorNumber}</td>
                 <td className="border px-4 py-2">{flat.area}</td>
                 <td className="border px-4 py-2">
-                  <span className={`px-2 py-1 rounded text-xs font-semibold ${FLAT_STATUS[flat.status] || ''}`}>{flat.status}</span>
+                  <span className={`px-2 py-1 rounded-xl text-xs font-semibold ${FLAT_STATUS[flat.status] || ''}`}>{flat.status}</span>
                 </td>
                 <td className="border px-4 py-2">{wings.find(w => w.wingId === flat.wingId)?.name || '-'}</td>
                 <td className="border px-4 py-2 space-x-2">

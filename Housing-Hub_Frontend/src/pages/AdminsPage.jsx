@@ -170,7 +170,7 @@ const AdminsPage = () => {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <h1 className="text-2xl font-bold mb-6">Admins Management</h1>
-      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+      <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 mb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-2">
           <div className="flex flex-col">
             <label htmlFor="admin-name" className="font-semibold mb-1">Name</label>
@@ -195,7 +195,7 @@ const AdminsPage = () => {
           )}
           <div className="flex flex-col">
             <label htmlFor="admin-societyId" className="font-semibold mb-1">Society</label>
-            <select id="admin-societyId" name="societyId" value={form.societyId} onChange={handleChange} className="w-full border rounded px-2 py-1" required>
+            <select id="admin-societyId" name="societyId" value={form.societyId} onChange={handleChange} className="w-full border rounded-xl px-2 py-1" required>
               <option value="">Select Society</option>
               {societies.map(s => (
                 <option key={s.societyId} value={s.societyId}>{s.name}</option>
@@ -208,7 +208,7 @@ const AdminsPage = () => {
           )}
         </form>
         {error && <div className="text-red-600 mb-2">{error}</div>}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-xl border border-gray-200 [&_table]:border-0 [&_thead_tr>*]:border-t-0 [&_tr>*:first-child]:border-l-0 [&_tr>*:last-child]:border-r-0 [&_tbody_tr:last-child>*]:border-b-0">
           <table className="min-w-full border text-sm">
             <thead>
               <tr className="bg-gray-100">

@@ -69,7 +69,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 lg:hidden"
+            className="rounded-xl p-1.5 text-gray-500 hover:bg-gray-100 lg:hidden"
             aria-label="Close navigation"
           >
             <X className="h-5 w-5" />
@@ -89,7 +89,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
                     onClick={onClose}
                     aria-current={isActive ? 'page' : undefined}
                     className={clsx(
-                      'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200',
+                      'flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors duration-200',
                       isActive
                         ? 'bg-blue-50 text-blue-700 border-r-4 border-blue-700'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
@@ -108,7 +108,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
           <button
             type="button"
             onClick={openProfile}
-            className="mb-4 flex w-full items-center space-x-3 rounded-lg bg-gray-50 p-3 text-left transition-colors hover:bg-gray-100"
+            className="mb-4 flex w-full items-center space-x-3 rounded-xl bg-gray-50 p-3 text-left transition-colors hover:bg-gray-100"
             aria-label="View personal details"
           >
             <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
@@ -124,7 +124,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
 
           <button
             onClick={logout}
-            className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+            className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors duration-200"
           >
             <LogOut className="h-5 w-5" />
             <span className="font-medium">Logout</span>
@@ -190,7 +190,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
                 )}
 
                 {profile.flat ? (
-                  <div className="rounded-lg border border-gray-200 p-4">
+                  <div className="rounded-xl border border-gray-200 p-4">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-semibold text-gray-900">Assigned Flat</p>
                       <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">

@@ -21,14 +21,14 @@ const WingsFlatsPage = () => {
           {TABS.map(t => (
             <button
               key={t.value}
-              className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 ${tab === t.value ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
+              className={`px-4 py-2 rounded-t-xl font-semibold border-b-2 ${tab === t.value ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
               onClick={() => setTab(t.value)}
             >
               {t.label}
             </button>
           ))}
         </div>
-        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
           {tab === 'wings' && <WingsList />}
           {tab === 'flats' && <FlatsList />}
         </div>

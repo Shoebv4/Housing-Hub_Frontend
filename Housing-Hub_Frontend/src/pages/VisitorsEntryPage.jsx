@@ -122,7 +122,7 @@ const VisitorsEntryPage = () => {
                             <select
                                 value={newVisitor.flatId}
                                 onChange={e => setNewVisitor({ ...newVisitor, flatId: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 required
                             >
                                 <option value="">Select Flat</option>
@@ -136,7 +136,7 @@ const VisitorsEntryPage = () => {
                             <select
                                 value={newVisitor.visitorType}
                                 onChange={e => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 required
                             >
                                 <option value="guest">Guest</option>

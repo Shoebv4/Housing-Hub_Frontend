@@ -235,7 +235,7 @@ const ResidentDashboard = () => {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -247,7 +247,7 @@ const ResidentDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
@@ -277,7 +277,7 @@ const ResidentDashboard = () => {
               <p className="text-sm text-gray-500">No announcements for your flat yet.</p>
             ) : (
               visibleAnnouncements.map(announcement => (
-                <div key={announcement.aid} className="p-4 bg-gray-50 rounded-lg">
+                <div key={announcement.aid} className="p-4 bg-gray-50 rounded-xl">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h3 className="font-medium text-gray-900">{announcement.title}</h3>
                     <span className={`flex-shrink-0 px-2 py-1 text-xs font-medium rounded-full ${
@@ -311,7 +311,7 @@ const ResidentDashboard = () => {
               <p className="text-sm text-gray-500">No visitors recorded for your flat yet.</p>
             ) : (
               recentVisitors.map(visitor => (
-                <div key={visitor.visitorId} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
+                <div key={visitor.visitorId} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-xl">
                   <div className="flex min-w-0 items-center space-x-3">
                     <Users className="h-5 w-5 text-gray-400" />
                     <div className="min-w-0">
@@ -425,7 +425,7 @@ const ResidentDashboard = () => {
             <select
               value={newComplaint.category}
               onChange={(e) => setNewComplaint({ ...newComplaint, category: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="maintenance">Maintenance</option>
               <option value="plumbing">Plumbing</option>
@@ -441,7 +441,7 @@ const ResidentDashboard = () => {
               value={newComplaint.description}
               onChange={(e) => setNewComplaint({ ...newComplaint, description: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Detailed description of the issue..."
               required
             />

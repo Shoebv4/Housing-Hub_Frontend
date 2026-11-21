@@ -290,7 +290,7 @@ const AdminDashboard = () => {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -308,7 +308,7 @@ const AdminDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
@@ -344,8 +344,8 @@ const AdminDashboard = () => {
               <p className="text-sm text-gray-500">No recent activity yet.</p>
             ) : (
               visibleActivities.map(activity => (
-                <div key={activity.key} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className={`p-2 rounded-lg ${
+                <div key={activity.key} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-xl">
+                  <div className={`p-2 rounded-xl ${
                     activity.type === 'complaint'
                       ? 'bg-red-100 text-red-600'
                       : 'bg-purple-100 text-purple-600'
@@ -417,7 +417,7 @@ const AdminDashboard = () => {
         {loading ? (
           <p className="text-sm text-gray-500">Loading revenue...</p>
         ) : maxRevenue === 0 ? (
-          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+          <div className="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
             <p className="text-gray-500">No paid bookings recorded in the last six months.</p>
           </div>
         ) : (
@@ -428,7 +428,7 @@ const AdminDashboard = () => {
                   {month.total ? formatCurrency(month.total) : ''}
                 </span>
                 <div
-                  className="w-full rounded-t bg-blue-500"
+                  className="w-full rounded-t-lg bg-blue-500"
                   style={{ height: `${Math.max((month.total / maxRevenue) * 100, 2)}%` }}
                   title={`${month.label}: ${formatCurrency(month.total)}`}
                 />

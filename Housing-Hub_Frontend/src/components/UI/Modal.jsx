@@ -28,7 +28,7 @@ const Modal = ({
         />
         <div
           className={clsx(
-            'relative bg-white rounded-xl shadow-xl w-full transform transition-all',
+            'relative bg-white rounded-2xl shadow-xl w-full transform transition-all',
             sizeClasses[size]
           )}
         >
