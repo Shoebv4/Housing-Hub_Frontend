@@ -325,21 +325,29 @@ const ResidentDashboard = () => {
       <Card>
         <h2 className="text-lg font-semibold tracking-tight text-ink mb-6">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/amenities')}>
-            <Calendar className="h-5 w-5 mb-1" />
-            Book Amenity
+          <Button variant="primary" className="h-16" onClick={() => navigate('/amenities')}>
+            <span className="flex flex-col items-center gap-1">
+              <Calendar className="h-5 w-5 shrink-0" />
+              Book Amenity
+            </span>
           </Button>
-          <Button variant="secondary" className="h-16 flex-col" onClick={() => setShowBillsModal(true)}>
-            <FileText className="h-5 w-5 mb-1" />
-            View Bills
+          <Button variant="secondary" className="h-16" onClick={() => setShowBillsModal(true)}>
+            <span className="flex flex-col items-center gap-1">
+              <FileText className="h-5 w-5 shrink-0" />
+              View Bills
+            </span>
           </Button>
-          <Button variant="warning" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
-            <MessageSquare className="h-5 w-5 mb-1" />
-            My Complaints
+          <Button variant="warning" className="h-16" onClick={() => navigate('/complaints')}>
+            <span className="flex flex-col items-center gap-1">
+              <MessageSquare className="h-5 w-5 shrink-0" />
+              My Complaints
+            </span>
           </Button>
-          <Button variant="success" className="h-16 flex-col" onClick={() => navigate('/visitors')}>
-            <Users className="h-5 w-5 mb-1" />
-            Visitors
+          <Button variant="success" className="h-16" onClick={() => navigate('/visitors')}>
+            <span className="flex flex-col items-center gap-1">
+              <Users className="h-5 w-5 shrink-0" />
+              Visitors
+            </span>
           </Button>
         </div>
       </Card>

@@ -357,34 +357,46 @@ const AdminDashboard = () => {
         <Card>
           <h2 className="text-lg font-semibold tracking-tight text-ink mb-6">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/residents')}>
-              <Users className="h-5 w-5 mb-1" />
-              Add Resident
+            <Button variant="primary" className="h-16" onClick={() => navigate('/residents')}>
+              <span className="flex flex-col items-center gap-1">
+                <Users className="h-5 w-5 shrink-0" />
+                Add Resident
+              </span>
             </Button>
-            <Button variant="secondary" className="h-16 flex-col" onClick={() => navigate('/security-staff')}>
-              <ShieldCheck className="h-5 w-5 mb-1" />
-              Manage Staff
+            <Button variant="secondary" className="h-16" onClick={() => navigate('/security-staff')}>
+              <span className="flex flex-col items-center gap-1">
+                <ShieldCheck className="h-5 w-5 shrink-0" />
+                Manage Staff
+              </span>
             </Button>
-            <Button variant="secondary" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
-              <MessageSquare className="h-5 w-5 mb-1" />
-              View Complaints
+            <Button variant="secondary" className="h-16" onClick={() => navigate('/complaints')}>
+              <span className="flex flex-col items-center gap-1">
+                <MessageSquare className="h-5 w-5 shrink-0" />
+                View Complaints
+              </span>
             </Button>
-            <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/visitors')}>
-              <UserCheck className="h-5 w-5 mb-1" />
-              Visitors
+            <Button variant="primary" className="h-16" onClick={() => navigate('/visitors')}>
+              <span className="flex flex-col items-center gap-1">
+                <UserCheck className="h-5 w-5 shrink-0" />
+                Visitors
+              </span>
             </Button>
             <Button
               variant="success"
-              className="h-16 flex-col"
+              className="h-16"
               onClick={handleExportReport}
               disabled={exporting}
             >
-              <FileText className="h-5 w-5 mb-1" />
-              Generate Bills
+              <span className="flex flex-col items-center gap-1">
+                <FileText className="h-5 w-5 shrink-0" />
+                Generate Bills
+              </span>
             </Button>
-            <Button variant="warning" className="h-16 flex-col" onClick={handleOpenBills}>
-              <Wrench className="h-5 w-5 mb-1" />
-              Maintenance
+            <Button variant="warning" className="h-16" onClick={handleOpenBills}>
+              <span className="flex flex-col items-center gap-1">
+                <Wrench className="h-5 w-5 shrink-0" />
+                Maintenance
+              </span>
             </Button>
           </div>
         </Card>
