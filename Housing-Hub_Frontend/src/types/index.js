@@ -121,17 +121,36 @@
 
 /**
  * @typedef {Object} MaintenanceBill
- * @property {number} mbId
- * @property {number} flatId
- * @property {number} mfid
- * @property {string} periodStart
- * @property {string} periodEnd
- * @property {string} dueDate
- * @property {number} amount
+ * @property {number} mbid
+ * @property {number} [flatId]
+ * @property {number} [mfid]
+ * @property {string} [periodStart]
+ * @property {string} [periodEnd]
+ * @property {string} [dueDate]
+ * @property {number} [amount]
  * @property {string} [paidDate]
- * @property {boolean} paid
+ * @property {boolean} [paid]
  * @property {string} [transactionId]
  * @property {Flat} [flat]
+ */
+
+/**
+ * @typedef {Object} MaintenanceFee
+ * @property {number} mfid
+ * @property {number} [wingId]
+ * @property {number} [ratePerSqft]
+ * @property {string} [effectiveFrom]
+ * @property {string} [effectiveTo]
+ * @property {boolean} [isActive]
+ * @property {number} [createdBy]
+ */
+
+/**
+ * @typedef {Object} GenerateBillsResult
+ * @property {number} generatedCount
+ * @property {number} skippedCount
+ * @property {number} ignoredCount
+ * @property {number} totalAmount
  */
 
 /**

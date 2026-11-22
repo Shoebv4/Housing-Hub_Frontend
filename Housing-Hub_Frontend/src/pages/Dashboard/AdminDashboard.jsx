@@ -12,13 +12,13 @@ import {
   UserCheck
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Badge, Button, Card, Modal, PageHeader, Table } from '../../components/UI';
+import { Alert, Button, Card, PageHeader } from '../../components/UI';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
 import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
-import { formatCurrency, formatDate, parseDate, timeAgo } from '../../utils/format';
+import { formatCurrency, parseDate, timeAgo } from '../../utils/format';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -33,9 +33,6 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
   const [showAllActivities, setShowAllActivities] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const [showBillsModal, setShowBillsModal] = useState(false);
-  const [bills, setBills] = useState([]);
-  const [billsLoading, setBillsLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,12 +120,6 @@ const AdminDashboard = () => {
     () => new Set(societyFlats.map(flat => flat.flatId)),
     [societyFlats]
   );
-
-  const flatNumberById = useMemo(() => {
-    const map = new Map();
-    societyFlats.forEach(flat => map.set(flat.flatId, flat.flatNumber));
-    return map;
-  }, [societyFlats]);
 
   const societyResidents = useMemo(
     () => users.filter(account => account.role === 'resident' && account.societyId === societyId),
@@ -247,22 +238,6 @@ const AdminDashboard = () => {
       setError(err.message || 'Failed to generate the billing report.');
     } finally {
       setExporting(false);
-    }
-  };
-
-  const handleOpenBills = async () => {
-    setShowBillsModal(true);
-    setBillsLoading(true);
-    setError('');
-
-    try {
-      const allBills = await apiGet('/maintenance/bills');
-      setBills((Array.isArray(allBills) ? allBills : []).filter(bill => flatIds.has(bill.flatId)));
-    } catch (err) {
-      setBills([]);
-      setError(err.message || 'Failed to load maintenance bills.');
-    } finally {
-      setBillsLoading(false);
     }
   };
 
@@ -392,7 +367,7 @@ const AdminDashboard = () => {
                 Billing Report
               </span>
             </Button>
-            <Button variant="warning" className="h-16" onClick={handleOpenBills}>
+            <Button variant="warning" className="h-16" onClick={() => navigate('/maintenance')}>
               <span className="flex flex-col items-center gap-1">
                 <Wrench className="h-5 w-5 shrink-0" />
                 Maintenance
@@ -447,49 +422,6 @@ const AdminDashboard = () => {
           </div>
         )}
       </Card>
-
-      {/* Maintenance Bills Modal */}
-      <Modal
-        isOpen={showBillsModal}
-        onClose={() => setShowBillsModal(false)}
-        title="Maintenance Bills"
-        size="lg"
-      >
-        {billsLoading ? (
-          <p className="text-sm text-faint">Loading maintenance bills...</p>
-        ) : bills.length === 0 ? (
-          <p className="text-sm text-faint">No maintenance bills recorded for your society yet.</p>
-        ) : (
-          <Table headers={[
-            { label: 'Flat No.', align: 'center' },
-            { label: 'Period', align: 'left' },
-            { label: 'Due Date', align: 'center' },
-            { label: 'Amount', align: 'right' },
-            { label: 'Status', align: 'center' }
-          ]}>
-            {bills.map(bill => (
-              <tr key={bill.mbid}>
-                <td className="font-medium text-ink text-center">
-                  {flatNumberById.get(bill.flatId) || '—'}
-                </td>
-                <td className="text-muted">
-                  {formatDate(bill.periodStart)} – {formatDate(bill.periodEnd)}
-                </td>
-                <td className="text-muted text-center">{formatDate(bill.dueDate)}</td>
-                <td className="text-ink text-right">{formatCurrency(bill.amount)}</td>
-                <td className="text-center">
-                  <Badge tone={bill.paid ? 'success' : 'warning'}>
-                    {bill.paid ? 'Paid' : 'Pending'}
-                  </Badge>
-                </td>
-              </tr>
-            ))}
-          </Table>
-        )}
-        <div className="flex justify-end pt-4">
-          <Button variant="secondary" onClick={() => setShowBillsModal(false)}>Close</Button>
-        </div>
-      </Modal>
     </div>
   );
 };
