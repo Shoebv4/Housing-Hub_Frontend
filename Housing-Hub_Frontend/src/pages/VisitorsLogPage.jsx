@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
 import { useLiveEvents } from '../hooks/useLiveEvents';
 import { Alert, Badge, PageHeader, Table } from '../components/UI';
+import { formatVisitorType } from '../utils/format';
 
 const VisitorsLogPage = () => {
   const { user } = useAuth();
@@ -80,11 +81,20 @@ const VisitorsLogPage = () => {
 
   return (
     <div className="page-container">
-      <PageHeader title="Visitors Log" subtitle="Browse the visitor history for your society" />
+      <PageHeader
+        title={user.role === 'security_staff' ? 'Visitor Log' : 'Visitors'}
+        subtitle={
+          user.role === 'resident'
+            ? 'See visitors registered for your flat'
+            : user.role === 'security_staff'
+              ? 'Review recorded visitor entries and exits'
+              : 'Review visitor activity across your society'
+        }
+      />
       {error && <Alert tone="danger">{error}</Alert>}
         <Table headers={[
           { label: 'Name', align: 'left' },
-          { label: 'Flat', align: 'center' },
+          { label: 'Flat No.', align: 'center' },
           { label: 'Purpose', align: 'left' },
           { label: 'Entry Time', align: 'left' },
           { label: 'Exit Time', align: 'left' },
@@ -101,14 +111,22 @@ const VisitorsLogPage = () => {
               <td>{visitor.exitTime ? new Date(visitor.exitTime).toLocaleString() : '-'}</td>
               <td className="text-center">{visitor.vehicleNo || '-'}</td>
               <td className="text-center">
-                <Badge tone="neutral">{visitor.visitorType}</Badge>
+                <Badge tone="neutral">{formatVisitorType(visitor.visitorType)}</Badge>
               </td>
               <td>{visitor.recordedByName || '-'}</td>
             </tr>
           ))}
         </Table>
         {loading && <div className="text-muted">Loading...</div>}
-        {!loading && visitors.length === 0 && <div className="text-muted">No visitors found.</div>}
+        {!loading && visitors.length === 0 && (
+          <div className="text-muted">
+            {user.role === 'resident'
+              ? 'No visitors recorded for your flat yet'
+              : user.role === 'security_staff'
+                ? 'No visitor records yet'
+                : 'No visitor activity recorded yet'}
+          </div>
+        )}
     </div>
   );
 };

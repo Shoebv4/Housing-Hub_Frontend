@@ -38,20 +38,20 @@ const LoginPage = () => {
           <div className="mb-4 flex items-center justify-center">
             <Building2 className="h-12 w-12 text-accent" />
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink">HousingHub</h2>
-          <p className="mt-2 text-sm text-muted">Sign in to your account</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">Welcome Back</h2>
+          <p className="mt-2 text-sm text-muted">Sign in to your HousingHub account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && <Alert tone="danger">{error}</Alert>}
 
           <div className="relative flex flex-col">
-            <label htmlFor="login-email" className="field-label">Email</label>
+            <label htmlFor="login-email" className="field-label">Email address</label>
             <Mail className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="login-email"
               type="email"
-              placeholder="Enter your email"
+              placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10"
@@ -82,13 +82,13 @@ const LoginPage = () => {
           <p className="text-sm text-muted">
             Don't have an account?{' '}
             <Link to="/register" className="font-medium text-accent hover:text-accent">
-              Register here
+              Register as a resident
             </Link>
           </p>
           <p className="text-sm text-muted">
-            New Society?{' '}
+            Setting up a new society?{' '}
             <Link to="/register-society" className="font-medium text-accent hover:text-accent">
-              Register Society
+              Register a society
             </Link>
           </p>
         </div>

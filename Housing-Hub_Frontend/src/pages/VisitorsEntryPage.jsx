@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
 import { Alert, Badge, Button, Card, Input, Modal, PageHeader, Select, Table } from '../components/UI';
+import { formatVisitorType } from '../utils/format';
 
 const emptyVisitor = {
     name: '',
@@ -87,25 +88,27 @@ const VisitorsEntryPage = () => {
         setLoading(false);
     };
 
+    const currentVisitors = visitors.filter(visitor => !visitor.exitTime);
+
     return (
         <div className="page-container">
             <PageHeader
                 title="Visitor Entry"
-                subtitle="Register and track visitor entries"
-                actions={<Button onClick={() => setShowModal(true)}>New Visitor Entry</Button>}
+                subtitle="Register visitors and record their exit"
+                actions={<Button onClick={() => setShowModal(true)}>Register Visitor</Button>}
             />
             <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="New Visitor Entry" size="lg">
                 <form onSubmit={handleVisitorEntry} className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
-                            label="Visitor Name"
+                            label="Visitor name"
                             value={newVisitor.name}
                             onChange={e => setNewVisitor({ ...newVisitor, name: e.target.value })}
                             placeholder="Enter visitor's full name"
                             required
                         />
                         <Input
-                            label="Phone Number"
+                            label="Phone number"
                             value={newVisitor.phone}
                             onChange={e => setNewVisitor({ ...newVisitor, phone: e.target.value })}
                             placeholder="Enter phone number"
@@ -125,7 +128,7 @@ const VisitorsEntryPage = () => {
                             ))}
                         </Select>
                         <Select
-                            label="Visitor Type"
+                            label="Visitor type"
                             value={newVisitor.visitorType}
                             onChange={e => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
                             required
@@ -137,14 +140,14 @@ const VisitorsEntryPage = () => {
                         </Select>
                     </div>
                     <Input
-                        label="Purpose of Visit"
+                        label="Purpose of visit"
                         value={newVisitor.purpose}
                         onChange={e => setNewVisitor({ ...newVisitor, purpose: e.target.value })}
                         placeholder="Brief description of visit purpose"
                         required
                     />
                     <Input
-                        label="Vehicle Number (Optional)"
+                        label="Vehicle number (optional)"
                         value={newVisitor.vehicleNo}
                         onChange={e => setNewVisitor({ ...newVisitor, vehicleNo: e.target.value })}
                         placeholder="e.g., MH01AB1234"
@@ -156,7 +159,7 @@ const VisitorsEntryPage = () => {
                             Cancel
                         </Button>
                         <Button type="submit" variant="primary" disabled={loading}>
-                            Register Entry
+                            Register Visitor
                         </Button>
                     </div>
                 </form>
@@ -165,7 +168,7 @@ const VisitorsEntryPage = () => {
                 <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Current Visitors</h2>
                 <Table headers={[
                     { label: 'Name', align: 'left' },
-                    { label: 'Flat', align: 'center' },
+                    { label: 'Flat No.', align: 'center' },
                     { label: 'Purpose', align: 'left' },
                     { label: 'Entry Time', align: 'left' },
                     { label: 'Vehicle', align: 'center' },
@@ -173,7 +176,7 @@ const VisitorsEntryPage = () => {
                     { label: 'Actions', align: 'center' },
                     { label: 'Recorded By', align: 'left' }
                 ]}>
-                    {visitors.filter(v => !v.exitTime).map(visitor => (
+                    {currentVisitors.map(visitor => (
                         <tr key={visitor.visitorId}>
                             <td className="font-medium text-ink">{visitor.name}</td>
                             <td className="text-center">{flats.find(f => f.flatId === visitor.flatId)?.flatNumber || '-'}</td>
@@ -181,7 +184,7 @@ const VisitorsEntryPage = () => {
                             <td>{visitor.entryTime ? new Date(visitor.entryTime).toLocaleString() : '-'}</td>
                             <td className="text-center">{visitor.vehicleNo || '-'}</td>
                             <td className="text-center">
-                                <Badge tone="neutral">{visitor.visitorType}</Badge>
+                                <Badge tone="neutral">{formatVisitorType(visitor.visitorType)}</Badge>
                             </td>
                             <td className="text-center">
                                 <Button
@@ -205,6 +208,9 @@ const VisitorsEntryPage = () => {
                             <td>{visitor.recordedByName || '-'}</td>
                         </tr>
                     ))}
+                    {currentVisitors.length === 0 && (
+                        <tr><td colSpan={8} className="text-center text-muted">No visitors are currently inside</td></tr>
+                    )}
                 </Table>
             </Card>
         </div>

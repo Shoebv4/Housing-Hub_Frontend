@@ -132,19 +132,19 @@ const RegisterPage = () => {
             <Building2 className="h-12 w-12 text-accent" />
           </div>
           <h2 className="text-2xl font-semibold tracking-tight text-ink">Register Resident</h2>
-          <p className="mt-2 text-sm text-muted">Join your society community</p>
+          <p className="mt-2 text-sm text-muted">Join your society and connect your flat</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && <Alert tone="danger">{error}</Alert>}
           <div className="relative flex flex-col">
-            <label htmlFor="register-name" className="field-label">Full Name</label>
+            <label htmlFor="register-name" className="field-label">Full name</label>
             <User className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-name"
               name="name"
               type="text"
-              placeholder="Full Name"
+              placeholder="Full name"
               value={formData.name}
               onChange={handleChange}
               className="pl-10"
@@ -153,13 +153,13 @@ const RegisterPage = () => {
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-email" className="field-label">Email Address</label>
+            <label htmlFor="register-email" className="field-label">Email address</label>
             <Mail className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-email"
               name="email"
               type="email"
-              placeholder="Email Address"
+              placeholder="Email address"
               value={formData.email}
               onChange={handleChange}
               className="pl-10"
@@ -169,13 +169,13 @@ const RegisterPage = () => {
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-phone" className="field-label">Phone Number</label>
+            <label htmlFor="register-phone" className="field-label">Phone number</label>
             <Phone className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-phone"
               name="phone"
               type="tel"
-              placeholder="Phone Number"
+              placeholder="Phone number"
               value={formData.phone}
               onChange={handleChange}
               className="pl-10"
@@ -188,20 +188,20 @@ const RegisterPage = () => {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Select
-              label="Society Name"
+              label="Society"
               id="register-societyId"
               name="societyId"
               value={formData.societyId}
               onChange={handleChange}
               required
             >
-              <option value="">Select Society</option>
+              <option value="">Select a society</option>
               {societies.map(s => (
                 <option key={s.societyId} value={s.societyId}>{s.name}</option>
               ))}
             </Select>
             <Select
-              label="Flat Number"
+              label="Flat"
               id="register-flatId"
               name="flatId"
               value={formData.flatId}
@@ -209,7 +209,7 @@ const RegisterPage = () => {
               required
               disabled={!formData.societyId}
             >
-              <option value="">Select Flat</option>
+              <option value="">Select a flat</option>
               {flats
                 .filter(f => f.status === 'Pending')
                 .map(f => (
@@ -235,13 +235,13 @@ const RegisterPage = () => {
           </div>
 
           <div className="relative flex flex-col">
-            <label htmlFor="register-confirmPassword" className="field-label">Confirm Password</label>
+            <label htmlFor="register-confirmPassword" className="field-label">Confirm password</label>
             <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
             <Input
               id="register-confirmPassword"
               name="confirmPassword"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="Confirm password"
               value={formData.confirmPassword}
               onChange={handleChange}
               className="pl-10"
@@ -250,7 +250,7 @@ const RegisterPage = () => {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Creating...' : 'Create Account'}
           </Button>
         </form>
 
@@ -258,7 +258,7 @@ const RegisterPage = () => {
           <p className="text-sm text-muted">
             Already have an account?{' '}
             <Link to="/login" className="font-medium text-accent hover:text-accent">
-              Sign in here
+              Sign in
             </Link>
           </p>
         </div>

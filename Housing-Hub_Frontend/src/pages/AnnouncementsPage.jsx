@@ -230,7 +230,12 @@ const AnnouncementsPage = () => {
 
     return (
         <div className="page-container">
-            <PageHeader title="Announcements Management" subtitle="Publish announcements to residents" />
+            <PageHeader
+                title="Announcements"
+                subtitle={user.role === 'admin'
+                    ? 'Publish and manage announcements for residents'
+                    : 'Read the latest announcements for your home'}
+            />
             <Card>
                 {user.role === 'admin' && (
                     <form onSubmit={handleSubmit} className="form-row">
@@ -254,9 +259,9 @@ const AnnouncementsPage = () => {
                         </div>
                         <label className="flex items-center gap-2 text-sm text-ink">
                             <input type="checkbox" name="isGlobal" checked={form.isGlobal || false} onChange={handleChange} />
-                            Send to whole society
+                            Send to entire society
                         </label>
-                        <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+                        <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Save Changes' : 'Publish'}</Button>
                         {editingId && (
                             <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
                         )}
@@ -269,7 +274,7 @@ const AnnouncementsPage = () => {
                     { label: 'Wings', align: 'left' },
                     { label: 'Flats', align: 'left' },
                     { label: 'Created At', align: 'center' },
-                    { label: 'Actions', align: 'center' }
+                    ...(user.role === 'admin' ? [{ label: 'Actions', align: 'center' }] : [])
                 ]}>
                     {announcements.map(a => (
                         <tr key={a.aid}>
@@ -277,14 +282,14 @@ const AnnouncementsPage = () => {
                             <td>{a.content}</td>
                             <td>{
                                 a.isGlobal
-                                    ? 'All Wings'
+                                    ? 'All wings'
                                     : Array.isArray(a.targetWingIds) && a.targetWingIds.length > 0
                                         ? a.targetWingIds.map(id => wings.find(w => String(w.wingId) === String(id))?.name).filter(Boolean).join(', ')
                                         : '-'
                             }</td>
                             <td>{
                                 a.isGlobal
-                                    ? 'All Flats'
+                                    ? 'All flats'
                                     : Array.isArray(a.targetFlatIds) && a.targetFlatIds.length > 0
                                         ? a.targetFlatIds.map(id => flats.find(f => String(f.flatId) === String(id))?.flatNumber).filter(Boolean).join(', ')
                                         : '-'
@@ -305,20 +310,24 @@ const AnnouncementsPage = () => {
                                     })()
                                     : '-'
                             }</td>
-                            <td>
-                                <div className="flex flex-wrap items-center justify-center gap-2">
-                                    {user.role === 'admin' && (
-                                        <>
-                                            <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
-                                            <Button type="button" variant="danger" onClick={() => handleDelete(a.aid)} size="sm">Delete</Button>
-                                        </>
-                                    )}
-                                </div>
-                            </td>
+                            {user.role === 'admin' && (
+                                <td>
+                                    <div className="flex flex-wrap items-center justify-center gap-2">
+                                        <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
+                                        <Button type="button" variant="danger" onClick={() => handleDelete(a.aid)} size="sm">Delete</Button>
+                                    </div>
+                                </td>
+                            )}
                         </tr>
                     ))}
                     {announcements.length === 0 && (
-                        <tr><td colSpan={6} className="text-center text-muted">No announcements found.</td></tr>
+                        <tr>
+                            <td colSpan={user.role === 'admin' ? 6 : 5} className="text-center text-muted">
+                                {user.role === 'admin'
+                                    ? 'No announcements have been published yet'
+                                    : 'No announcements for your society yet'}
+                            </td>
+                        </tr>
                     )}
                 </Table>
             </Card>

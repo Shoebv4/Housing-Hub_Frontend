@@ -274,30 +274,35 @@ const AmenitiesPage = () => {
 
     return (
         <div className="page-container">
-            <PageHeader title="Amenities & Bookings" subtitle="Manage amenities and resident bookings" />
-            <Tabs
-                tabs={user.role === 'admin' ? [
-                    { value: 'amenities', label: 'Amenities' },
-                    { value: 'bookings', label: 'Bookings' }
-                ] : [
-                    { value: 'amenities', label: 'Amenities' }
-                ]}
-                value={tab}
-                onChange={setTab}
-                ariaLabel="Amenities views"
+            <PageHeader
+                title={user.role === 'admin' ? 'Amenity Management' : 'Amenities'}
+                subtitle={user.role === 'admin'
+                    ? 'Manage amenities and review resident bookings'
+                    : 'Book a society amenity and track your bookings'}
             />
+            {user.role === 'admin' && (
+                <Tabs
+                    tabs={[
+                        { value: 'amenities', label: 'Amenities' },
+                        { value: 'bookings', label: 'Bookings' }
+                    ]}
+                    value={tab}
+                    onChange={setTab}
+                    ariaLabel="Amenity views"
+                />
+            )}
             <Card>
                 {tab === 'amenities' && (
                     <>
                         {user.role === 'admin' && (
                             <form onSubmit={handleSubmit} className="form-row">
-                                <Input label="Name" name="name" id="name" value={form.name} onChange={handleChange} placeholder="Name" required />
+                                <Input label="Amenity name" name="name" id="name" value={form.name} onChange={handleChange} placeholder="Amenity name" required />
                                 <Input label="Description" name="description" id="description" value={form.description} onChange={handleChange} placeholder="Description" />
-                                <Input label="Hourly Rate" name="hourlyRate" id="hourlyRate" value={form.hourlyRate} onChange={handleChange} placeholder="Hourly Rate" type="number" min="0" step="0.01" required />
-                                <Input label="Max Capacity" name="maxCapacity" id="maxCapacity" value={form.maxCapacity} onChange={handleChange} placeholder="Max Capacity" type="number" min="1" required />
-                                <Input label="Opening Time" name="openingTime" id="openingTime" value={form.openingTime} onChange={handleChange} type="time" required />
-                                <Input label="Closing Time" name="closingTime" id="closingTime" value={form.closingTime} onChange={handleChange} type="time" required />
-                                <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+                                <Input label="Hourly rate" name="hourlyRate" id="hourlyRate" value={form.hourlyRate} onChange={handleChange} placeholder="Hourly rate" type="number" min="0" step="0.01" required />
+                                <Input label="Max capacity" name="maxCapacity" id="maxCapacity" value={form.maxCapacity} onChange={handleChange} placeholder="Max capacity" type="number" min="1" required />
+                                <Input label="Opening time" name="openingTime" id="openingTime" value={form.openingTime} onChange={handleChange} type="time" required />
+                                <Input label="Closing time" name="closingTime" id="closingTime" value={form.closingTime} onChange={handleChange} type="time" required />
+                                <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update Amenity' : 'Add Amenity'}</Button>
                                 {editingId && (
                                     <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
                                 )}
@@ -307,13 +312,11 @@ const AmenitiesPage = () => {
                         <Table headers={[
                             { label: 'Name', align: 'left' },
                             { label: 'Description', align: 'left' },
-                            { label: 'Hourly Rate', align: 'right' },
-                            { label: 'Max Capacity', align: 'center' },
-                            { label: 'Opening Time', align: 'center' },
-                            { label: 'Closing Time', align: 'center' },
-                            user.role === 'admin'
-                                ? { label: 'Actions', align: 'center' }
-                                : { label: 'Book', align: 'center' }
+                            { label: 'Hourly rate', align: 'right' },
+                            { label: 'Capacity', align: 'center' },
+                            { label: 'Opens', align: 'center' },
+                            { label: 'Closes', align: 'center' },
+                            { label: 'Actions', align: 'center' }
                         ]}>
                             {amenities.map(a => (
                                 <tr key={a.amenityId}>
@@ -339,10 +342,10 @@ const AmenitiesPage = () => {
                                             {showBooking === a.amenityId && (
                                                 <form onSubmit={handleBookingSubmit} className="mt-3 space-y-3 rounded-xl bg-surface-muted p-3">
                                                     <Input label="Date" name="date" id="date" type="date" value={bookingForm.date} onChange={handleBookingChange} required />
-                                                    <Input label="Start Time" name="startTime" id="startTime" type="time" value={bookingForm.startTime} onChange={handleBookingChange} required />
-                                                    <Input label="End Time" name="endTime" id="endTime" type="time" value={bookingForm.endTime} onChange={handleBookingChange} required />
+                                                    <Input label="Start time" name="startTime" id="startTime" type="time" value={bookingForm.startTime} onChange={handleBookingChange} required />
+                                                    <Input label="End time" name="endTime" id="endTime" type="time" value={bookingForm.endTime} onChange={handleBookingChange} required />
                                                     <div className="flex gap-2">
-                                                        <Button type="submit" variant="primary" size="sm" disabled={bookingLoading}>Confirm</Button>
+                                                        <Button type="submit" variant="primary" size="sm" disabled={bookingLoading}>Confirm Booking</Button>
                                                         <Button type="button" variant="secondary" size="sm" onClick={closeBooking}>Cancel</Button>
                                                     </div>
                                                     {bookingError && <p className="text-xs text-red-600 dark:text-red-400">{bookingError}</p>}
@@ -353,18 +356,20 @@ const AmenitiesPage = () => {
                                 </tr>
                             ))}
                             {amenities.length === 0 && (
-                                <tr><td colSpan={7} className="text-center text-muted">No amenities found.</td></tr>
+                                <tr><td colSpan={7} className="text-center text-muted">
+                                    {user.role === 'admin' ? 'No amenities have been added yet' : 'No amenities are available yet'}
+                                </td></tr>
                             )}
                         </Table>
                         {user.role === 'resident' && (
                             <div className="mt-8 space-y-3">
-                                <h2 className="text-lg font-semibold tracking-tight text-ink">My Amenity Bookings</h2>
+                                <h2 className="text-lg font-semibold tracking-tight text-ink">My Bookings</h2>
                                 {bookingError && <Alert tone="danger">{bookingError}</Alert>}
                                 <Table headers={[
                                     { label: 'Amenity', align: 'left' },
                                     { label: 'Date', align: 'center' },
-                                    { label: 'Start Time', align: 'center' },
-                                    { label: 'End Time', align: 'center' },
+                                    { label: 'Start time', align: 'center' },
+                                    { label: 'End time', align: 'center' },
                                     { label: 'Status', align: 'center' },
                                     { label: 'Paid', align: 'center' },
                                     { label: 'Transaction ID', align: 'left' },
@@ -447,7 +452,7 @@ const AmenitiesPage = () => {
                                         );
                                     })}
                                     {bookings.length === 0 && (
-                                        <tr><td colSpan={9} className="text-center text-muted">No bookings found.</td></tr>
+                                        <tr><td colSpan={9} className="text-center text-muted">You haven't booked an amenity yet</td></tr>
                                     )}
                                 </Table>
                             </div>
@@ -456,15 +461,14 @@ const AmenitiesPage = () => {
                 )}
                 {tab === 'bookings' && user.role === 'admin' && (
                     <div className="space-y-4">
-                        <h2 className="text-lg font-semibold tracking-tight text-ink">Amenity Bookings</h2>
                         {bookingError && <Alert tone="danger">{bookingError}</Alert>}
                         <Table headers={[
                             { label: 'Booking ID', align: 'center' },
                             { label: 'Amenity', align: 'left' },
-                            { label: 'User Name', align: 'left' },
+                            { label: 'Booked By', align: 'left' },
                             { label: 'Date', align: 'center' },
-                            { label: 'Start Time', align: 'center' },
-                            { label: 'End Time', align: 'center' },
+                            { label: 'Start time', align: 'center' },
+                            { label: 'End time', align: 'center' },
                             { label: 'Status', align: 'center' },
                             { label: 'Paid', align: 'center' },
                             { label: 'Transaction ID', align: 'left' },
@@ -507,7 +511,7 @@ const AmenitiesPage = () => {
                                 );
                             })}
                             {bookings.length === 0 && (
-                                <tr><td colSpan={11} className="text-center text-muted">No bookings found.</td></tr>
+                                <tr><td colSpan={11} className="text-center text-muted">No resident bookings yet</td></tr>
                             )}
                         </Table>
                     </div>

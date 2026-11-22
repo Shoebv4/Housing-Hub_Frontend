@@ -148,18 +148,19 @@ const ComplaintsList = () => {
         Rejected: 'danger'
     };
     const statusTone = status => STATUS_TONES[status] || 'neutral';
+    const statusLabel = status => (status === 'InProgress' ? 'In Progress' : status);
 
     const headers = [
         { label: 'Title', align: 'left' },
         { label: 'Category', align: 'center' },
         { label: 'Description', align: 'left' },
         ...(user.role === 'admin' ? [
-            { label: 'Flat', align: 'center' },
+            { label: 'Flat No.', align: 'center' },
             { label: 'Wing', align: 'center' }
         ] : []),
         { label: 'Status', align: 'center' },
         { label: 'Created At', align: 'center' },
-        { label: 'Closed At', align: 'center' },
+        { label: 'Resolved At', align: 'center' },
         ...(user.role === 'admin' ? [
             { label: 'Raised By', align: 'left' },
             { label: 'Actions', align: 'center' }
@@ -168,11 +169,10 @@ const ComplaintsList = () => {
 
     return (
         <div>
-            <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Complaints</h2>
             {user.role === 'admin' && (
                 <div className="mb-4 w-full sm:w-56">
-                    <Select label="Filter by Wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
-                        <option value="">All Wings</option>
+                    <Select label="Filter by wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
+                        <option value="">All wings</option>
                         {wings.map(w => (
                             <option key={w.wingId} value={w.wingId}>{w.name}</option>
                         ))}
@@ -188,7 +188,7 @@ const ComplaintsList = () => {
                         ))}
                     </Select>
                     <Input label="Description" id="complaint-description" name="description" value={form.description} onChange={handleChange} placeholder="Description" required />
-                    <Button type="submit" variant="primary" disabled={loading}>Add</Button>
+                    <Button type="submit" variant="primary" disabled={loading}>Submit Complaint</Button>
                 </form>
             )}
             {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
@@ -203,7 +203,7 @@ const ComplaintsList = () => {
                             {user.role === 'admin' && <td className="text-center">{flat?.flatNumber || '-'}</td>}
                             {user.role === 'admin' && <td className="text-center">{flat?.wing?.name || '-'}</td>}
                             <td className="text-center">
-                                <Badge tone={statusTone(complaint.status)}>{complaint.status}</Badge>
+                                <Badge tone={statusTone(complaint.status)}>{statusLabel(complaint.status)}</Badge>
                             </td>
                             <td className="text-center text-muted">{
                                 complaint.createdAt ? (() => {
@@ -236,7 +236,7 @@ const ComplaintsList = () => {
                                         onChange={e => handleStatusUpdate(complaint.complaintId, e.target.value)}
                                     >
                                         <option value="Pending">Pending</option>
-                                        <option value="InProgress">InProgress</option>
+                                        <option value="InProgress">In Progress</option>
                                         <option value="Resolved">Resolved</option>
                                         <option value="Rejected">Rejected</option>
                                     </Select>
@@ -246,7 +246,13 @@ const ComplaintsList = () => {
                     );
                 })}
                 {complaints.length === 0 && (
-                    <tr><td colSpan={user.role === 'admin' ? 10 : 7} className="text-center text-muted">No complaints found.</td></tr>
+                    <tr>
+                        <td colSpan={user.role === 'admin' ? 10 : 6} className="text-center text-muted">
+                            {user.role === 'admin'
+                                ? (filterWing ? 'No complaints match the selected wing' : 'No complaints have been raised yet')
+                                : "You haven't raised any complaints yet"}
+                        </td>
+                    </tr>
                 )}
             </Table>
         </div>

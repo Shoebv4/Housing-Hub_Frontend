@@ -55,7 +55,7 @@ const RegisterSocietyPage = () => {
       return;
     }
     if (!/^\d{1,10}$/.test(formData.pincode)) {
-      setError('Pincode must be numeric and up to 10 digits');
+      setError('PIN code must be numeric and up to 10 digits');
       setLoading(false);
       return;
     }
@@ -146,7 +146,7 @@ const RegisterSocietyPage = () => {
     }
     if (name === 'pincode') {
       if (!/^\d{0,10}$/.test(value)) return;
-      setPincodeError(value.length > 0 && value.length <= 10 ? '' : 'Pincode must be numeric and up to 10 digits');
+      setPincodeError(value.length > 0 && value.length <= 10 ? '' : 'PIN code must be numeric and up to 10 digits');
     }
     setFormData({
       ...formData,
@@ -165,8 +165,8 @@ const RegisterSocietyPage = () => {
           <div className="mb-4 flex items-center justify-center">
             <Building2 className="h-12 w-12 text-accent" />
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink">Register New Society</h2>
-          <p className="mt-2 text-sm text-muted">Create your society account with admin details</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">Register Society</h2>
+          <p className="mt-2 text-sm text-muted">Create your society and its administrator account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -176,16 +176,16 @@ const RegisterSocietyPage = () => {
           )}
           {/* Society Information */}
           <div>
-            <h3 className="text-lg font-semibold text-ink mb-4">Society Information</h3>
+            <h3 className="text-lg font-semibold text-ink mb-4">Society Details</h3>
             <div className="space-y-4">
               <div className="relative flex flex-col">
-                <label htmlFor="society-societyName" className="field-label">Society Name</label>
+                <label htmlFor="society-societyName" className="field-label">Society name</label>
                 <Building2 className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-societyName"
                   name="societyName"
                   type="text"
-                  placeholder="Society Name"
+                  placeholder="Society name"
                   value={formData.societyName}
                   onChange={handleChange}
                   className="pl-10"
@@ -194,13 +194,13 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-address" className="field-label">Full Address</label>
+                <label htmlFor="society-address" className="field-label">Full address</label>
                 <MapPin className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-address"
                   name="address"
                   type="text"
-                  placeholder="Full Address"
+                  placeholder="Full address"
                   value={formData.address}
                   onChange={handleChange}
                   className="pl-10"
@@ -249,12 +249,12 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="society-pincode" className="field-label">Pincode</label>
+                <label htmlFor="society-pincode" className="field-label">PIN code</label>
                 <Input
                   id="society-pincode"
                   name="pincode"
                   type="text"
-                  placeholder="Pincode"
+                  placeholder="PIN code"
                   value={formData.pincode}
                   onChange={handleChange}
                   error={pincodeError}
@@ -268,16 +268,16 @@ const RegisterSocietyPage = () => {
 
           {/* Admin Information */}
           <div>
-            <h3 className="text-lg font-semibold text-ink mb-4">Admin Details</h3>
+            <h3 className="text-lg font-semibold text-ink mb-4">Administrator Details</h3>
             <div className="space-y-4">
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminName" className="field-label">Admin Full Name</label>
+                <label htmlFor="society-adminName" className="field-label">Administrator name</label>
                 <User className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminName"
                   name="adminName"
                   type="text"
-                  placeholder="Admin Full Name"
+                  placeholder="Administrator name"
                   value={formData.adminName}
                   onChange={handleChange}
                   className="pl-10"
@@ -286,13 +286,13 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminEmail" className="field-label">Admin Email</label>
+                <label htmlFor="society-adminEmail" className="field-label">Email address</label>
                 <Mail className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminEmail"
                   name="adminEmail"
                   type="email"
-                  placeholder="Admin Email"
+                  placeholder="Email address"
                   value={formData.adminEmail}
                   onChange={handleChange}
                   className="pl-10"
@@ -302,13 +302,13 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminPhone" className="field-label">Admin Phone</label>
+                <label htmlFor="society-adminPhone" className="field-label">Phone number</label>
                 <Phone className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminPhone"
                   name="adminPhone"
                   type="tel"
-                  placeholder="Admin Phone"
+                  placeholder="Phone number"
                   value={formData.adminPhone}
                   onChange={handleChange}
                   className="pl-10"
@@ -320,13 +320,13 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-adminPassword" className="field-label">Admin Password</label>
+                <label htmlFor="society-adminPassword" className="field-label">Password</label>
                 <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-adminPassword"
                   name="adminPassword"
                   type="password"
-                  placeholder="Admin Password"
+                  placeholder="Password"
                   value={formData.adminPassword}
                   onChange={handleChange}
                   className="pl-10"
@@ -336,13 +336,13 @@ const RegisterSocietyPage = () => {
               </div>
 
               <div className="relative flex flex-col">
-                <label htmlFor="society-confirmPassword" className="field-label">Confirm Password</label>
+                <label htmlFor="society-confirmPassword" className="field-label">Confirm password</label>
                 <Lock className="absolute left-3 top-10 h-4 w-4 text-faint" />
                 <Input
                   id="society-confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm Password"
+                  placeholder="Confirm password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="pl-10"
@@ -361,7 +361,7 @@ const RegisterSocietyPage = () => {
           <p className="text-sm text-muted">
             Already have an account?{' '}
             <Link to="/login" className="text-accent hover:text-accent font-medium">
-              Sign in here
+              Sign in
             </Link>
           </p>
         </div>

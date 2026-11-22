@@ -1,3 +1,18 @@
+const VISITOR_TYPE_LABELS = {
+  guest: 'Guest',
+  delivery: 'Delivery',
+  service: 'Service',
+  vendor: 'Vendor',
+  maintenance: 'Maintenance',
+  other: 'Other'
+};
+
+export const formatVisitorType = (value) => {
+  if (!value) return '—';
+  const key = String(value).toLowerCase();
+  return VISITOR_TYPE_LABELS[key] || `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+};
+
 export const formatCurrency = (value) =>
   new Intl.NumberFormat('en-IN', {
     style: 'currency',
