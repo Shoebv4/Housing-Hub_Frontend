@@ -28,7 +28,6 @@ const ResidentDashboard = () => {
   const society = useSociety();
   const navigate = useNavigate();
   const [showComplaintModal, setShowComplaintModal] = useState(false);
-  const [showBillsModal, setShowBillsModal] = useState(false);
   const [newComplaint, setNewComplaint] = useState(emptyComplaint);
   const [submitting, setSubmitting] = useState(false);
   const [complaints, setComplaints] = useState([]);
@@ -134,13 +133,19 @@ const ResidentDashboard = () => {
 
     if (event.type === 'announcement.created') {
       refreshAnnouncements();
-    } else if (event.type === 'bill.created') {
+    } else if (event.type === 'bill.created' || event.type === 'bill.updated') {
       refreshBilling();
     }
   };
 
   useLiveEvents({
-    eventTypes: ['visitor.created', 'visitor.exited', 'announcement.created', 'bill.created'],
+    eventTypes: [
+      'visitor.created',
+      'visitor.exited',
+      'announcement.created',
+      'bill.created',
+      'bill.updated'
+    ],
     onEvent: handleLiveEvent,
     onReconnect: () => {
       refreshVisitors();
@@ -331,7 +336,7 @@ const ResidentDashboard = () => {
               Book Amenity
             </span>
           </Button>
-          <Button variant="secondary" className="h-16" onClick={() => setShowBillsModal(true)}>
+          <Button variant="secondary" className="h-16" onClick={() => navigate('/bills')}>
             <span className="flex flex-col items-center gap-1">
               <FileText className="h-5 w-5 shrink-0" />
               View Bills
@@ -351,53 +356,6 @@ const ResidentDashboard = () => {
           </Button>
         </div>
       </Card>
-
-      {/* Bills Modal */}
-      <Modal
-        isOpen={showBillsModal}
-        onClose={() => setShowBillsModal(false)}
-        title="My Bills"
-      >
-        {billingReport ? (
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted">Flat</span>
-              <span className="font-medium text-ink">{billingReport.flatNumber || '—'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">Maintenance charges</span>
-              <span className="text-ink">{formatCurrency(billingReport.maintenanceCharges)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">Pending maintenance</span>
-              <span className="text-ink">{formatCurrency(billingReport.pendingMaintenanceAmount)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">Amenity charges</span>
-              <span className="text-ink">{formatCurrency(billingReport.amenityCharges)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">Pending amenity</span>
-              <span className="text-ink">{formatCurrency(billingReport.pendingAmenityAmount)}</span>
-            </div>
-            <hr className="border-line" />
-            <div className="flex justify-between font-semibold text-ink">
-              <span>Total charges</span>
-              <span>{formatCurrency(billingReport.totalAmount)}</span>
-            </div>
-            <div className="flex justify-between font-semibold text-red-600">
-              <span>Outstanding total</span>
-              <span>{formatCurrency(billingReport.totalPendingAmount)}</span>
-            </div>
-            <p className="text-xs text-faint">Online payment is not available yet.</p>
-          </div>
-        ) : (
-          <p className="text-sm text-faint">No billing information is available for your flat.</p>
-        )}
-        <div className="flex justify-end pt-4">
-          <Button variant="secondary" onClick={() => setShowBillsModal(false)}>Close</Button>
-        </div>
-      </Modal>
 
       {/* Complaint Modal */}
       <Modal
