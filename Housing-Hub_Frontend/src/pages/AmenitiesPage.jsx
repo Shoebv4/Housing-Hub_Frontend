@@ -275,6 +275,7 @@ const AmenitiesPage = () => {
     return (
         <div className="page-container">
             <PageHeader
+                backTo="/dashboard"
                 title={user.role === 'admin' ? 'Amenity Management' : 'Amenities'}
                 subtitle={user.role === 'admin'
                     ? 'Manage amenities and review resident bookings'

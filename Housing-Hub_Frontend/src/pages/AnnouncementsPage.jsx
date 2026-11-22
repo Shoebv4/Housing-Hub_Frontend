@@ -231,6 +231,7 @@ const AnnouncementsPage = () => {
     return (
         <div className="page-container">
             <PageHeader
+                backTo="/dashboard"
                 title="Announcements"
                 subtitle={user.role === 'admin'
                     ? 'Publish and manage announcements for residents'

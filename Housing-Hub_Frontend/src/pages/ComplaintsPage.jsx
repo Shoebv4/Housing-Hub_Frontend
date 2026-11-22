@@ -11,6 +11,7 @@ const ComplaintsPage = () => {
     <ProtectedRoute requiredRoles={['admin', 'resident']}>
       <div className="page-container">
         <PageHeader
+          backTo="/dashboard"
           title={user?.role === 'resident' ? 'My Complaints' : 'Complaints'}
           subtitle={user?.role === 'resident'
             ? 'Raise complaints and track their progress'

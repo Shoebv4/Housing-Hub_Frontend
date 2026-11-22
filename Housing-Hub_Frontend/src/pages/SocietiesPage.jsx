@@ -144,7 +144,7 @@ const SocietiesPage = () => {
 
     return (
         <div className="page-container">
-            <PageHeader title="Societies" subtitle="Review and manage registered societies" />
+            <PageHeader backTo="/dashboard" title="Societies" subtitle="Review and manage registered societies" />
             <Card>
                 <form onSubmit={editingId ? handleUpdate : handleAdd} className="form-row">
                     <Input label="Society name" id="society-name" name="name" value={form.name} onChange={handleChange} placeholder="Society name" required />

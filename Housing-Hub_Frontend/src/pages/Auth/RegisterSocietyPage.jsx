@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, User, Mail, Phone, Lock, MapPin } from 'lucide-react';
-import { Alert, Button, Input, ThemeToggle } from '../../components/UI';
+import { Alert, BackButton, Button, Input, ThemeToggle } from '../../components/UI';
 import { API_BASE_URL } from '../../config';
 
 const RegisterSocietyPage = () => {
@@ -161,6 +161,7 @@ const RegisterSocietyPage = () => {
         <ThemeToggle />
       </div>
       <div className="relative w-full max-w-2xl rounded-2xl border border-line bg-surface p-6 shadow-card sm:p-8">
+        <BackButton fallbackTo="/login" className="mb-4" />
         <div className="mb-8 text-center">
           <div className="mb-4 flex items-center justify-center">
             <Building2 className="h-12 w-12 text-accent" />
