@@ -372,7 +372,7 @@ const AdminDashboard = () => {
             <Button variant="secondary" className="h-16" onClick={() => navigate('/complaints')}>
               <span className="flex flex-col items-center gap-1">
                 <MessageSquare className="h-5 w-5 shrink-0" />
-                View Complaints
+                Complaints
               </span>
             </Button>
             <Button variant="primary" className="h-16" onClick={() => navigate('/visitors')}>
@@ -426,8 +426,8 @@ const AdminDashboard = () => {
         {loading ? (
           <p className="text-sm text-faint">Loading revenue...</p>
         ) : maxRevenue === 0 ? (
-          <div className="h-64 bg-surface-muted rounded-xl flex items-center justify-center">
-            <p className="text-faint">No paid bookings recorded in the last six months.</p>
+          <div className="h-64 bg-surface-muted rounded-xl flex items-center justify-center p-6">
+            <p className="text-center text-faint">No paid bookings recorded in the last six months.</p>
           </div>
         ) : (
           <div className="flex items-end gap-2 h-64 sm:gap-4">
