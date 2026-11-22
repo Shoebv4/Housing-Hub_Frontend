@@ -7,7 +7,8 @@ import {
   Calendar,
   UserCheck,
   Shield,
-  Wrench
+  Wrench,
+  Receipt
 } from 'lucide-react';
 
 export const getMenuItems = (role) => {
@@ -36,6 +37,7 @@ export const getMenuItems = (role) => {
         { icon: Bell, label: 'Announcements', path: '/announcements', section: 'Community' },
         { icon: MessageSquare, label: 'Complaints', path: '/complaints', section: 'Community' },
         { icon: Calendar, label: 'Amenities', path: '/amenities', section: 'Community' },
+        { icon: Receipt, label: 'Bills', path: '/bills', section: 'Community' },
         { icon: UserCheck, label: 'Visitors', path: '/visitors', section: 'Community' }
       ];
     case 'security_staff':

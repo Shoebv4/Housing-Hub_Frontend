@@ -29,6 +29,7 @@ import ComplaintsPage from './pages/ComplaintsPage';
 import SocietiesPage from './pages/SocietiesPage';
 import AnnouncementsPage from './pages/AnnouncementsPage';
 import AmenitiesPage from './pages/AmenitiesPage';
+import BillsPage from './pages/BillsPage';
 import VisitorsEntryPage from './pages/VisitorsEntryPage';
 import VisitorsLogPage from './pages/VisitorsLogPage';
 
@@ -55,7 +56,7 @@ const App = () => {
             {/* Role-based dashboards */}
             <Route path="dashboard" element={<DashboardRouter />} />
             
-            {/* Placeholder routes for future pages */}
+            {/* Application routes */}
             {/* Societies Management for Super Admin */}
             <Route path="societies" element={<ProtectedRoute requiredRoles={['super_admin']}><SocietiesPage /></ProtectedRoute>} />
             <Route path="admins" element={<ProtectedRoute requiredRoles={['super_admin']}><AdminsPage /></ProtectedRoute>} />
@@ -75,8 +76,8 @@ const App = () => {
                 <AmenitiesPage />
               </ProtectedRoute>
             } />
-            {/*<Route path="bills" element={<div>Bills Page (Coming Soon)</div>} />*/}
-                      <Route path="visitors" element={<ProtectedRoute requiredRoles={['security_staff', 'resident', 'admin']}><VisitorsLogPage /></ProtectedRoute>} />
+            <Route path="bills" element={<ProtectedRoute requiredRoles={['resident']}><BillsPage /></ProtectedRoute>} />
+            <Route path="visitors" element={<ProtectedRoute requiredRoles={['security_staff', 'resident', 'admin']}><VisitorsLogPage /></ProtectedRoute>} />
             <Route path="visitor-entry" element={<ProtectedRoute requiredRoles={['security_staff']}><VisitorsEntryPage /></ProtectedRoute>} />
             <Route path="visitors-log" element={<ProtectedRoute requiredRoles={['security_staff','resident','admin']}><VisitorsLogPage /></ProtectedRoute>} />
             {/*<Route path="settings" element={<div>Settings Page (Coming Soon)</div>} />*/}
