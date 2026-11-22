@@ -217,7 +217,7 @@ const AdminDashboard = () => {
     { icon: Building2, label: 'Total Flats', value: loading ? '—' : String(societyFlats.length), color: 'bg-blue-500' },
     { icon: Users, label: 'Residents', value: loading ? '—' : String(societyResidents.length), color: 'bg-green-500' },
     { icon: MessageSquare, label: 'Open Complaints', value: loading ? '—' : String(openComplaints.length), color: 'bg-red-500' },
-    { icon: Calendar, label: 'Amenity Bookings', value: loading ? '—' : String(societyBookings.length), color: 'bg-purple-500' }
+    { icon: Calendar, label: 'Total Bookings', value: loading ? '—' : String(societyBookings.length), color: 'bg-purple-500' }
   ];
 
   const handleExportReport = async () => {
@@ -269,7 +269,7 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Admin Dashboard"
+        title="Society Overview"
         subtitle={society?.name ? (
           <span className="flex items-center">
             <Building2 className="mr-1.5 h-4 w-4" />
@@ -312,10 +312,10 @@ const AdminDashboard = () => {
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Activities */}
+        {/* Recent Activity */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold tracking-tight text-ink">Recent Activities</h2>
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Recent Activity</h2>
             {recentActivities.length > 5 && (
               <Button
                 variant="secondary"
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
             >
               <span className="flex flex-col items-center gap-1">
                 <FileText className="h-5 w-5 shrink-0" />
-                Generate Bills
+                Billing Report
               </span>
             </Button>
             <Button variant="warning" className="h-16" onClick={handleOpenBills}>
@@ -402,12 +402,12 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
-      {/* Monthly Revenue */}
+      {/* Amenity Revenue */}
       <Card>
         <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-ink">Monthly Revenue</h2>
-            <p className="text-sm text-faint mt-1">Paid amenity bookings in your society</p>
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Amenity Revenue</h2>
+            <p className="text-sm text-faint mt-1">Paid amenity bookings over the last six months</p>
           </div>
           <div className="flex items-center space-x-2">
             <TrendingUp className={`h-5 w-5 ${revenueChange !== null && revenueChange < 0 ? 'text-red-600' : 'text-green-600'}`} />
@@ -461,7 +461,7 @@ const AdminDashboard = () => {
           <p className="text-sm text-faint">No maintenance bills recorded for your society yet.</p>
         ) : (
           <Table headers={[
-            { label: 'Flat', align: 'center' },
+            { label: 'Flat No.', align: 'center' },
             { label: 'Period', align: 'left' },
             { label: 'Due Date', align: 'center' },
             { label: 'Amount', align: 'right' },

@@ -186,8 +186,8 @@ const ResidentDashboard = () => {
     .slice(0, 3);
 
   const stats = [
-    { icon: CheckCircle, label: 'Bills Paid', value: loading ? '—' : formatCurrency(paidAmount), color: 'bg-green-500' },
-    { icon: Clock, label: 'Pending Bills', value: loading ? '—' : formatCurrency(pendingAmount), color: 'bg-yellow-500' },
+    { icon: CheckCircle, label: 'Amount Paid', value: loading ? '—' : formatCurrency(paidAmount), color: 'bg-green-500' },
+    { icon: Clock, label: 'Pending Amount', value: loading ? '—' : formatCurrency(pendingAmount), color: 'bg-yellow-500' },
     { icon: MessageSquare, label: 'Open Complaints', value: loading ? '—' : String(openComplaints.length), color: 'bg-blue-500' },
     { icon: Calendar, label: 'Active Bookings', value: loading ? '—' : String(activeBookings.length), color: 'bg-purple-500' }
   ];
@@ -267,14 +267,14 @@ const ResidentDashboard = () => {
             {loading ? (
               <p className="text-sm text-faint">Loading announcements...</p>
             ) : visibleAnnouncements.length === 0 ? (
-              <p className="text-sm text-faint">No announcements for your flat yet.</p>
+              <p className="text-sm text-faint">No announcements for your society yet</p>
             ) : (
               visibleAnnouncements.map(announcement => (
                 <div key={announcement.aid} className="p-4 bg-surface-muted rounded-xl">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h3 className="font-medium text-ink">{announcement.title}</h3>
                     <Badge tone={announcement.isGlobal ? 'brand' : 'neutral'} className="flex-shrink-0">
-                      {announcement.isGlobal ? 'Global' : 'Society'}
+                      {announcement.isGlobal ? 'Entire society' : 'Targeted'}
                     </Badge>
                   </div>
                   <p className="text-sm text-muted mb-2">{announcement.content}</p>
@@ -297,7 +297,7 @@ const ResidentDashboard = () => {
             {loading ? (
               <p className="text-sm text-faint">Loading visitors...</p>
             ) : recentVisitors.length === 0 ? (
-              <p className="text-sm text-faint">No visitors recorded for your flat yet.</p>
+              <p className="text-sm text-faint">No visitors recorded yet</p>
             ) : (
               recentVisitors.map(visitor => (
                 <div key={visitor.visitorId} className="flex items-center justify-between gap-3 p-3 bg-surface-muted rounded-xl">
@@ -382,11 +382,11 @@ const ResidentDashboard = () => {
             </div>
             <hr className="border-line" />
             <div className="flex justify-between font-semibold text-ink">
-              <span>Total</span>
+              <span>Total charges</span>
               <span>{formatCurrency(billingReport.totalAmount)}</span>
             </div>
             <div className="flex justify-between font-semibold text-red-600">
-              <span>Outstanding</span>
+              <span>Outstanding total</span>
               <span>{formatCurrency(billingReport.totalPendingAmount)}</span>
             </div>
             <p className="text-xs text-faint">Online payment is not available yet.</p>
@@ -403,7 +403,7 @@ const ResidentDashboard = () => {
       <Modal
         isOpen={showComplaintModal}
         onClose={() => setShowComplaintModal(false)}
-        title="Raise New Complaint"
+        title="Raise Complaint"
       >
         <form className="space-y-4" onSubmit={handleSubmitComplaint}>
           <Input

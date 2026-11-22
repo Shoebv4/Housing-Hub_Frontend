@@ -15,7 +15,7 @@ import { useLiveEvents } from '../../hooks/useLiveEvents';
 import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost, apiPut } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
-import { formatDateTime, formatDuration, formatTime, isToday, parseDate } from '../../utils/format';
+import { formatDateTime, formatDuration, formatTime, formatVisitorType, isToday, parseDate } from '../../utils/format';
 
 const emptyVisitor = {
   name: '',
@@ -173,8 +173,8 @@ const SecurityDashboard = () => {
   const stats = [
     { icon: Users, label: 'Visitors Inside', value: loading ? '—' : String(insideVisitors.length), color: 'bg-blue-500' },
     { icon: UserPlus, label: "Today's Entries", value: loading ? '—' : String(todaysEntries.length), color: 'bg-green-500' },
-    { icon: Clock, label: 'Avg. Visit Duration', value: loading ? '—' : averageVisitDuration, color: 'bg-yellow-500' },
-    { icon: Car, label: 'Vehicles Parked', value: loading ? '—' : String(vehiclesParked), color: 'bg-purple-500' }
+    { icon: Clock, label: 'Avg. Visit (All Time)', value: loading ? '—' : averageVisitDuration, color: 'bg-yellow-500' },
+    { icon: Car, label: 'Vehicles on Site', value: loading ? '—' : String(vehiclesParked), color: 'bg-purple-500' }
   ];
 
   const handleVisitorEntry = async (event) => {
@@ -232,7 +232,7 @@ const SecurityDashboard = () => {
       flatNumberById.get(visitor.flatId) || '',
       visitor.phone || '',
       visitor.purpose || '',
-      visitor.visitorType || '',
+      formatVisitorType(visitor.visitorType),
       visitor.vehicleNo || '',
       formatDateTime(visitor.entryTime),
       visitor.exitTime ? formatDateTime(visitor.exitTime) : '',
@@ -241,7 +241,7 @@ const SecurityDashboard = () => {
 
     downloadCsv(
       `visitor-log-${new Date().toISOString().slice(0, 10)}.csv`,
-      ['Name', 'Flat', 'Phone', 'Purpose', 'Type', 'Vehicle', 'Entry Time', 'Exit Time', 'Duration'],
+      ['Name', 'Flat No.', 'Phone', 'Purpose', 'Type', 'Vehicle', 'Entry Time', 'Exit Time', 'Duration'],
       rows
     );
   };
@@ -249,7 +249,7 @@ const SecurityDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Security Dashboard"
+        title="Security Overview"
         subtitle={society?.name ? (
           <span className="flex items-center">
             <Building2 className="mr-1.5 h-4 w-4" />
@@ -264,7 +264,7 @@ const SecurityDashboard = () => {
             </Badge>
             <Button onClick={() => setShowVisitorModal(true)}>
               <Plus className="h-4 w-4" />
-              New Visitor Entry
+              Register Visitor
             </Button>
           </>
         )}
@@ -300,7 +300,7 @@ const SecurityDashboard = () => {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search visitors by name, flat number, or purpose..."
+            placeholder="Search visitors by name, flat number, purpose, phone, or vehicle..."
             className="w-full rounded-xl border border-line-strong bg-surface py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-faint transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
@@ -314,13 +314,13 @@ const SecurityDashboard = () => {
             <Badge tone="brand">{loading ? '…' : insideVisitors.length} Inside</Badge>
           </div>
           <Button variant="secondary" size="sm" onClick={handleExportLog} disabled={visitors.length === 0}>
-            Export Log
+            Export All Visitors
           </Button>
         </div>
 
         <Table headers={[
           { label: 'Name', align: 'left' },
-          { label: 'Flat', align: 'center' },
+          { label: 'Flat No.', align: 'center' },
           { label: 'Purpose', align: 'left' },
           { label: 'Entry Time', align: 'center' },
           { label: 'Vehicle', align: 'center' },
@@ -365,7 +365,7 @@ const SecurityDashboard = () => {
                 </td>
                 <td className="text-center">
                   <Badge tone={VISITOR_TYPE_TONES[visitor.visitorType] || 'neutral'}>
-                    {visitor.visitorType}
+                    {formatVisitorType(visitor.visitorType)}
                   </Badge>
                 </td>
                 <td className="text-center">
@@ -375,7 +375,7 @@ const SecurityDashboard = () => {
                     onClick={() => handleVisitorExit(visitor.visitorId)}
                     disabled={busyVisitorId === visitor.visitorId}
                   >
-                    {busyVisitorId === visitor.visitorId ? 'Exiting...' : 'Exit'}
+                    {busyVisitorId === visitor.visitorId ? 'Marking Exit...' : 'Mark Exit'}
                   </Button>
                 </td>
               </tr>
@@ -428,14 +428,14 @@ const SecurityDashboard = () => {
         <form onSubmit={handleVisitorEntry} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
-              label="Visitor Name"
+              label="Visitor name"
               value={newVisitor.name}
               onChange={(e) => setNewVisitor({ ...newVisitor, name: e.target.value })}
               placeholder="Enter visitor's full name"
               required
             />
             <Input
-              label="Phone Number"
+              label="Phone number"
               value={newVisitor.phone}
               onChange={(e) => setNewVisitor({ ...newVisitor, phone: e.target.value })}
               placeholder="Enter phone number"
@@ -459,7 +459,7 @@ const SecurityDashboard = () => {
               ))}
             </Select>
             <Select
-              label="Visitor Type"
+              label="Visitor type"
               value={newVisitor.visitorType}
               onChange={(e) => setNewVisitor({ ...newVisitor, visitorType: e.target.value })}
             >
@@ -471,7 +471,7 @@ const SecurityDashboard = () => {
           </div>
 
           <Input
-            label="Purpose of Visit"
+            label="Purpose of visit"
             value={newVisitor.purpose}
             onChange={(e) => setNewVisitor({ ...newVisitor, purpose: e.target.value })}
             placeholder="Brief description of visit purpose"
@@ -479,7 +479,7 @@ const SecurityDashboard = () => {
           />
 
           <Input
-            label="Vehicle Number (Optional)"
+            label="Vehicle number (optional)"
             value={newVisitor.vehicleNo}
             onChange={(e) => setNewVisitor({ ...newVisitor, vehicleNo: e.target.value })}
             placeholder="e.g., MH01AB1234"
@@ -490,7 +490,7 @@ const SecurityDashboard = () => {
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={submitting}>
-              {submitting ? 'Registering...' : 'Register Entry'}
+              {submitting ? 'Registering...' : 'Register Visitor'}
             </Button>
           </div>
         </form>

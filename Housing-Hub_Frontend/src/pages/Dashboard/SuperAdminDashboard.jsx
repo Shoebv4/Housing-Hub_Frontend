@@ -70,20 +70,20 @@ const SuperAdminDashboard = () => {
   const stats = [
     { icon: Building2, label: 'Total Societies', value: loading ? '—' : String(societies.length), color: 'bg-blue-500' },
     { icon: CheckCircle, label: 'Verified Societies', value: loading ? '—' : String(verifiedCount), color: 'bg-green-500' },
-    { icon: AlertCircle, label: 'Pending Verification', value: loading ? '—' : String(societies.length - verifiedCount), color: 'bg-yellow-500' },
+    { icon: AlertCircle, label: 'Unverified Societies', value: loading ? '—' : String(societies.length - verifiedCount), color: 'bg-yellow-500' },
     { icon: Users, label: 'Total Admins', value: loading ? '—' : String(admins.length), color: 'bg-purple-500' }
   ];
 
   const handleExport = () => {
     downloadCsv(
       'societies.csv',
-      ['Society', 'Admin', 'City', 'State', 'Verified'],
+      ['Society', 'Primary Admin', 'City', 'State', 'Verification'],
       societies.map(society => [
         society.name,
         adminBySociety.get(society.societyId)?.name || '',
         society.city || '',
         society.state || '',
-        society.isVerified ? 'Yes' : 'No'
+        society.isVerified ? 'Verified' : 'Unverified'
       ])
     );
   };
@@ -218,8 +218,8 @@ const SuperAdminDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Super Admin Dashboard"
-        subtitle="Manage societies and administrators"
+        title="Platform Overview"
+        subtitle="Manage societies, admins, and verification across the platform"
         actions={(
           <Button onClick={openAdminModal}>
             <Plus className="h-4 w-4" />
@@ -253,21 +253,21 @@ const SuperAdminDashboard = () => {
       {/* Societies Table */}
       <Card>
         <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-lg font-semibold tracking-tight text-ink">All Societies</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-ink">Registered Societies</h2>
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" size="sm" onClick={handleExport} disabled={societies.length === 0}>
               Export
             </Button>
             <Button variant="primary" size="sm" onClick={openCreateSociety}>
               <Plus className="h-4 w-4 mr-1" />
-              New Society
+              Add Society
             </Button>
           </div>
         </div>
 
         <Table headers={[
           { label: 'Society Name', align: 'left' },
-          { label: 'Admin', align: 'left' },
+          { label: 'Primary Admin', align: 'left' },
           { label: 'City', align: 'left' },
           { label: 'Status', align: 'center' },
           { label: 'Actions', align: 'center' }
@@ -297,7 +297,7 @@ const SuperAdminDashboard = () => {
                   <td className="text-muted">{society.city || '—'}</td>
                   <td className="text-center">
                     <Badge tone={society.isVerified ? 'success' : 'warning'}>
-                      {society.isVerified ? 'Verified' : 'Pending'}
+                      {society.isVerified ? 'Verified' : 'Unverified'}
                     </Badge>
                   </td>
                   <td>
@@ -326,7 +326,7 @@ const SuperAdminDashboard = () => {
       <Modal
         isOpen={showAdminModal}
         onClose={() => setShowAdminModal(false)}
-        title="Create New Admin"
+        title="Add Admin"
       >
         <form className="space-y-4" onSubmit={handleAdminSubmit}>
           {modalError && <Alert tone="danger">{modalError}</Alert>}
@@ -338,7 +338,7 @@ const SuperAdminDashboard = () => {
             required
           />
           <Input
-            label="Email"
+            label="Email address"
             type="email"
             value={adminForm.email}
             onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })}
@@ -346,7 +346,7 @@ const SuperAdminDashboard = () => {
             required
           />
           <Input
-            label="Phone"
+            label="Phone number"
             value={adminForm.phone}
             onChange={(e) => setAdminForm({ ...adminForm, phone: e.target.value })}
             placeholder="Enter phone number"
@@ -376,7 +376,7 @@ const SuperAdminDashboard = () => {
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={saving}>
-              {saving ? 'Creating...' : 'Create Admin'}
+              {saving ? 'Saving...' : 'Add Admin'}
             </Button>
           </div>
         </form>
@@ -386,12 +386,12 @@ const SuperAdminDashboard = () => {
       <Modal
         isOpen={showSocietyModal}
         onClose={() => setShowSocietyModal(false)}
-        title={editingSocietyId ? 'Edit Society' : 'New Society'}
+        title={editingSocietyId ? 'Edit Society' : 'Add Society'}
       >
         <form className="space-y-4" onSubmit={handleSocietySubmit}>
           {modalError && <Alert tone="danger">{modalError}</Alert>}
           <Input
-            label="Society Name"
+            label="Society name"
             value={societyForm.name}
             onChange={(e) => setSocietyForm({ ...societyForm, name: e.target.value })}
             placeholder="Enter society name"
@@ -429,10 +429,10 @@ const SuperAdminDashboard = () => {
               required
             />
             <Input
-              label="Pincode"
+              label="PIN code"
               value={societyForm.pincode}
               onChange={(e) => setSocietyForm({ ...societyForm, pincode: e.target.value })}
-              placeholder="Pincode"
+              placeholder="PIN code"
             />
           </div>
           <div className="flex flex-wrap justify-end gap-3 pt-4">
@@ -440,7 +440,7 @@ const SuperAdminDashboard = () => {
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={saving}>
-              {saving ? 'Saving...' : editingSocietyId ? 'Save Changes' : 'Create Society'}
+              {saving ? 'Saving...' : editingSocietyId ? 'Save Changes' : 'Add Society'}
             </Button>
           </div>
         </form>
