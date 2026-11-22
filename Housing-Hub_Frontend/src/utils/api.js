@@ -25,14 +25,16 @@ export async function apiRequest(path, options = {}) {
       const body = await response.json();
       if (Array.isArray(body)) {
         message = body.map(item => item.errorMessage || item.message || String(item)).join(' ');
-      } else if (body?.message) {
-        message = body.message;
-      } else if (body?.Message) {
-        message = body.Message;
+      } else if (typeof body === 'string') {
+        message = body;
       } else if (body?.errors) {
         message = Object.values(body.errors).flat().join(' ');
       } else if (body?.Errors) {
         message = Object.values(body.Errors).flat().join(' ');
+      } else if (body?.message) {
+        message = body.message;
+      } else if (body?.Message) {
+        message = body.Message;
       }
     } catch {
       // Keep the default message when the response body is not JSON.

@@ -6,7 +6,8 @@ import {
   Bell,
   Calendar,
   UserCheck,
-  Shield
+  Shield,
+  Wrench
 } from 'lucide-react';
 
 export const getMenuItems = (role) => {
@@ -23,6 +24,7 @@ export const getMenuItems = (role) => {
         { icon: Building2, label: 'Wings & Flats', path: '/wings-flats', section: 'Manage' },
         { icon: Users, label: 'Residents', path: '/residents', section: 'Manage' },
         { icon: Shield, label: 'Security Staff', path: '/security-staff', section: 'Manage' },
+        { icon: Wrench, label: 'Maintenance', path: '/maintenance', section: 'Manage' },
         { icon: MessageSquare, label: 'Complaints', path: '/complaints', section: 'Community' },
         { icon: Bell, label: 'Announcements', path: '/announcements', section: 'Community' },
         { icon: Calendar, label: 'Amenities', path: '/amenities', section: 'Community' },

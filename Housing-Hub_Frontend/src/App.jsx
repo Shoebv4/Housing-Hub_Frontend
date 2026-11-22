@@ -20,6 +20,7 @@ import SecurityDashboard from './pages/Dashboard/SecurityDashboard';
 import WingsFlatsPage from './pages/Admin/WingsFlatsPage';
 import ResidentsPage from './pages/Admin/ResidentsPage';
 import SecurityStaffPage from './pages/Admin/SecurityStaffPage';
+import MaintenancePage from './pages/Admin/MaintenancePage';
 import AdminsPage from './pages/AdminsPage';
 
 // Other Pages
@@ -62,15 +63,13 @@ const App = () => {
             <Route path="wings-flats" element={<ProtectedRoute requiredRoles={['admin']}><WingsFlatsPage /></ProtectedRoute>} />
             <Route path="residents" element={<ProtectedRoute requiredRoles={['admin']}><ResidentsPage /></ProtectedRoute>} />
             <Route path="security-staff" element={<ProtectedRoute requiredRoles={['admin']}><SecurityStaffPage /></ProtectedRoute>} />
-            {/*<Route path="residents" element={<div>Residents Page (Coming Soon)</div>} />*/}
-            {/*<Route path="staff" element={<div>Staff Page (Coming Soon)</div>} />*/}
+            <Route path="maintenance" element={<ProtectedRoute requiredRoles={['admin']}><MaintenancePage /></ProtectedRoute>} />
             <Route path="complaints" element={<ProtectedRoute requiredRoles={['admin','resident']}><ComplaintsPage /></ProtectedRoute>} />
             <Route path="announcements" element={
               <ProtectedRoute requiredRoles={['admin', 'resident']}>
                 <AnnouncementsPage />
               </ProtectedRoute>
             } />
-            {/*<Route path="maintenance" element={<div>Maintenance Page (Coming Soon)</div>} />*/}
             <Route path="amenities" element={
               <ProtectedRoute requiredRoles={['admin', 'resident']}>
                 <AmenitiesPage />

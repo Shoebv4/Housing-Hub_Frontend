@@ -20,12 +20,40 @@ export const formatCurrency = (value) =>
     maximumFractionDigits: 0
   }).format(Number(value) || 0);
 
+export const formatCurrencyPrecise = (value) =>
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(Number(value) || 0);
+
 export const parseDate = (value) => {
   if (!value) return null;
   const date = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
     ? new Date(`${value}T00:00:00`)
     : new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
+};
+
+export const toDateInputValue = (value) => {
+  const date = value instanceof Date ? value : parseDate(value);
+  if (!date) return '';
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+export const getMaintenanceBillStatus = (bill) => {
+  if (bill?.paid === true) return 'Paid';
+
+  const dueDate = parseDate(bill?.dueDate);
+  if (!dueDate) return 'Unpaid';
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return dueDate < today ? 'Overdue' : 'Unpaid';
 };
 
 export const formatDateTime = (value) => {
