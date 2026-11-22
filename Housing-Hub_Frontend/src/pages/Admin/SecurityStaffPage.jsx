@@ -7,7 +7,7 @@ const SecurityStaffPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin']}>
       <div className="page-container">
-        <PageHeader title="Security Staff Management" subtitle="Manage guard accounts for your society" />
+        <PageHeader title="Security Staff" subtitle="Manage security staff accounts for your society" />
         <Card>
           <SecurityStaffList />
         </Card>

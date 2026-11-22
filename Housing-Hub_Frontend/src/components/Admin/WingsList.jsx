@@ -141,18 +141,17 @@ const WingsList = () => {
 
     return (
         <div>
-            <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Wings</h2>
             {society && (
                 <div className="mb-4 rounded-xl border border-line bg-surface-muted p-3 text-ink">
                     <span className="font-medium">Society:</span> {society.name}
                 </div>
             )}
             <form onSubmit={handleSubmit} className="form-row">
-                <Input label="Wing Name" id="wing-name" name="name" value={form.name} onChange={handleChange} placeholder="Wing Name" required />
-                <Input label="Total Floors" id="wing-totalFloors" name="totalFloors" value={form.totalFloors} onChange={handleChange} placeholder="Total Floors" type="number" min="1" required />
-                <Input label="Flats Per Floor" id="wing-flatsPerFloor" name="flatsPerFloor" value={form.flatsPerFloor} onChange={handleChange} placeholder="Flats Per Floor" type="number" min="1" required />
+                <Input label="Wing name" id="wing-name" name="name" value={form.name} onChange={handleChange} placeholder="Wing name" required />
+                <Input label="Total floors" id="wing-totalFloors" name="totalFloors" value={form.totalFloors} onChange={handleChange} placeholder="Total floors" type="number" min="1" required />
+                <Input label="Flats per floor" id="wing-flatsPerFloor" name="flatsPerFloor" value={form.flatsPerFloor} onChange={handleChange} placeholder="Flats per floor" type="number" min="1" required />
                 <Button type="submit" variant="primary" disabled={loading}>
-                    {editingId ? 'Update' : 'Add'}
+                    {editingId ? 'Update Wing' : 'Add Wing'}
                 </Button>
                 {editingId && (
                     <Button type="button" variant="secondary" onClick={() => { setForm({ name: '', totalFloors: '', flatsPerFloor: '' }); setEditingId(null); }}>
@@ -162,15 +161,13 @@ const WingsList = () => {
             </form>
             {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
             <Table headers={[
-                { label: 'Wing ID', align: 'center' },
-                { label: 'Name', align: 'left' },
-                { label: 'Total Floors', align: 'center' },
-                { label: 'Flats Per Floor', align: 'center' },
+                { label: 'Wing', align: 'left' },
+                { label: 'Total floors', align: 'center' },
+                { label: 'Flats per floor', align: 'center' },
                 { label: 'Actions', align: 'center' }
             ]}>
                 {wings.map(wing => (
                     <tr key={wing.wingId}>
-                        <td className="text-center">{wing.wingId}</td>
                         <td className="font-medium text-ink">{wing.name}</td>
                         <td className="text-center">{wing.totalFloors}</td>
                         <td className="text-center">{wing.flatsPerFloor}</td>
@@ -183,7 +180,7 @@ const WingsList = () => {
                     </tr>
                 ))}
                 {wings.length === 0 && (
-                    <tr><td colSpan={5} className="text-center text-muted">No wings found.</td></tr>
+                    <tr><td colSpan={4} className="text-center text-muted">No wings have been added yet</td></tr>
                 )}
             </Table>
         </div>

@@ -144,30 +144,30 @@ const SocietiesPage = () => {
 
     return (
         <div className="page-container">
-            <PageHeader title="Societies Management" subtitle="Review and manage registered societies" />
+            <PageHeader title="Societies" subtitle="Review and manage registered societies" />
             <Card>
                 <form onSubmit={editingId ? handleUpdate : handleAdd} className="form-row">
-                    <Input label="Name" id="society-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
+                    <Input label="Society name" id="society-name" name="name" value={form.name} onChange={handleChange} placeholder="Society name" required />
                     <Input label="Address" id="society-address" name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
                     <Input label="State" id="society-state" name="state" value={form.state} onChange={handleChange} placeholder="State" required />
                     <Input label="Country" id="society-country" name="country" value={form.country} onChange={handleChange} placeholder="Country" required />
                     <Input label="City" id="society-city" name="city" value={form.city} onChange={handleChange} placeholder="City" required />
-                    <Input label="Pincode" id="society-pincode" name="pincode" value={form.pincode || ''} onChange={handleChange} placeholder="Pincode" required />
-                    <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+                    <Input label="PIN code" id="society-pincode" name="pincode" value={form.pincode || ''} onChange={handleChange} placeholder="PIN code" required />
+                    <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update Society' : 'Add Society'}</Button>
                     {editingId && (
                         <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
                     )}
                 </form>
                 {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
                 <Table headers={[
-                    { label: 'Name', align: 'left' },
+                    { label: 'Society Name', align: 'left' },
                     { label: 'Address', align: 'left' },
                     { label: 'State', align: 'left' },
                     { label: 'Country', align: 'left' },
                     { label: 'City', align: 'left' },
-                    { label: 'Pincode', align: 'center' },
+                    { label: 'PIN code', align: 'center' },
                     { label: 'Created At', align: 'center' },
-                    { label: 'Admin', align: 'left' },
+                    { label: 'Primary Admin', align: 'left' },
                     { label: 'Verified', align: 'center' },
                     { label: 'Actions', align: 'center' }
                 ]}>
@@ -182,7 +182,7 @@ const SocietiesPage = () => {
                             <td className="text-center text-muted">{society.createdAt ? new Date(society.createdAt + 'Z').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '-'}</td>
                             <td>{admins[society.societyId] || '-'}</td>
                             <td className="text-center">
-                                <Badge tone={society.isVerified ? 'success' : 'warning'}>{society.isVerified ? 'Yes' : 'No'}</Badge>
+                                <Badge tone={society.isVerified ? 'success' : 'warning'}>{society.isVerified ? 'Verified' : 'Unverified'}</Badge>
                             </td>
                             <td>
                                 <div className="flex flex-wrap items-center justify-center gap-2">
@@ -201,7 +201,7 @@ const SocietiesPage = () => {
                         </tr>
                     ))}
                     {societies.length === 0 && (
-                        <tr><td colSpan={10} className="text-center text-muted">No societies found.</td></tr>
+                        <tr><td colSpan={10} className="text-center text-muted">No societies registered yet</td></tr>
                     )}
                 </Table>
             </Card>

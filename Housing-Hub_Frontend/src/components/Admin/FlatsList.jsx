@@ -164,28 +164,27 @@ const FlatsList = () => {
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Flats</h2>
       {society && (
         <div className="mb-4 rounded-xl border border-line bg-surface-muted p-3 text-ink">
           <span className="font-medium">Society:</span> {society.name}
         </div>
       )}
       <form onSubmit={handleSubmit} className="form-row">
-        <Input label="Flat Number" id="flat-flatNumber" name="flatNumber" value={form.flatNumber} onChange={handleChange} placeholder="Flat Number" required />
-        <Input label="Floor Number" id="flat-floorNumber" name="floorNumber" value={form.floorNumber} onChange={handleChange} placeholder="Floor Number" required />
+        <Input label="Flat number" id="flat-flatNumber" name="flatNumber" value={form.flatNumber} onChange={handleChange} placeholder="Flat number" required />
+        <Input label="Floor number" id="flat-floorNumber" name="floorNumber" value={form.floorNumber} onChange={handleChange} placeholder="Floor number" required />
         <Input label="Area (sq ft)" id="flat-area" name="area" value={form.area} onChange={handleChange} placeholder="Area (sq ft)" type="number" min="0" step="0.01" required />
         <Select label="Status" id="flat-status" name="status" value={form.status} onChange={handleChange} required>
           <option value="Pending">Pending</option>
           <option value="Registered">Registered</option>
         </Select>
         <Select label="Wing" id="flat-wingId" name="wingId" value={form.wingId} onChange={handleChange} required>
-          <option value="">Select Wing</option>
+          <option value="">Select wing</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
           ))}
         </Select>
         <Button type="submit" variant="primary" disabled={loading}>
-          {editingId ? 'Update' : 'Add'}
+          {editingId ? 'Update Flat' : 'Add Flat'}
         </Button>
         {editingId && (
           <Button type="button" variant="secondary" onClick={() => { setForm({ flatNumber: '', floorNumber: '', area: '', status: 'Pending', wingId: '' }); setEditingId(null); }}>
@@ -194,8 +193,8 @@ const FlatsList = () => {
         )}
       </form>
       <div className="mb-4 w-full sm:w-56">
-        <Select label="Filter by Wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
-          <option value="">All Wings</option>
+        <Select label="Filter by wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
+          <option value="">All wings</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
           ))}
@@ -207,7 +206,7 @@ const FlatsList = () => {
         headers={[
           { label: 'Flat No.', align: 'center' },
           { label: 'Floor No.', align: 'center' },
-          { label: 'Area', align: 'center' },
+          { label: 'Area (sq ft)', align: 'center' },
           { label: 'Status', align: 'center' },
           { label: 'Wing', align: 'center' },
           { label: 'Actions', align: 'center' }
@@ -231,7 +230,7 @@ const FlatsList = () => {
           </tr>
         ))}
         {filteredFlats.length === 0 && (
-          <tr><td colSpan={6} className="text-center text-muted">No flats found.</td></tr>
+          <tr><td colSpan={6} className="text-center text-muted">No flats have been added yet</td></tr>
         )}
       </Table>
     </div>

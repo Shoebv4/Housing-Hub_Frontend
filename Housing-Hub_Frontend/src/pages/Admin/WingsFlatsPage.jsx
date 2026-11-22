@@ -15,7 +15,7 @@ const WingsFlatsPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin']}>
       <div className="page-container">
-        <PageHeader title="Wings & Flats Management" subtitle="Manage wings and flats for your society" />
+        <PageHeader title="Wings & Flats" subtitle="Manage the wings and flats in your society" />
         <Tabs tabs={TABS} value={tab} onChange={setTab} ariaLabel="Wings and flats views" />
         <Card>
           {tab === 'wings' && <WingsList />}

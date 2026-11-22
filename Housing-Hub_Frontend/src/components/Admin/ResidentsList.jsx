@@ -218,7 +218,6 @@ const ResidentsList = () => {
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Residents</h2>
       {society && (
         <div className="mb-4 rounded-xl border border-line bg-surface-muted p-3 text-ink">
           <span className="font-medium">Society:</span> {society.name}
@@ -232,13 +231,13 @@ const ResidentsList = () => {
           <Input label="Password" id="resident-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" error={passwordError} required />
         )}
         <Select label="Flat" id="resident-flatId" name="flatId" value={form.flatId} onChange={handleChange} required>
-          <option value="">Select Flat</option>
+          <option value="">Select flat</option>
           {flats.filter(f => f.status === 'Vacant').map(f => (
-            <option key={f.flatId} value={f.flatId}>{f.flatNumber} ({f.floorNumber})</option>
+            <option key={f.flatId} value={f.flatId}>{f.flatNumber} (Floor {f.floorNumber})</option>
           ))}
         </Select>
         <Button type="submit" variant="primary" disabled={loading}>
-          {editingId ? 'Update' : 'Add'}
+          {editingId ? 'Update Resident' : 'Add Resident'}
         </Button>
         {editingId && (
           <Button type="button" variant="secondary" onClick={() => { setForm({ name: '', email: '', phone: '', password: '', flatId: '' }); setEditingId(null); }}>
@@ -247,8 +246,8 @@ const ResidentsList = () => {
         )}
       </form>
       <div className="mb-4 w-full sm:w-56">
-        <Select label="Filter by Wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
-          <option value="">All Wings</option>
+        <Select label="Filter by wing" value={filterWing} onChange={e => setFilterWing(e.target.value)}>
+          <option value="">All wings</option>
           {wings.map(w => (
             <option key={w.wingId} value={w.wingId}>{w.name}</option>
           ))}
@@ -259,7 +258,7 @@ const ResidentsList = () => {
         { label: 'Name', align: 'left' },
         { label: 'Email', align: 'left' },
         { label: 'Phone', align: 'center' },
-        { label: 'Flat', align: 'center' },
+        { label: 'Flat No.', align: 'center' },
         { label: 'Verified', align: 'center' },
         { label: 'Actions', align: 'center' }
       ]}>
@@ -270,7 +269,7 @@ const ResidentsList = () => {
             <td className="text-center">{resident.phone}</td>
             <td className="text-center">{flats.find(f => f.flatId === resident.flatId)?.flatNumber || '-'}</td>
             <td className="text-center">
-              <Badge tone={resident.isVerified ? 'success' : 'warning'}>{resident.isVerified ? 'Yes' : 'No'}</Badge>
+              <Badge tone={resident.isVerified ? 'success' : 'warning'}>{resident.isVerified ? 'Verified' : 'Unverified'}</Badge>
             </td>
             <td>
               <div className="flex flex-wrap items-center justify-center gap-2">
@@ -296,7 +295,11 @@ const ResidentsList = () => {
           </tr>
         ))}
         {filteredResidents.length === 0 && (
-          <tr><td colSpan={6} className="text-center text-muted">No residents found.</td></tr>
+          <tr>
+            <td colSpan={6} className="text-center text-muted">
+              {filterWing ? 'No residents match the selected wing' : 'No resident accounts yet'}
+            </td>
+          </tr>
         )}
       </Table>
     </div>

@@ -29,11 +29,11 @@ const SecurityStaffList = () => {
       const res = await fetch(`${API_BASE_URL}/users`, {
         headers: getAuthHeaders()
       });
-      if (!res.ok) throw new Error('Failed to load staff');
+      if (!res.ok) throw new Error('Failed to load security staff');
       const data = await res.json();
       setStaff(data.filter(s => s.role === 'security_staff' && s.societyId === user.societyId));
     } catch {
-      setError('Failed to load staff');
+      setError('Failed to load security staff');
     }
     setLoading(false);
   };
@@ -103,12 +103,12 @@ const SecurityStaffList = () => {
         headers: getAuthHeaders(),
         body: JSON.stringify(payload)
       });
-      if (!res.ok) throw new Error('Failed to save staff');
+      if (!res.ok) throw new Error('Failed to save security staff');
       setForm({ name: '', email: '', phone: '', password: '' });
       setEditingId(null);
       fetchStaff();
     } catch {
-      setError('Failed to save staff');
+      setError('Failed to save security staff');
     }
     setLoading(false);
   };
@@ -133,14 +133,13 @@ const SecurityStaffList = () => {
       });
       fetchStaff();
     } catch {
-      setError('Failed to delete staff');
+      setError('Failed to delete security staff');
     }
     setLoading(false);
   };
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Security Staff</h2>
       <form onSubmit={handleSubmit} className="form-row">
         <Input label="Name" id="staff-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
         <Input label="Email" id="staff-email" name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" error={emailError} required />
@@ -149,7 +148,7 @@ const SecurityStaffList = () => {
           <Input label="Password" id="staff-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" error={passwordError} required />
         )}
         <Button type="submit" variant="primary" disabled={loading}>
-          {editingId ? 'Update' : 'Add'}
+          {editingId ? 'Update Staff' : 'Add Staff'}
         </Button>
         {editingId && (
           <Button type="button" variant="secondary" onClick={() => { setForm({ name: '', email: '', phone: '', password: '' }); setEditingId(null); }}>
@@ -178,7 +177,7 @@ const SecurityStaffList = () => {
           </tr>
         ))}
         {staff.length === 0 && (
-          <tr><td colSpan={4} className="text-center text-muted">No security staff found.</td></tr>
+          <tr><td colSpan={4} className="text-center text-muted">No security staff accounts yet</td></tr>
         )}
       </Table>
     </div>
