@@ -1,8 +1,7 @@
 ﻿import React, { useEffect, useState, useRef } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
+import { Alert, Button, Card, Input, PageHeader, Table } from '../components/UI';
 
 const emptyForm = {
     title: '',
@@ -27,20 +26,20 @@ const DropdownCheckbox = ({ options, selected, onChange, label, disabled }) => {
     }, []);
 
     return (
-        <div className="relative inline-block w-64" ref={ref}>
-            <button type="button" className={`border rounded px-2 py-1 w-full text-left bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`} onClick={() => setOpen(!open)} disabled={disabled}>
+        <div className="relative w-full sm:inline-block sm:w-64" ref={ref}>
+            <button type="button" className={`w-full rounded-xl border border-line-strong bg-surface px-3 py-2.5 text-left text-sm text-ink shadow-none transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${disabled ? 'cursor-not-allowed bg-surface-muted text-faint' : ''}`} onClick={() => setOpen(!open)} disabled={disabled}>
                 <span className="truncate block">{selected.length > 0 ? selected.map(id => options.find(o => o.value === id)?.label).filter(Boolean).join(', ') : `Select ${label}`}</span>
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                  <svg className="w-4 h-4 text-faint" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </span>
             </button>
             {open && !disabled && (
-                <div className="absolute z-10 bg-white border rounded shadow w-full max-h-56 overflow-auto mt-1">
+                <div className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-line bg-surface shadow-pop">
                     <div className="flex justify-end p-1 border-b">
-                        <button type="button" className="text-xs text-blue-600 underline" onClick={() => onChange([])}>Clear Selection</button>
+                        <button type="button" className="text-xs text-accent underline" onClick={() => onChange([])}>Clear Selection</button>
                     </div>
                     {options.map(opt => (
-                        <label key={opt.value} className="flex items-center px-2 py-1 cursor-pointer hover:bg-blue-50">
+                        <label key={opt.value} className="flex items-center px-2 py-1 cursor-pointer hover:bg-accent-soft">
                             <input
                                 type="checkbox"
                                 checked={selected.includes(opt.value)}
@@ -230,20 +229,19 @@ const AnnouncementsPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4">
-            <h1 className="text-2xl font-bold mb-6">Announcements Management</h1>
-            <div className="bg-white rounded-lg shadow p-6">
+        <div className="page-container">
+            <PageHeader
+                title="Announcements"
+                subtitle={user.role === 'admin'
+                    ? 'Publish and manage announcements for residents'
+                    : 'Read the latest announcements for your home'}
+            />
+            <Card>
                 {user.role === 'admin' && (
-                    <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
-                        <div className="flex flex-col">
-                            <label htmlFor="title" className="font-semibold mb-1">Title</label>
-                            <Input name="title" id="title" value={form.title} onChange={handleChange} placeholder="Title" required />
-                        </div>
-                        <div className="flex flex-col">
-                            <label htmlFor="content" className="font-semibold mb-1">Message</label>
-                            <Input name="content" id="content" value={form.content} onChange={handleChange} placeholder="Message" required />
-                        </div>
-                        <div className="w-full flex gap-2 mt-2">
+                    <form onSubmit={handleSubmit} className="form-row">
+                        <Input label="Title" name="title" id="title" value={form.title} onChange={handleChange} placeholder="Title" required />
+                        <Input label="Message" name="content" id="content" value={form.content} onChange={handleChange} placeholder="Message" required />
+                        <div className="flex w-full flex-col gap-2 sm:flex-row">
                             <DropdownCheckbox
                                 options={wings.map(w => ({ value: String(w.wingId), label: w.name }))}
                                 selected={form.targetWingIds}
@@ -259,81 +257,80 @@ const AnnouncementsPage = () => {
                                 disabled={form.isGlobal}
                             />
                         </div>
-                        <label className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 text-sm text-ink">
                             <input type="checkbox" name="isGlobal" checked={form.isGlobal || false} onChange={handleChange} />
-                            Send to whole society
+                            Send to entire society
                         </label>
-                        <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+                        <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Save Changes' : 'Publish'}</Button>
                         {editingId && (
                             <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
                         )}
                     </form>
                 )}
-                {error && <div className="text-red-600 mb-2">{error}</div>}
-                <div className="overflow-x-auto">
-                    <table className="min-w-full border text-sm">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="px-4 py-2 border">Title</th>
-                                <th className="px-4 py-2 border">Message</th>
-                                <th className="px-4 py-2 border">Wings</th>
-                                <th className="px-4 py-2 border">Flats</th>
-                                <th className="px-4 py-2 border">Created At</th>
-                                <th className="px-4 py-2 border">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {announcements.map(a => (
-                                <tr key={a.aid}>
-                                    <td className="border px-4 py-2">{a.title}</td>
-                                    <td className="border px-4 py-2">{a.content}</td>
-                                    <td className="border px-4 py-2">{
-                                        a.isGlobal
-                                            ? 'All Wings'
-                                            : Array.isArray(a.targetWingIds) && a.targetWingIds.length > 0
-                                                ? a.targetWingIds.map(id => wings.find(w => String(w.wingId) === String(id))?.name).filter(Boolean).join(', ')
-                                                : '-'
-                                    }</td>
-                                    <td className="border px-4 py-2">{
-                                        a.isGlobal
-                                            ? 'All Flats'
-                                            : Array.isArray(a.targetFlatIds) && a.targetFlatIds.length > 0
-                                                ? a.targetFlatIds.map(id => flats.find(f => String(f.flatId) === String(id))?.flatNumber).filter(Boolean).join(', ')
-                                                : '-'
-                                    }</td>
-                                    <td className="border px-4 py-2">{
-                                        a.createdAt ?
-                                            (() => {
-                                                // Convert UTC to India time
-                                                const utcDate = new Date(a.createdAt);
-                                                const indiaOffset = 5.5 * 60;
-                                                const indiaMs = utcDate.getTime() + indiaOffset * 60 * 1000;
-                                                const indiaDate = new Date(indiaMs);
-                                                const day = String(indiaDate.getDate()).padStart(2, '0');
-                                                const month = String(indiaDate.getMonth() + 1).padStart(2, '0');
-                                                const year = indiaDate.getFullYear();
-                                                const time = indiaDate.toLocaleTimeString('en-IN');
-                                                return `${day}/${month}/${year} ${time}`;
-                                            })()
-                                            : '-'
-                                    }</td>
-                                    <td className="border px-4 py-2 space-x-2">
-                                        {user.role === 'admin' && (
-                                            <>
-                                                <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
-                                                <Button type="button" variant="danger" onClick={() => handleDelete(a.aid)} size="sm">Delete</Button>
-                                            </>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                            {announcements.length === 0 && (
-                                <tr><td colSpan={6} className="text-center py-4">No announcements found.</td></tr>
+                {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+                <Table headers={[
+                    { label: 'Title', align: 'left' },
+                    { label: 'Message', align: 'left' },
+                    { label: 'Wings', align: 'left' },
+                    { label: 'Flats', align: 'left' },
+                    { label: 'Created At', align: 'center' },
+                    ...(user.role === 'admin' ? [{ label: 'Actions', align: 'center' }] : [])
+                ]}>
+                    {announcements.map(a => (
+                        <tr key={a.aid}>
+                            <td className="font-medium text-ink">{a.title}</td>
+                            <td>{a.content}</td>
+                            <td>{
+                                a.isGlobal
+                                    ? 'All wings'
+                                    : Array.isArray(a.targetWingIds) && a.targetWingIds.length > 0
+                                        ? a.targetWingIds.map(id => wings.find(w => String(w.wingId) === String(id))?.name).filter(Boolean).join(', ')
+                                        : '-'
+                            }</td>
+                            <td>{
+                                a.isGlobal
+                                    ? 'All flats'
+                                    : Array.isArray(a.targetFlatIds) && a.targetFlatIds.length > 0
+                                        ? a.targetFlatIds.map(id => flats.find(f => String(f.flatId) === String(id))?.flatNumber).filter(Boolean).join(', ')
+                                        : '-'
+                            }</td>
+                            <td className="text-center text-muted">{
+                                a.createdAt ?
+                                    (() => {
+                                        // Convert UTC to India time
+                                        const utcDate = new Date(a.createdAt);
+                                        const indiaOffset = 5.5 * 60;
+                                        const indiaMs = utcDate.getTime() + indiaOffset * 60 * 1000;
+                                        const indiaDate = new Date(indiaMs);
+                                        const day = String(indiaDate.getDate()).padStart(2, '0');
+                                        const month = String(indiaDate.getMonth() + 1).padStart(2, '0');
+                                        const year = indiaDate.getFullYear();
+                                        const time = indiaDate.toLocaleTimeString('en-IN');
+                                        return `${day}/${month}/${year} ${time}`;
+                                    })()
+                                    : '-'
+                            }</td>
+                            {user.role === 'admin' && (
+                                <td>
+                                    <div className="flex flex-wrap items-center justify-center gap-2">
+                                        <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
+                                        <Button type="button" variant="danger" onClick={() => handleDelete(a.aid)} size="sm">Delete</Button>
+                                    </div>
+                                </td>
                             )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                        </tr>
+                    ))}
+                    {announcements.length === 0 && (
+                        <tr>
+                            <td colSpan={user.role === 'admin' ? 6 : 5} className="text-center text-muted">
+                                {user.role === 'admin'
+                                    ? 'No announcements have been published yet'
+                                    : 'No announcements for your society yet'}
+                            </td>
+                        </tr>
+                    )}
+                </Table>
+            </Card>
         </div>
     );
 };

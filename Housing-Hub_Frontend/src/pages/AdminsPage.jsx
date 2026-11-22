@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
+import { Alert, Badge, Button, Card, Input, PageHeader, Select, Table } from '../components/UI';
 
 const emptyForm = {
   name: '',
@@ -168,80 +167,59 @@ const AdminsPage = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6">Admins Management</h1>
-      <div className="bg-white rounded-lg shadow p-6">
-        <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
-          <div className="flex flex-col">
-            <label htmlFor="admin-name" className="font-semibold mb-1">Name</label>
-            <Input id="admin-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="admin-email" className="font-semibold mb-1">Email</label>
-            <Input id="admin-email" name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" required />
-            {emailError && <span className="text-red-600 text-xs mt-1">{emailError}</span>}
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="admin-phone" className="font-semibold mb-1">Phone</label>
-            <Input id="admin-phone" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" required />
-            {phoneError && <span className="text-red-600 text-xs mt-1">{phoneError}</span>}
-          </div>
+    <div className="page-container">
+      <PageHeader title="Admins" subtitle="Manage admin accounts and society assignments" />
+      <Card>
+        <form onSubmit={handleSubmit} className="form-row">
+          <Input label="Name" id="admin-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
+          <Input label="Email address" id="admin-email" name="email" value={form.email} onChange={handleChange} placeholder="Email address" type="email" error={emailError} required />
+          <Input label="Phone number" id="admin-phone" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone number" error={phoneError} required />
           {!editingId && (
-            <div className="flex flex-col">
-              <label htmlFor="admin-password" className="font-semibold mb-1">Password</label>
-              <Input id="admin-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" required />
-              {passwordError && <span className="text-red-600 text-xs mt-1">{passwordError}</span>}
-            </div>
+            <Input label="Password" id="admin-password" name="password" value={form.password} onChange={handleChange} placeholder="Password" type="password" error={passwordError} required />
           )}
-          <div className="flex flex-col">
-            <label htmlFor="admin-societyId" className="font-semibold mb-1">Society</label>
-            <select id="admin-societyId" name="societyId" value={form.societyId} onChange={handleChange} className="border rounded px-2 py-1" required>
-              <option value="">Select Society</option>
-              {societies.map(s => (
-                <option key={s.societyId} value={s.societyId}>{s.name}</option>
-              ))}
-            </select>
-          </div>
-          <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+          <Select label="Society" id="admin-societyId" name="societyId" value={form.societyId} onChange={handleChange} required>
+            <option value="">Select society</option>
+            {societies.map(s => (
+              <option key={s.societyId} value={s.societyId}>{s.name}</option>
+            ))}
+          </Select>
+          <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update Admin' : 'Add Admin'}</Button>
           {editingId && (
             <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
           )}
         </form>
-        {error && <div className="text-red-600 mb-2">{error}</div>}
-        <div className="overflow-x-auto">
-          <table className="min-w-full border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-2 border">Name</th>
-                <th className="px-4 py-2 border">Email</th>
-                <th className="px-4 py-2 border">Phone</th>
-                <th className="px-4 py-2 border">Society</th>
-                <th className="px-4 py-2 border">Verified</th>
-                <th className="px-4 py-2 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {admins.map(admin => (
-                <tr key={admin.userId}>
-                  <td className="border px-4 py-2">{admin.name}</td>
-                  <td className="border px-4 py-2">{admin.email}</td>
-                  <td className="border px-4 py-2">{admin.phone}</td>
-                  <td className="border px-4 py-2">{societies.find(s => s.societyId === admin.societyId)?.name || '-'}</td>
-                  <td className="border px-4 py-2">{admin.isVerified ? 'Yes' : 'No'}</td>
-                  <td className="border px-4 py-2 space-x-2">
-                    <Button type="button" variant="secondary" onClick={() => handleEdit(admin)} size="sm">Edit</Button>
-                    <Button type="button" variant="danger" onClick={() => handleDelete(admin.userId)} size="sm">Delete</Button>
-                    <Button type="button" size="sm" variant={admin.isVerified ? 'secondary' : 'success'} onClick={() => handleVerify(admin)}>{admin.isVerified ? 'Unverify' : 'Verify'}</Button>
-                  </td>
-                </tr>
-              ))}
-              {admins.length === 0 && (
-                <tr><td colSpan={6} className="text-center py-4">No admins found.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+        <Table headers={[
+          { label: 'Name', align: 'left' },
+          { label: 'Email', align: 'left' },
+          { label: 'Phone', align: 'center' },
+          { label: 'Society', align: 'left' },
+          { label: 'Verified', align: 'center' },
+          { label: 'Actions', align: 'center' }
+        ]}>
+          {admins.map(admin => (
+            <tr key={admin.userId}>
+              <td className="font-medium text-ink">{admin.name}</td>
+              <td className="text-muted">{admin.email}</td>
+              <td className="text-center">{admin.phone}</td>
+              <td>{societies.find(s => s.societyId === admin.societyId)?.name || '-'}</td>
+              <td className="text-center">
+                <Badge tone={admin.isVerified ? 'success' : 'warning'}>{admin.isVerified ? 'Verified' : 'Unverified'}</Badge>
+              </td>
+              <td>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <Button type="button" variant="secondary" onClick={() => handleEdit(admin)} size="sm">Edit</Button>
+                  <Button type="button" variant="danger" onClick={() => handleDelete(admin.userId)} size="sm">Delete</Button>
+                  <Button type="button" size="sm" variant={admin.isVerified ? 'secondary' : 'success'} onClick={() => handleVerify(admin)}>{admin.isVerified ? 'Unverify' : 'Verify'}</Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+          {admins.length === 0 && (
+            <tr><td colSpan={6} className="text-center text-muted">No admins have been added yet</td></tr>
+          )}
+        </Table>
+      </Card>
     </div>
   );
 };

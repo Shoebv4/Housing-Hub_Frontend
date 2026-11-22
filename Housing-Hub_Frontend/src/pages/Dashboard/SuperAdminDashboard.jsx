@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Building2, Users, CheckCircle, AlertCircle, Plus } from 'lucide-react';
-import Card from '../../components/UI/Card';
-import Button from '../../components/UI/Button';
-import Table from '../../components/UI/Table';
-import Modal from '../../components/UI/Modal';
-import Input from '../../components/UI/Input';
+import { Alert, Badge, Button, Card, Input, Modal, PageHeader, Select, Table } from '../../components/UI';
 import { apiDelete, apiGet, apiPost, apiPut } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
 
@@ -74,20 +70,20 @@ const SuperAdminDashboard = () => {
   const stats = [
     { icon: Building2, label: 'Total Societies', value: loading ? '—' : String(societies.length), color: 'bg-blue-500' },
     { icon: CheckCircle, label: 'Verified Societies', value: loading ? '—' : String(verifiedCount), color: 'bg-green-500' },
-    { icon: AlertCircle, label: 'Pending Verification', value: loading ? '—' : String(societies.length - verifiedCount), color: 'bg-yellow-500' },
+    { icon: AlertCircle, label: 'Unverified Societies', value: loading ? '—' : String(societies.length - verifiedCount), color: 'bg-yellow-500' },
     { icon: Users, label: 'Total Admins', value: loading ? '—' : String(admins.length), color: 'bg-purple-500' }
   ];
 
   const handleExport = () => {
     downloadCsv(
       'societies.csv',
-      ['Society', 'Admin', 'City', 'State', 'Verified'],
+      ['Society', 'Primary Admin', 'City', 'State', 'Verification'],
       societies.map(society => [
         society.name,
         adminBySociety.get(society.societyId)?.name || '',
         society.city || '',
         society.state || '',
-        society.isVerified ? 'Yes' : 'No'
+        society.isVerified ? 'Verified' : 'Unverified'
       ])
     );
   };
@@ -220,23 +216,19 @@ const SuperAdminDashboard = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Super Admin Dashboard</h1>
-          <p className="text-gray-600 mt-2">Manage societies and administrators</p>
-        </div>
-        <Button onClick={openAdminModal}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Admin
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Platform Overview"
+        subtitle="Manage societies, admins, and verification across the platform"
+        actions={(
+          <Button onClick={openAdminModal}>
+            <Plus className="h-4 w-4" />
+            Add Admin
+          </Button>
+        )}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
+      {error && <Alert tone="danger">{error}</Alert>}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -245,12 +237,12 @@ const SuperAdminDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-medium text-muted">{stat.label}</p>
+                  <p className="text-2xl font-semibold tracking-tight text-ink tabular-nums">{stat.value}</p>
                 </div>
               </div>
             </Card>
@@ -260,27 +252,33 @@ const SuperAdminDashboard = () => {
 
       {/* Societies Table */}
       <Card>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">All Societies</h2>
-          <div className="flex space-x-2">
+        <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-lg font-semibold tracking-tight text-ink">Registered Societies</h2>
+          <div className="flex flex-wrap gap-2">
             <Button variant="secondary" size="sm" onClick={handleExport} disabled={societies.length === 0}>
               Export
             </Button>
             <Button variant="primary" size="sm" onClick={openCreateSociety}>
               <Plus className="h-4 w-4 mr-1" />
-              New Society
+              Add Society
             </Button>
           </div>
         </div>
 
-        <Table headers={['Society Name', 'Admin', 'City', 'Status', 'Actions']}>
+        <Table headers={[
+          { label: 'Society Name', align: 'left' },
+          { label: 'Primary Admin', align: 'left' },
+          { label: 'City', align: 'left' },
+          { label: 'Status', align: 'center' },
+          { label: 'Actions', align: 'center' }
+        ]}>
           {loading ? (
             <tr>
-              <td colSpan={5} className="px-6 py-6 text-center text-gray-500">Loading societies...</td>
+              <td colSpan={5} className="text-center text-faint">Loading societies...</td>
             </tr>
           ) : societies.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-6 py-6 text-center text-gray-500">No societies registered yet.</td>
+              <td colSpan={5} className="text-center text-faint">No societies registered yet.</td>
             </tr>
           ) : (
             societies.map(society => {
@@ -288,28 +286,22 @@ const SuperAdminDashboard = () => {
               const busy = busyId === society.societyId;
 
               return (
-                <tr key={society.societyId} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
+                <tr key={society.societyId}>
+                  <td>
                     <div className="flex items-center">
-                      <Building2 className="h-5 w-5 text-gray-400 mr-3" />
-                      <span className="font-medium text-gray-900">{society.name}</span>
+                      <Building2 className="h-5 w-5 text-faint mr-3" />
+                      <span className="font-medium text-ink">{society.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{admin?.name || '—'}</td>
-                  <td className="px-6 py-4 text-gray-600">{society.city || '—'}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        society.isVerified
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}
-                    >
-                      {society.isVerified ? 'Verified' : 'Pending'}
-                    </span>
+                  <td className="text-muted">{admin?.name || '—'}</td>
+                  <td className="text-muted">{society.city || '—'}</td>
+                  <td className="text-center">
+                    <Badge tone={society.isVerified ? 'success' : 'warning'}>
+                      {society.isVerified ? 'Verified' : 'Unverified'}
+                    </Badge>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex space-x-2">
+                  <td>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
                       <Button variant="secondary" size="sm" onClick={() => openEditSociety(society)} disabled={busy}>
                         Edit
                       </Button>
@@ -334,14 +326,10 @@ const SuperAdminDashboard = () => {
       <Modal
         isOpen={showAdminModal}
         onClose={() => setShowAdminModal(false)}
-        title="Create New Admin"
+        title="Add Admin"
       >
         <form className="space-y-4" onSubmit={handleAdminSubmit}>
-          {modalError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              {modalError}
-            </div>
-          )}
+          {modalError && <Alert tone="danger">{modalError}</Alert>}
           <Input
             label="Name"
             value={adminForm.name}
@@ -350,7 +338,7 @@ const SuperAdminDashboard = () => {
             required
           />
           <Input
-            label="Email"
+            label="Email address"
             type="email"
             value={adminForm.email}
             onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })}
@@ -358,7 +346,7 @@ const SuperAdminDashboard = () => {
             required
           />
           <Input
-            label="Phone"
+            label="Phone number"
             value={adminForm.phone}
             onChange={(e) => setAdminForm({ ...adminForm, phone: e.target.value })}
             placeholder="Enter phone number"
@@ -372,26 +360,23 @@ const SuperAdminDashboard = () => {
             placeholder="Set an initial password"
             required
           />
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Society</label>
-            <select
-              value={adminForm.societyId}
-              onChange={(e) => setAdminForm({ ...adminForm, societyId: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            >
-              <option value="">Select a society</option>
-              {societies.map(society => (
-                <option key={society.societyId} value={society.societyId}>{society.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex justify-end space-x-3 pt-4">
+          <Select
+            label="Society"
+            value={adminForm.societyId}
+            onChange={(e) => setAdminForm({ ...adminForm, societyId: e.target.value })}
+            required
+          >
+            <option value="">Select a society</option>
+            {societies.map(society => (
+              <option key={society.societyId} value={society.societyId}>{society.name}</option>
+            ))}
+          </Select>
+          <div className="flex flex-wrap justify-end gap-3 pt-4">
             <Button type="button" variant="secondary" onClick={() => setShowAdminModal(false)}>
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={saving}>
-              {saving ? 'Creating...' : 'Create Admin'}
+              {saving ? 'Saving...' : 'Add Admin'}
             </Button>
           </div>
         </form>
@@ -401,16 +386,12 @@ const SuperAdminDashboard = () => {
       <Modal
         isOpen={showSocietyModal}
         onClose={() => setShowSocietyModal(false)}
-        title={editingSocietyId ? 'Edit Society' : 'New Society'}
+        title={editingSocietyId ? 'Edit Society' : 'Add Society'}
       >
         <form className="space-y-4" onSubmit={handleSocietySubmit}>
-          {modalError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              {modalError}
-            </div>
-          )}
+          {modalError && <Alert tone="danger">{modalError}</Alert>}
           <Input
-            label="Society Name"
+            label="Society name"
             value={societyForm.name}
             onChange={(e) => setSocietyForm({ ...societyForm, name: e.target.value })}
             placeholder="Enter society name"
@@ -423,7 +404,7 @@ const SuperAdminDashboard = () => {
             placeholder="Enter street address"
             required
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
               label="City"
               value={societyForm.city}
@@ -439,7 +420,7 @@ const SuperAdminDashboard = () => {
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
               label="Country"
               value={societyForm.country}
@@ -448,18 +429,18 @@ const SuperAdminDashboard = () => {
               required
             />
             <Input
-              label="Pincode"
+              label="PIN code"
               value={societyForm.pincode}
               onChange={(e) => setSocietyForm({ ...societyForm, pincode: e.target.value })}
-              placeholder="Pincode"
+              placeholder="PIN code"
             />
           </div>
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex flex-wrap justify-end gap-3 pt-4">
             <Button type="button" variant="secondary" onClick={() => setShowSocietyModal(false)}>
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={saving}>
-              {saving ? 'Saving...' : editingSocietyId ? 'Save Changes' : 'Create Society'}
+              {saving ? 'Saving...' : editingSocietyId ? 'Save Changes' : 'Add Society'}
             </Button>
           </div>
         </form>

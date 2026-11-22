@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
+import { Alert, Badge, Button, Card, Input, PageHeader, Table } from '../components/UI';
 
 const emptyForm = {
     name: '',
@@ -144,89 +143,68 @@ const SocietiesPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4">
-            <h1 className="text-2xl font-bold mb-6">Societies Management</h1>
-            <div className="bg-white rounded-lg shadow p-6">
-                <form onSubmit={editingId ? handleUpdate : handleAdd} className="flex flex-wrap gap-2 mb-4 items-end">
-                    <div className="flex flex-col">
-                        <label htmlFor="society-name" className="font-semibold mb-1">Name</label>
-                        <Input id="society-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="society-address" className="font-semibold mb-1">Address</label>
-                        <Input id="society-address" name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="society-state" className="font-semibold mb-1">State</label>
-                        <Input id="society-state" name="state" value={form.state} onChange={handleChange} placeholder="State" required />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="society-country" className="font-semibold mb-1">Country</label>
-                        <Input id="society-country" name="country" value={form.country} onChange={handleChange} placeholder="Country" required />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="society-city" className="font-semibold mb-1">City</label>
-                        <Input id="society-city" name="city" value={form.city} onChange={handleChange} placeholder="City" required />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="society-pincode" className="font-semibold mb-1">Pincode</label>
-                        <Input id="society-pincode" name="pincode" value={form.pincode || ''} onChange={handleChange} placeholder="Pincode" required />
-                    </div>
-                    <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+        <div className="page-container">
+            <PageHeader title="Societies" subtitle="Review and manage registered societies" />
+            <Card>
+                <form onSubmit={editingId ? handleUpdate : handleAdd} className="form-row">
+                    <Input label="Society name" id="society-name" name="name" value={form.name} onChange={handleChange} placeholder="Society name" required />
+                    <Input label="Address" id="society-address" name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
+                    <Input label="State" id="society-state" name="state" value={form.state} onChange={handleChange} placeholder="State" required />
+                    <Input label="Country" id="society-country" name="country" value={form.country} onChange={handleChange} placeholder="Country" required />
+                    <Input label="City" id="society-city" name="city" value={form.city} onChange={handleChange} placeholder="City" required />
+                    <Input label="PIN code" id="society-pincode" name="pincode" value={form.pincode || ''} onChange={handleChange} placeholder="PIN code" required />
+                    <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update Society' : 'Add Society'}</Button>
                     {editingId && (
                         <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
                     )}
                 </form>
-                {error && <div className="text-red-600 mb-2">{error}</div>}
-                <div className="overflow-x-auto">
-                    <table className="min-w-full border text-sm">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="px-4 py-2 border">Name</th>
-                                <th className="px-4 py-2 border">Address</th>
-                                <th className="px-4 py-2 border">State</th>
-                                <th className="px-4 py-2 border">Country</th>
-                                <th className="px-4 py-2 border">City</th>
-                                <th className="px-4 py-2 border">Pincode</th>
-                                <th className="px-4 py-2 border">Created At</th>
-                                <th className="px-4 py-2 border">Admin</th>
-                                <th className="px-4 py-2 border">Verified</th>
-                                <th className="px-4 py-2 border">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {societies.map(society => (
-                                <tr key={society.societyId}>
-                                    <td className="border px-4 py-2">{society.name}</td>
-                                    <td className="border px-4 py-2">{society.address}</td>
-                                    <td className="border px-4 py-2">{society.state}</td>
-                                    <td className="border px-4 py-2">{society.country}</td>
-                                    <td className="border px-4 py-2">{society.city}</td>
-                                    <td className="border px-4 py-2">{society.pincode}</td>
-                                    <td className="border px-4 py-2">{society.createdAt ? new Date(society.createdAt + 'Z').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '-'}</td>
-                                    <td className="border px-4 py-2">{admins[society.societyId] || '-'}</td>
-                                    <td className="border px-4 py-2">{society.isVerified ? 'Yes' : 'No'}</td>
-                                    <td className="border px-4 py-2 space-x-2">
-                                        <Button type="button" variant="secondary" onClick={() => handleEdit(society)} size="sm">Edit</Button>
-                                        <Button type="button" variant="danger" onClick={() => handleDelete(society.societyId)} size="sm">Delete</Button>
-                                        <Button
-                                            type="button"
-                                            size="sm"
-                                            variant={society.isVerified ? 'secondary' : 'success'}
-                                            onClick={() => handleApprove(society)}
-                                        >
-                                            {society.isVerified ? 'Unverify' : 'Verify'}
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {societies.length === 0 && (
-                                <tr><td colSpan={10} className="text-center py-4">No societies found.</td></tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+                <Table headers={[
+                    { label: 'Society Name', align: 'left' },
+                    { label: 'Address', align: 'left' },
+                    { label: 'State', align: 'left' },
+                    { label: 'Country', align: 'left' },
+                    { label: 'City', align: 'left' },
+                    { label: 'PIN code', align: 'center' },
+                    { label: 'Created At', align: 'center' },
+                    { label: 'Primary Admin', align: 'left' },
+                    { label: 'Verified', align: 'center' },
+                    { label: 'Actions', align: 'center' }
+                ]}>
+                    {societies.map(society => (
+                        <tr key={society.societyId}>
+                            <td className="font-medium text-ink">{society.name}</td>
+                            <td>{society.address}</td>
+                            <td>{society.state}</td>
+                            <td>{society.country}</td>
+                            <td>{society.city}</td>
+                            <td className="text-center">{society.pincode}</td>
+                            <td className="text-center text-muted">{society.createdAt ? new Date(society.createdAt + 'Z').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '-'}</td>
+                            <td>{admins[society.societyId] || '-'}</td>
+                            <td className="text-center">
+                                <Badge tone={society.isVerified ? 'success' : 'warning'}>{society.isVerified ? 'Verified' : 'Unverified'}</Badge>
+                            </td>
+                            <td>
+                                <div className="flex flex-wrap items-center justify-center gap-2">
+                                    <Button type="button" variant="secondary" onClick={() => handleEdit(society)} size="sm">Edit</Button>
+                                    <Button type="button" variant="danger" onClick={() => handleDelete(society.societyId)} size="sm">Delete</Button>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        variant={society.isVerified ? 'secondary' : 'success'}
+                                        onClick={() => handleApprove(society)}
+                                    >
+                                        {society.isVerified ? 'Unverify' : 'Verify'}
+                                    </Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                    {societies.length === 0 && (
+                        <tr><td colSpan={10} className="text-center text-muted">No societies registered yet</td></tr>
+                    )}
+                </Table>
+            </Card>
         </div>
     );
 };

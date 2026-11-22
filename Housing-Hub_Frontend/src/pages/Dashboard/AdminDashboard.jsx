@@ -7,21 +7,22 @@ import {
   Calendar,
   FileText,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Card from '../../components/UI/Card';
-import Button from '../../components/UI/Button';
-import Modal from '../../components/UI/Modal';
-import Table from '../../components/UI/Table';
+import { Alert, Badge, Button, Card, Modal, PageHeader, Table } from '../../components/UI';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
+import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost } from '../../utils/api';
 import { downloadCsv } from '../../utils/export';
 import { formatCurrency, formatDate, parseDate, timeAgo } from '../../utils/format';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const society = useSociety();
   const navigate = useNavigate();
   const [flats, setFlats] = useState([]);
   const [users, setUsers] = useState([]);
@@ -216,7 +217,7 @@ const AdminDashboard = () => {
     { icon: Building2, label: 'Total Flats', value: loading ? '—' : String(societyFlats.length), color: 'bg-blue-500' },
     { icon: Users, label: 'Residents', value: loading ? '—' : String(societyResidents.length), color: 'bg-green-500' },
     { icon: MessageSquare, label: 'Open Complaints', value: loading ? '—' : String(openComplaints.length), color: 'bg-red-500' },
-    { icon: Calendar, label: 'Amenity Bookings', value: loading ? '—' : String(societyBookings.length), color: 'bg-purple-500' }
+    { icon: Calendar, label: 'Total Bookings', value: loading ? '—' : String(societyBookings.length), color: 'bg-purple-500' }
   ];
 
   const handleExportReport = async () => {
@@ -266,33 +267,28 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-2">Manage your society operations</p>
-        </div>
-        <div className="flex space-x-3">
-          <Button variant="secondary" onClick={handleExportReport} disabled={exporting}>
-            {exporting ? 'Exporting...' : 'Export Report'}
-          </Button>
-          <Button variant="primary" onClick={() => navigate('/announcements')}>
-            Create Announcement
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Society Overview"
+        subtitle={society?.name ? (
+          <span className="flex items-center">
+            <Building2 className="mr-1.5 h-4 w-4" />
+            {society.name}
+          </span>
+        ) : undefined}
+        actions={(
+          <>
+            <Button variant="secondary" onClick={handleExportReport} disabled={exporting}>
+              {exporting ? 'Exporting...' : 'Export Report'}
+            </Button>
+            <Button variant="primary" onClick={() => navigate('/announcements')}>
+              Create Announcement
+            </Button>
+          </>
+        )}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
-
-      <div className="mb-6">
-        <Button variant="primary" onClick={() => navigate('/security-staff')}>
-          Manage Security Staff
-        </Button>
-      </div>
+      {error && <Alert tone="danger">{error}</Alert>}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -301,12 +297,12 @@ const AdminDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-medium text-muted">{stat.label}</p>
+                  <p className="text-2xl font-semibold tracking-tight text-ink tabular-nums">{stat.value}</p>
                 </div>
               </div>
             </Card>
@@ -316,10 +312,10 @@ const AdminDashboard = () => {
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Activities */}
+        {/* Recent Activity */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Recent Activities</h2>
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Recent Activity</h2>
             {recentActivities.length > 5 && (
               <Button
                 variant="secondary"
@@ -332,24 +328,24 @@ const AdminDashboard = () => {
           </div>
           <div className="space-y-4">
             {loading ? (
-              <p className="text-sm text-gray-500">Loading recent activity...</p>
+              <p className="text-sm text-faint">Loading recent activity...</p>
             ) : visibleActivities.length === 0 ? (
-              <p className="text-sm text-gray-500">No recent activity yet.</p>
+              <p className="text-sm text-faint">No recent activity yet.</p>
             ) : (
               visibleActivities.map(activity => (
-                <div key={activity.key} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className={`p-2 rounded-lg ${
+                <div key={activity.key} className="flex items-start space-x-3 p-3 bg-surface-muted rounded-xl">
+                  <div className={`p-2 rounded-xl ${
                     activity.type === 'complaint'
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-purple-100 text-purple-600'
+                      ? 'bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-300'
+                      : 'bg-accent-soft text-accent'
                   }`}>
                     {activity.type === 'complaint'
                       ? <AlertTriangle className="h-4 w-4" />
                       : <Calendar className="h-4 w-4" />}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-800">{activity.message}</p>
-                    <p className="text-xs text-gray-500 mt-1">{timeAgo(activity.timestamp)}</p>
+                    <p className="text-sm text-ink">{activity.message}</p>
+                    <p className="text-xs text-faint mt-1">{timeAgo(activity.timestamp)}</p>
                   </div>
                 </div>
               ))
@@ -359,46 +355,66 @@ const AdminDashboard = () => {
 
         {/* Quick Actions */}
         <Card>
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-ink mb-6">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/residents')}>
-              <Users className="h-5 w-5 mb-1" />
-              Add Resident
+            <Button variant="primary" className="h-16" onClick={() => navigate('/residents')}>
+              <span className="flex flex-col items-center gap-1">
+                <Users className="h-5 w-5 shrink-0" />
+                Add Resident
+              </span>
             </Button>
-            <Button variant="secondary" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
-              <MessageSquare className="h-5 w-5 mb-1" />
-              View Complaints
+            <Button variant="secondary" className="h-16" onClick={() => navigate('/security-staff')}>
+              <span className="flex flex-col items-center gap-1">
+                <ShieldCheck className="h-5 w-5 shrink-0" />
+                Manage Staff
+              </span>
+            </Button>
+            <Button variant="secondary" className="h-16" onClick={() => navigate('/complaints')}>
+              <span className="flex flex-col items-center gap-1">
+                <MessageSquare className="h-5 w-5 shrink-0" />
+                Complaints
+              </span>
+            </Button>
+            <Button variant="primary" className="h-16" onClick={() => navigate('/visitors')}>
+              <span className="flex flex-col items-center gap-1">
+                <UserCheck className="h-5 w-5 shrink-0" />
+                Visitors
+              </span>
             </Button>
             <Button
               variant="success"
-              className="h-16 flex-col"
+              className="h-16"
               onClick={handleExportReport}
               disabled={exporting}
             >
-              <FileText className="h-5 w-5 mb-1" />
-              Generate Bills
+              <span className="flex flex-col items-center gap-1">
+                <FileText className="h-5 w-5 shrink-0" />
+                Billing Report
+              </span>
             </Button>
-            <Button variant="warning" className="h-16 flex-col" onClick={handleOpenBills}>
-              <Wrench className="h-5 w-5 mb-1" />
-              Maintenance
+            <Button variant="warning" className="h-16" onClick={handleOpenBills}>
+              <span className="flex flex-col items-center gap-1">
+                <Wrench className="h-5 w-5 shrink-0" />
+                Maintenance
+              </span>
             </Button>
           </div>
         </Card>
       </div>
 
-      {/* Monthly Revenue */}
+      {/* Amenity Revenue */}
       <Card>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Monthly Revenue</h2>
-            <p className="text-sm text-gray-500 mt-1">Paid amenity bookings in your society</p>
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Amenity Revenue</h2>
+            <p className="text-sm text-faint mt-1">Paid amenity bookings over the last six months</p>
           </div>
           <div className="flex items-center space-x-2">
             <TrendingUp className={`h-5 w-5 ${revenueChange !== null && revenueChange < 0 ? 'text-red-600' : 'text-green-600'}`} />
             {loading ? (
-              <span className="text-sm font-medium text-gray-500">Loading...</span>
+              <span className="text-sm font-medium text-faint">Loading...</span>
             ) : revenueChange === null ? (
-              <span className="text-sm font-medium text-gray-500">No prior month data</span>
+              <span className="text-sm font-medium text-faint">No prior month data</span>
             ) : (
               <span className={`text-sm font-medium ${revenueChange < 0 ? 'text-red-600' : 'text-green-600'}`}>
                 {revenueChange >= 0 ? '+' : ''}{revenueChange}% from last month
@@ -408,24 +424,24 @@ const AdminDashboard = () => {
         </div>
 
         {loading ? (
-          <p className="text-sm text-gray-500">Loading revenue...</p>
+          <p className="text-sm text-faint">Loading revenue...</p>
         ) : maxRevenue === 0 ? (
-          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-            <p className="text-gray-500">No paid bookings recorded in the last six months.</p>
+          <div className="h-64 bg-surface-muted rounded-xl flex items-center justify-center p-6">
+            <p className="text-center text-faint">No paid bookings recorded in the last six months.</p>
           </div>
         ) : (
-          <div className="flex items-end gap-4 h-64">
+          <div className="flex items-end gap-2 h-64 sm:gap-4">
             {revenueMonths.map(month => (
               <div key={month.key} className="flex-1 flex flex-col items-center justify-end h-full">
-                <span className="text-xs font-medium text-gray-600 mb-1">
+                <span className="text-xs font-medium text-muted mb-1">
                   {month.total ? formatCurrency(month.total) : ''}
                 </span>
                 <div
-                  className="w-full rounded-t bg-blue-500"
+                  className="w-full rounded-t-lg bg-primary"
                   style={{ height: `${Math.max((month.total / maxRevenue) * 100, 2)}%` }}
                   title={`${month.label}: ${formatCurrency(month.total)}`}
                 />
-                <span className="text-xs text-gray-500 mt-2">{month.label}</span>
+                <span className="text-xs text-faint mt-2">{month.label}</span>
               </div>
             ))}
           </div>
@@ -440,27 +456,31 @@ const AdminDashboard = () => {
         size="lg"
       >
         {billsLoading ? (
-          <p className="text-sm text-gray-500">Loading maintenance bills...</p>
+          <p className="text-sm text-faint">Loading maintenance bills...</p>
         ) : bills.length === 0 ? (
-          <p className="text-sm text-gray-500">No maintenance bills recorded for your society yet.</p>
+          <p className="text-sm text-faint">No maintenance bills recorded for your society yet.</p>
         ) : (
-          <Table headers={['Flat', 'Period', 'Due Date', 'Amount', 'Status']}>
+          <Table headers={[
+            { label: 'Flat No.', align: 'center' },
+            { label: 'Period', align: 'left' },
+            { label: 'Due Date', align: 'center' },
+            { label: 'Amount', align: 'right' },
+            { label: 'Status', align: 'center' }
+          ]}>
             {bills.map(bill => (
-              <tr key={bill.mbid} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-900">
+              <tr key={bill.mbid}>
+                <td className="font-medium text-ink text-center">
                   {flatNumberById.get(bill.flatId) || '—'}
                 </td>
-                <td className="px-6 py-4 text-gray-600">
+                <td className="text-muted">
                   {formatDate(bill.periodStart)} – {formatDate(bill.periodEnd)}
                 </td>
-                <td className="px-6 py-4 text-gray-600">{formatDate(bill.dueDate)}</td>
-                <td className="px-6 py-4 text-gray-900">{formatCurrency(bill.amount)}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    bill.paid ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}>
+                <td className="text-muted text-center">{formatDate(bill.dueDate)}</td>
+                <td className="text-ink text-right">{formatCurrency(bill.amount)}</td>
+                <td className="text-center">
+                  <Badge tone={bill.paid ? 'success' : 'warning'}>
                     {bill.paid ? 'Paid' : 'Pending'}
-                  </span>
+                  </Badge>
                 </td>
               </tr>
             ))}

@@ -1,3 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas: 249 250 251;
+    --surface: 255 255 255;
+    --surface-muted: 249 250 251;
+    --surface-hover: 243 244 246;
+    --control: 229 231 235;
+    --control-hover: 209 213 219;
+    --line: 229 231 235;
+    --line-strong: 209 213 219;
+    --ink: 17 24 39;
+    --muted: 75 85 99;
+    --faint: 107 114 128;
+    --primary: 37 99 235;
+    --primary-hover: 29 78 216;
+    --accent: 29 78 216;
+    --accent-soft: 239 246 255;
+    --ring: 59 130 246;
+    color-scheme: light;
+  }
+
+  .dark {
+    --canvas: 3 7 18;
+    --surface: 17 24 39;
+    --surface-muted: 31 41 55;
+    --surface-hover: 55 65 81;
+    --control: 55 65 81;
+    --control-hover: 75 85 99;
+    --line: 31 41 55;
+    --line-strong: 55 65 81;
+    --ink: 243 244 246;
+    --muted: 209 213 219;
+    --faint: 156 163 175;
+    --primary: 37 99 235;
+    --primary-hover: 59 130 246;
+    --accent: 96 165 250;
+    --accent-soft: 23 37 84;
+    --ring: 96 165 250;
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+  }
+}
+
+@layer components {
+  .page-container {
+    @apply mx-auto w-full max-w-5xl space-y-6;
+  }
+
+  .form-row {
+    @apply mb-6 grid grid-cols-1 items-stretch gap-4 sm:flex sm:flex-wrap sm:items-end sm:gap-3;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+
+  .table-frame {
+    @apply overflow-x-auto rounded-xl border border-line bg-surface;
+  }
+
+  .table-frame table {
+    @apply min-w-full;
+  }
+
+  .table-frame thead {
+    @apply border-b border-line bg-surface-muted;
+  }
+
+  .table-frame th {
+    @apply px-4 py-3 text-xs font-semibold uppercase tracking-wider text-faint;
+  }
+
+  .table-frame tbody {
+    @apply divide-y divide-line;
+  }
+
+  .table-frame tbody tr {
+    @apply transition-colors hover:bg-surface-muted;
+  }
+
+  .table-frame td {
+    @apply px-4 py-3 text-sm;
+  }
+
+  .scrollbar-slim {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--line-strong)) transparent;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background-color: rgb(var(--line-strong));
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(var(--faint));
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}

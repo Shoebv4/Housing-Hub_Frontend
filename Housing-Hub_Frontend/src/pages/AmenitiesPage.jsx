@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
+import { Alert, Badge, Button, Card, Input, PageHeader, Select, Table, Tabs } from '../components/UI';
 
 const emptyForm = {
     name: '',
@@ -21,6 +20,16 @@ const emptyBookingForm = {
 };
 
 const STATUS_OPTIONS = ['Pending', 'Approved', 'Rejected', 'Completed', 'Cancelled'];
+
+const BOOKING_STATUS_TONES = {
+    Pending: 'warning',
+    Approved: 'success',
+    Rejected: 'danger',
+    Completed: 'success',
+    Cancelled: 'neutral'
+};
+
+const bookingStatusTone = status => BOOKING_STATUS_TONES[status] || 'neutral';
 
 const AmenitiesPage = () => {
     const { user } = useAuth();
@@ -264,291 +273,250 @@ const AmenitiesPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4">
-            <h1 className="text-2xl font-bold mb-6">Amenities & Bookings</h1>
-            <div className="mb-6 flex space-x-4">
-                <button
-                    className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 ${tab === 'amenities' ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
-                    onClick={() => setTab('amenities')}
-                >
-                    Amenities
-                </button>
-                {user.role === 'admin' && (
-                    <button
-                        className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 ${tab === 'bookings' ? 'border-purple-600 text-purple-700 bg-purple-50' : 'border-transparent text-gray-500 bg-gray-100'}`}
-                        onClick={() => setTab('bookings')}
-                    >
-                        Bookings
-                    </button>
-                )}
-            </div>
-            <div className="bg-white rounded-lg shadow p-6">
+        <div className="page-container">
+            <PageHeader
+                title={user.role === 'admin' ? 'Amenity Management' : 'Amenities'}
+                subtitle={user.role === 'admin'
+                    ? 'Manage amenities and review resident bookings'
+                    : 'Book a society amenity and track your bookings'}
+            />
+            {user.role === 'admin' && (
+                <Tabs
+                    tabs={[
+                        { value: 'amenities', label: 'Amenities' },
+                        { value: 'bookings', label: 'Bookings' }
+                    ]}
+                    value={tab}
+                    onChange={setTab}
+                    ariaLabel="Amenity views"
+                />
+            )}
+            <Card>
                 {tab === 'amenities' && (
                     <>
                         {user.role === 'admin' && (
-                            <form onSubmit={handleSubmit} className="flex flex-wrap gap-2 mb-4 items-end">
-                                <div className="flex flex-col">
-                                    <label htmlFor="name" className="font-semibold mb-1">Name</label>
-                                    <Input name="name" id="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor="description" className="font-semibold mb-1">Description</label>
-                                    <Input name="description" id="description" value={form.description} onChange={handleChange} placeholder="Description" />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor="hourlyRate" className="font-semibold mb-1">Hourly Rate</label>
-                                    <Input name="hourlyRate" id="hourlyRate" value={form.hourlyRate} onChange={handleChange} placeholder="Hourly Rate" type="number" min="0" step="0.01" required />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor="maxCapacity" className="font-semibold mb-1">Max Capacity</label>
-                                    <Input name="maxCapacity" id="maxCapacity" value={form.maxCapacity} onChange={handleChange} placeholder="Max Capacity" type="number" min="1" required />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor="openingTime" className="font-semibold mb-1">Opening Time</label>
-                                    <Input name="openingTime" id="openingTime" value={form.openingTime} onChange={handleChange} placeholder="Opening Time (HH:mm)" type="time" required />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor="closingTime" className="font-semibold mb-1">Closing Time</label>
-                                    <Input name="closingTime" id="closingTime" value={form.closingTime} onChange={handleChange} placeholder="Closing Time (HH:mm)" type="time" required />
-                                </div>
-                                <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update' : 'Add'}</Button>
+                            <form onSubmit={handleSubmit} className="form-row">
+                                <Input label="Amenity name" name="name" id="name" value={form.name} onChange={handleChange} placeholder="Amenity name" required />
+                                <Input label="Description" name="description" id="description" value={form.description} onChange={handleChange} placeholder="Description" />
+                                <Input label="Hourly rate" name="hourlyRate" id="hourlyRate" value={form.hourlyRate} onChange={handleChange} placeholder="Hourly rate" type="number" min="0" step="0.01" required />
+                                <Input label="Max capacity" name="maxCapacity" id="maxCapacity" value={form.maxCapacity} onChange={handleChange} placeholder="Max capacity" type="number" min="1" required />
+                                <Input label="Opening time" name="openingTime" id="openingTime" value={form.openingTime} onChange={handleChange} type="time" required />
+                                <Input label="Closing time" name="closingTime" id="closingTime" value={form.closingTime} onChange={handleChange} type="time" required />
+                                <Button type="submit" variant="primary" disabled={loading}>{editingId ? 'Update Amenity' : 'Add Amenity'}</Button>
                                 {editingId && (
                                     <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancel</Button>
                                 )}
                             </form>
                         )}
-                        {error && <div className="text-red-600 mb-2">{error}</div>}
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full border text-sm">
-                                <thead>
-                                    <tr className="bg-gray-100">
-                                        <th className="px-4 py-2 border">Name</th>
-                                        <th className="px-4 py-2 border">Description</th>
-                                        <th className="px-4 py-2 border">Hourly Rate</th>
-                                        <th className="px-4 py-2 border">Max Capacity</th>
-                                        <th className="px-4 py-2 border">Opening Time</th>
-                                        <th className="px-4 py-2 border">Closing Time</th>
-                                        {user.role === 'admin' && <th className="px-4 py-2 border">Actions</th>}
-                                        {user.role === 'resident' && <th className="px-4 py-2 border">Book</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {amenities.map(a => (
-                                        <tr key={a.amenityId}>
-                                            <td className="border px-4 py-2">{a.name}</td>
-                                            <td className="border px-4 py-2">{a.description}</td>
-                                            <td className="border px-4 py-2">{a.hourlyRate}</td>
-                                            <td className="border px-4 py-2">{a.maxCapacity}</td>
-                                            <td className="border px-4 py-2">{a.openingTime}</td>
-                                            <td className="border px-4 py-2">{a.closingTime}</td>
-                                            {user.role === 'admin' && (
-                                                <td className="border px-4 py-2 space-x-2">
-                                                    <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
-                                                    <Button type="button" variant="danger" onClick={() => handleDelete(a.amenityId)} size="sm">Delete</Button>
-                                                </td>
-                                            )}
-                                            {user.role === 'resident' && (
-                                                <td className="border px-4 py-2">
-                                                    <Button type="button" variant="primary" size="sm" onClick={() => openBooking(a.amenityId)}>Book</Button>
-                                                    {showBooking === a.amenityId && (
-                                                        <form onSubmit={handleBookingSubmit} className="mt-2 space-y-2 bg-gray-50 p-2 rounded">
-                                                            <div className="flex flex-col">
-                                                                <label htmlFor="date" className="font-semibold mb-1">Date</label>
-                                                                <Input name="date" id="date" type="date" value={bookingForm.date} onChange={handleBookingChange} required />
-                                                            </div>
-                                                            <div className="flex flex-col">
-                                                                <label htmlFor="startTime" className="font-semibold mb-1">Start Time</label>
-                                                                <Input name="startTime" id="startTime" type="time" value={bookingForm.startTime} onChange={handleBookingChange} required />
-                                                            </div>
-                                                            <div className="flex flex-col">
-                                                                <label htmlFor="endTime" className="font-semibold mb-1">End Time</label>
-                                                                <Input name="endTime" id="endTime" type="time" value={bookingForm.endTime} onChange={handleBookingChange} required />
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <Button type="submit" variant="primary" size="sm" disabled={bookingLoading}>Confirm</Button>
-                                                                <Button type="button" variant="secondary" size="sm" onClick={closeBooking}>Cancel</Button>
-                                                            </div>
-                                                            {bookingError && <div className="text-red-600 text-xs">{bookingError}</div>}
-                                                        </form>
-                                                    )}
-                                                </td>
-                                            )}
-                                        </tr>
-                                    ))}
-                                    {amenities.length === 0 && (
-                                        <tr><td colSpan={user.role === 'admin' ? 7 : 7} className="text-center py-4">No amenities found.</td></tr>
+                        {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+                        <Table headers={[
+                            { label: 'Name', align: 'left' },
+                            { label: 'Description', align: 'left' },
+                            { label: 'Hourly rate', align: 'right' },
+                            { label: 'Capacity', align: 'center' },
+                            { label: 'Opens', align: 'center' },
+                            { label: 'Closes', align: 'center' },
+                            { label: 'Actions', align: 'center' }
+                        ]}>
+                            {amenities.map(a => (
+                                <tr key={a.amenityId}>
+                                    <td className="font-medium text-ink">{a.name}</td>
+                                    <td>{a.description}</td>
+                                    <td className="text-right">{a.hourlyRate}</td>
+                                    <td className="text-center">{a.maxCapacity}</td>
+                                    <td className="text-center">{a.openingTime}</td>
+                                    <td className="text-center">{a.closingTime}</td>
+                                    {user.role === 'admin' && (
+                                        <td>
+                                            <div className="flex flex-wrap items-center justify-center gap-2">
+                                                <Button type="button" variant="secondary" onClick={() => handleEdit(a)} size="sm">Edit</Button>
+                                                <Button type="button" variant="danger" onClick={() => handleDelete(a.amenityId)} size="sm">Delete</Button>
+                                            </div>
+                                        </td>
                                     )}
-                                </tbody>
-                            </table>
-                        </div>
-                        {/* Resident's bookings */}
-                        {user.role === 'resident' && (
-                            <div className="mt-8">
-                                <h2 className="text-lg font-semibold mb-2">My Amenity Bookings</h2>
-                                {bookingError && <div className="text-red-600 mb-2">{bookingError}</div>}
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full border text-sm">
-                                        <thead>
-                                            <tr className="bg-gray-100">
-                                                <th className="px-4 py-2 border">Amenity</th>
-                                                <th className="px-4 py-2 border">Date</th>
-                                                <th className="px-4 py-2 border">Start Time</th>
-                                                <th className="px-4 py-2 border">End Time</th>
-                                                <th className="px-4 py-2 border">Status</th>
-                                                <th className="px-4 py-2 border">Paid</th>
-                                                <th className="px-4 py-2 border">Transaction ID</th>
-                                                <th className="px-4 py-2 border">Amount</th>
-                                                <th className="px-4 py-2 border">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {bookings.map(b => {
-                                                const amenity = amenities.find(a => a.amenityId === b.amenityId);
-                                                return (
-                                                    <tr key={b.bookingId}>
-                                                        <td className="border px-4 py-2">{amenity ? amenity.name : b.amenityId}</td>
-                                                        <td className="border px-4 py-2">{b.startDate}</td>
-                                                        <td className="border px-4 py-2">{b.startTime}</td>
-                                                        <td className="border px-4 py-2">{b.endTime}</td>
-                                                        <td className="border px-4 py-2">{b.status}</td>
-                                                        <td className="border px-4 py-2">{b.paid ? 'Paid' : 'Unpaid'}</td>
-                                                        <td className="border px-4 py-2">{b.transactionId || '-'}</td>
-                                                        <td className="border px-4 py-2">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
-                                                        <td className="border px-4 py-2">
-                                                            {/* Cancel button for Pending bookings */}
-                                                            {b.status === 'Pending' && (
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="danger"
-                                                                    size="sm"
-                                                                    onClick={async () => {
-                                                                        try {
-                                                                            const payload = { ...b, status: 'Cancelled' };
-                                                                            const res = await fetch(`${API_BASE_URL}/bookings/${b.bookingId}`, {
-                                                                                method: 'PUT',
-                                                                                headers: getAuthHeaders(),
-                                                                                body: JSON.stringify(payload)
-                                                                            });
-                                                                            if (!res.ok) throw new Error('Failed to cancel booking');
-                                                                            fetchBookings();
-                                                                        } catch {
-                                                                            setBookingError('Failed to cancel booking');
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            )}
-                                                            {/* Faded Cancel button for Approved bookings */}
-                                                            {b.status === 'Approved' && (
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="danger"
-                                                                    size="sm"
-                                                                    style={{ opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }}
-                                                                    disabled
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            )}
-                                                            {/* Transaction ID input for unpaid bookings */}
-                                                            {b.status !== 'Cancelled' && !b.paid && (
-                                                                <div className="mt-2 flex flex-col gap-1">
-                                                                    <input
-                                                                        type="text"
-                                                                        placeholder="Enter Transaction ID"
-                                                                        value={transactionInputs[b.bookingId] || ''}
-                                                                        onChange={e => handleTransactionInputChange(b.bookingId, e.target.value)}
-                                                                        className="border rounded px-2 py-1 text-sm placeholder-gray-900"
-                                                                    />
-                                                                    <Button
-                                                                        type="button"
-                                                                        variant="primary"
-                                                                        size="sm"
-                                                                        disabled={!transactionInputs[b.bookingId] || bookingLoading}
-                                                                        onClick={() => handleTransactionSubmit(b)}
-                                                                    >
-                                                                        Submit
-                                                                    </Button>
-                                                                </div>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                            {bookings.length === 0 && (
-                                                <tr><td colSpan={9} className="text-center py-4">No bookings found.</td></tr>
+                                    {user.role === 'resident' && (
+                                        <td className="align-top">
+                                            <div className="flex justify-center">
+                                                <Button type="button" variant="primary" size="sm" onClick={() => openBooking(a.amenityId)}>Book</Button>
+                                            </div>
+                                            {showBooking === a.amenityId && (
+                                                <form onSubmit={handleBookingSubmit} className="mt-3 space-y-3 rounded-xl bg-surface-muted p-3">
+                                                    <Input label="Date" name="date" id="date" type="date" value={bookingForm.date} onChange={handleBookingChange} required />
+                                                    <Input label="Start time" name="startTime" id="startTime" type="time" value={bookingForm.startTime} onChange={handleBookingChange} required />
+                                                    <Input label="End time" name="endTime" id="endTime" type="time" value={bookingForm.endTime} onChange={handleBookingChange} required />
+                                                    <div className="flex gap-2">
+                                                        <Button type="submit" variant="primary" size="sm" disabled={bookingLoading}>Confirm Booking</Button>
+                                                        <Button type="button" variant="secondary" size="sm" onClick={closeBooking}>Cancel</Button>
+                                                    </div>
+                                                    {bookingError && <p className="text-xs text-red-600 dark:text-red-400">{bookingError}</p>}
+                                                </form>
                                             )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )}
-                {tab === 'bookings' && user.role === 'admin' && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-4">Amenity Bookings</h2>
-                        {bookingError && <div className="text-red-600 mb-2">{bookingError}</div>}
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full border text-sm">
-                                <thead>
-                                    <tr className="bg-gray-100">
-                                        <th className="px-4 py-2 border">Booking ID</th>
-                                        <th className="px-4 py-2 border">Amenity</th>
-                                        <th className="px-4 py-2 border">User Name</th>
-                                        <th className="px-4 py-2 border">Date</th>
-                                        <th className="px-4 py-2 border">Start Time</th>
-                                        <th className="px-4 py-2 border">End Time</th>
-                                        <th className="px-4 py-2 border">Status</th>
-                                        <th className="px-4 py-2 border">Paid</th>
-                                        <th className="px-4 py-2 border">Transaction ID</th>
-                                        <th className="px-4 py-2 border">Amount</th>
-                                        <th className="px-4 py-2 border">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                        </td>
+                                    )}
+                                </tr>
+                            ))}
+                            {amenities.length === 0 && (
+                                <tr><td colSpan={7} className="text-center text-muted">
+                                    {user.role === 'admin' ? 'No amenities have been added yet' : 'No amenities are available yet'}
+                                </td></tr>
+                            )}
+                        </Table>
+                        {user.role === 'resident' && (
+                            <div className="mt-8 space-y-3">
+                                <h2 className="text-lg font-semibold tracking-tight text-ink">My Bookings</h2>
+                                {bookingError && <Alert tone="danger">{bookingError}</Alert>}
+                                <Table headers={[
+                                    { label: 'Amenity', align: 'left' },
+                                    { label: 'Date', align: 'center' },
+                                    { label: 'Start time', align: 'center' },
+                                    { label: 'End time', align: 'center' },
+                                    { label: 'Status', align: 'center' },
+                                    { label: 'Paid', align: 'center' },
+                                    { label: 'Transaction ID', align: 'left' },
+                                    { label: 'Amount', align: 'right' },
+                                    { label: 'Actions', align: 'center' }
+                                ]}>
                                     {bookings.map(b => {
                                         const amenity = amenities.find(a => a.amenityId === b.amenityId);
                                         return (
                                             <tr key={b.bookingId}>
-                                                <td className="border px-4 py-2">{b.bookingId}</td>
-                                                <td className="border px-4 py-2">{amenity ? amenity.name : b.amenityId}</td>
-                                                <td className="border px-4 py-2">{b.userName || '-'}</td>
-                                                <td className="border px-4 py-2">{b.startDate}</td>
-                                                <td className="border px-4 py-2">{b.startTime}</td>
-                                                <td className="border px-4 py-2">{b.endTime}</td>
-                                                <td className="border px-4 py-2">{b.status}</td>
-                                                <td className="border px-4 py-2">{b.paid ? 'Paid' : 'Unpaid'}</td>
-                                                <td className="border px-4 py-2">{b.transactionId || '-'}</td>
-                                                <td className="border px-4 py-2">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
-                                                <td className="border px-4 py-2">
-                                                    <select
-                                                        value={statusEdit[b.bookingId] || b.status}
-                                                        onChange={e => handleStatusChange(b.bookingId, e.target.value)}
-                                                        className="border rounded px-2 py-1"
-                                                        disabled={b.status === 'Cancelled'}
-                                                    >
-                                                        {STATUS_OPTIONS.map(opt => (
-                                                            <option key={opt} value={opt} disabled={opt === 'Cancelled'}>{opt}</option>
-                                                        ))}
-                                                    </select>
-                                                    {b.status === 'Cancelled' && (
-                                                        <span className="ml-2 text-red-600 font-semibold">Cancelled</span>
+                                                <td className="font-medium text-ink">{amenity ? amenity.name : b.amenityId}</td>
+                                                <td className="text-center">{b.startDate}</td>
+                                                <td className="text-center">{b.startTime}</td>
+                                                <td className="text-center">{b.endTime}</td>
+                                                <td className="text-center">
+                                                    <Badge tone={bookingStatusTone(b.status)}>{b.status}</Badge>
+                                                </td>
+                                                <td className="text-center">
+                                                    <Badge tone={b.paid ? 'success' : 'warning'}>{b.paid ? 'Paid' : 'Unpaid'}</Badge>
+                                                </td>
+                                                <td>{b.transactionId || '-'}</td>
+                                                <td className="text-right">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
+                                                <td className="text-center">
+                                                    {b.status === 'Pending' && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="danger"
+                                                            size="sm"
+                                                            onClick={async () => {
+                                                                try {
+                                                                    const payload = { ...b, status: 'Cancelled' };
+                                                                    const res = await fetch(`${API_BASE_URL}/bookings/${b.bookingId}`, {
+                                                                        method: 'PUT',
+                                                                        headers: getAuthHeaders(),
+                                                                        body: JSON.stringify(payload)
+                                                                    });
+                                                                    if (!res.ok) throw new Error('Failed to cancel booking');
+                                                                    fetchBookings();
+                                                                } catch {
+                                                                    setBookingError('Failed to cancel booking');
+                                                                }
+                                                            }}
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                    )}
+                                                    {b.status === 'Approved' && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="danger"
+                                                            size="sm"
+                                                            style={{ opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }}
+                                                            disabled
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                    )}
+                                                    {b.status !== 'Cancelled' && !b.paid && (
+                                                        <div className="mt-2 flex flex-col gap-2">
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Enter Transaction ID"
+                                                                value={transactionInputs[b.bookingId] || ''}
+                                                                onChange={e => handleTransactionInputChange(b.bookingId, e.target.value)}
+                                                                className="w-full rounded-xl border border-line-strong bg-surface px-2.5 py-1.5 text-sm text-ink placeholder:text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
+                                                            />
+                                                            <Button
+                                                                type="button"
+                                                                variant="primary"
+                                                                size="sm"
+                                                                disabled={!transactionInputs[b.bookingId] || bookingLoading}
+                                                                onClick={() => handleTransactionSubmit(b)}
+                                                            >
+                                                                Submit
+                                                            </Button>
+                                                        </div>
                                                     )}
                                                 </td>
                                             </tr>
                                         );
                                     })}
                                     {bookings.length === 0 && (
-                                        <tr><td colSpan={11} className="text-center py-4">No bookings found.</td></tr>
+                                        <tr><td colSpan={9} className="text-center text-muted">You haven't booked an amenity yet</td></tr>
                                     )}
-                                </tbody>
-                            </table>
-                        </div>
+                                </Table>
+                            </div>
+                        )}
+                    </>
+                )}
+                {tab === 'bookings' && user.role === 'admin' && (
+                    <div className="space-y-4">
+                        {bookingError && <Alert tone="danger">{bookingError}</Alert>}
+                        <Table headers={[
+                            { label: 'Booking ID', align: 'center' },
+                            { label: 'Amenity', align: 'left' },
+                            { label: 'Booked By', align: 'left' },
+                            { label: 'Date', align: 'center' },
+                            { label: 'Start time', align: 'center' },
+                            { label: 'End time', align: 'center' },
+                            { label: 'Status', align: 'center' },
+                            { label: 'Paid', align: 'center' },
+                            { label: 'Transaction ID', align: 'left' },
+                            { label: 'Amount', align: 'right' },
+                            { label: 'Actions', align: 'center' }
+                        ]}>
+                            {bookings.map(b => {
+                                const amenity = amenities.find(a => a.amenityId === b.amenityId);
+                                return (
+                                    <tr key={b.bookingId}>
+                                        <td className="text-center">{b.bookingId}</td>
+                                        <td className="font-medium text-ink">{amenity ? amenity.name : b.amenityId}</td>
+                                        <td>{b.userName || '-'}</td>
+                                        <td className="text-center">{b.startDate}</td>
+                                        <td className="text-center">{b.startTime}</td>
+                                        <td className="text-center">{b.endTime}</td>
+                                        <td className="text-center">
+                                            <Badge tone={bookingStatusTone(b.status)}>{b.status}</Badge>
+                                        </td>
+                                        <td className="text-center">
+                                            <Badge tone={b.paid ? 'success' : 'warning'}>{b.paid ? 'Paid' : 'Unpaid'}</Badge>
+                                        </td>
+                                        <td>{b.transactionId || '-'}</td>
+                                        <td className="text-right">{b.amount != null ? b.amount.toFixed(2) : '-'}</td>
+                                        <td>
+                                            <Select
+                                                hideLabel
+                                                label={`Update booking ${b.bookingId} status`}
+                                                containerClassName="mx-auto w-full max-w-[10rem]"
+                                                value={statusEdit[b.bookingId] || b.status}
+                                                onChange={e => handleStatusChange(b.bookingId, e.target.value)}
+                                                disabled={b.status === 'Cancelled'}
+                                            >
+                                                {STATUS_OPTIONS.map(opt => (
+                                                    <option key={opt} value={opt} disabled={opt === 'Cancelled'}>{opt}</option>
+                                                ))}
+                                            </Select>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            {bookings.length === 0 && (
+                                <tr><td colSpan={11} className="text-center text-muted">No resident bookings yet</td></tr>
+                            )}
+                        </Table>
                     </div>
                 )}
-            </div>
+            </Card>
         </div>
     );
 };

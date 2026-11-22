@@ -7,30 +7,39 @@ const Input = ({
   error,
   helperText,
   className,
+  id,
   ...props
 }) => {
+  const generatedId = React.useId();
+  const inputId = id || generatedId;
+  const errorId = `${inputId}-error`;
+  const helperId = `${inputId}-helper`;
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label htmlFor={inputId} className="block text-sm font-medium text-ink">
           {label}
         </label>
       )}
       <input
+        id={inputId}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? errorId : helperText ? helperId : undefined}
         className={clsx(
-          'w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors',
+          'w-full rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink placeholder:text-faint transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-faint',
           error
-            ? 'border-red-300 focus:ring-red-500'
-            : 'border-gray-300 focus:ring-blue-500',
+            ? 'border-red-400 focus:ring-red-500'
+            : 'border-line-strong',
           className
         )}
         {...props}
       />
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p id={errorId} className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
       {helperText && !error && (
-        <p className="text-sm text-gray-500">{helperText}</p>
+        <p id={helperId} className="text-sm text-muted">{helperText}</p>
       )}
     </div>
   );
@@ -40,7 +49,8 @@ Input.propTypes = {
   label: PropTypes.string,
   error: PropTypes.string,
   helperText: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string
 };
 
 export default Input;

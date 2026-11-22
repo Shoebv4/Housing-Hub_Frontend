@@ -6,15 +6,14 @@ import {
   Users,
   CheckCircle,
   Clock,
-  Plus
+  Plus,
+  Building2
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import Card from '../../components/UI/Card';
-import Button from '../../components/UI/Button';
-import Modal from '../../components/UI/Modal';
-import Input from '../../components/UI/Input';
+import { Alert, Badge, Button, Card, Input, Modal, PageHeader, Select } from '../../components/UI';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLiveEvents } from '../../hooks/useLiveEvents';
+import { useSociety } from '../../hooks/useSociety';
 import { apiGet, apiPost } from '../../utils/api';
 import { formatCurrency, formatTime, parseDate, timeAgo } from '../../utils/format';
 
@@ -26,6 +25,7 @@ const emptyComplaint = {
 
 const ResidentDashboard = () => {
   const { user } = useAuth();
+  const society = useSociety();
   const navigate = useNavigate();
   const [showComplaintModal, setShowComplaintModal] = useState(false);
   const [showBillsModal, setShowBillsModal] = useState(false);
@@ -186,8 +186,8 @@ const ResidentDashboard = () => {
     .slice(0, 3);
 
   const stats = [
-    { icon: CheckCircle, label: 'Bills Paid', value: loading ? '—' : formatCurrency(paidAmount), color: 'bg-green-500' },
-    { icon: Clock, label: 'Pending Bills', value: loading ? '—' : formatCurrency(pendingAmount), color: 'bg-yellow-500' },
+    { icon: CheckCircle, label: 'Amount Paid', value: loading ? '—' : formatCurrency(paidAmount), color: 'bg-green-500' },
+    { icon: Clock, label: 'Pending Amount', value: loading ? '—' : formatCurrency(pendingAmount), color: 'bg-yellow-500' },
     { icon: MessageSquare, label: 'Open Complaints', value: loading ? '—' : String(openComplaints.length), color: 'bg-blue-500' },
     { icon: Calendar, label: 'Active Bookings', value: loading ? '—' : String(activeBookings.length), color: 'bg-purple-500' }
   ];
@@ -214,23 +214,24 @@ const ResidentDashboard = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back! Here's what's happening</p>
-        </div>
-        <Button onClick={() => setShowComplaintModal(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Raise Complaint
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="My Dashboard"
+        subtitle={society?.name ? (
+          <span className="flex items-center">
+            <Building2 className="mr-1.5 h-4 w-4" />
+            {society.name}
+          </span>
+        ) : undefined}
+        actions={(
+          <Button onClick={() => setShowComplaintModal(true)}>
+            <Plus className="h-4 w-4" />
+            Raise Complaint
+          </Button>
+        )}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
+      {error && <Alert tone="danger">{error}</Alert>}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -239,12 +240,12 @@ const ResidentDashboard = () => {
           return (
             <Card key={index}>
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-xl ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-medium text-muted">{stat.label}</p>
+                  <p className="text-2xl font-semibold tracking-tight text-ink tabular-nums">{stat.value}</p>
                 </div>
               </div>
             </Card>
@@ -257,31 +258,27 @@ const ResidentDashboard = () => {
         {/* Announcements */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Latest Announcements</h2>
-            <Link to="/announcements" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Latest Announcements</h2>
+            <Link to="/announcements" className="text-sm font-medium text-accent hover:text-accent">
               View All
             </Link>
           </div>
           <div className="space-y-4">
             {loading ? (
-              <p className="text-sm text-gray-500">Loading announcements...</p>
+              <p className="text-sm text-faint">Loading announcements...</p>
             ) : visibleAnnouncements.length === 0 ? (
-              <p className="text-sm text-gray-500">No announcements for your flat yet.</p>
+              <p className="text-sm text-faint">No announcements for your society yet</p>
             ) : (
               visibleAnnouncements.map(announcement => (
-                <div key={announcement.aid} className="p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-medium text-gray-900">{announcement.title}</h3>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      announcement.isGlobal
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {announcement.isGlobal ? 'Global' : 'Society'}
-                    </span>
+                <div key={announcement.aid} className="p-4 bg-surface-muted rounded-xl">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-medium text-ink">{announcement.title}</h3>
+                    <Badge tone={announcement.isGlobal ? 'brand' : 'neutral'} className="flex-shrink-0">
+                      {announcement.isGlobal ? 'Entire society' : 'Targeted'}
+                    </Badge>
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">{announcement.content}</p>
-                  <p className="text-xs text-gray-500">{timeAgo(announcement.createdAt)}</p>
+                  <p className="text-sm text-muted mb-2">{announcement.content}</p>
+                  <p className="text-xs text-faint">{timeAgo(announcement.createdAt)}</p>
                 </div>
               ))
             )}
@@ -291,35 +288,31 @@ const ResidentDashboard = () => {
         {/* Recent Visitors */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Recent Visitors</h2>
-            <Link to="/visitors" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+            <h2 className="text-lg font-semibold tracking-tight text-ink">Recent Visitors</h2>
+            <Link to="/visitors" className="text-sm font-medium text-accent hover:text-accent">
               View All
             </Link>
           </div>
           <div className="space-y-4">
             {loading ? (
-              <p className="text-sm text-gray-500">Loading visitors...</p>
+              <p className="text-sm text-faint">Loading visitors...</p>
             ) : recentVisitors.length === 0 ? (
-              <p className="text-sm text-gray-500">No visitors recorded for your flat yet.</p>
+              <p className="text-sm text-faint">No visitors recorded yet</p>
             ) : (
               recentVisitors.map(visitor => (
-                <div key={visitor.visitorId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Users className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="font-medium text-gray-900">{visitor.name}</p>
-                      <p className="text-sm text-gray-600">{visitor.purpose}</p>
+                <div key={visitor.visitorId} className="flex items-center justify-between gap-3 p-3 bg-surface-muted rounded-xl">
+                  <div className="flex min-w-0 items-center space-x-3">
+                    <Users className="h-5 w-5 text-faint" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-ink">{visitor.name}</p>
+                      <p className="text-sm text-muted">{visitor.purpose}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-900">{formatTime(visitor.entryTime)}</p>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      visitor.exitTime
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'bg-blue-100 text-blue-800'
-                    }`}>
+                  <div className="flex-shrink-0 text-right">
+                    <p className="text-sm text-ink">{formatTime(visitor.entryTime)}</p>
+                    <Badge tone={visitor.exitTime ? 'neutral' : 'success'}>
                       {visitor.exitTime ? 'Exited' : 'Inside'}
-                    </span>
+                    </Badge>
                   </div>
                 </div>
               ))
@@ -330,23 +323,31 @@ const ResidentDashboard = () => {
 
       {/* Quick Actions */}
       <Card>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-ink mb-6">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button variant="primary" className="h-16 flex-col" onClick={() => navigate('/amenities')}>
-            <Calendar className="h-5 w-5 mb-1" />
-            Book Amenity
+          <Button variant="primary" className="h-16" onClick={() => navigate('/amenities')}>
+            <span className="flex flex-col items-center gap-1">
+              <Calendar className="h-5 w-5 shrink-0" />
+              Book Amenity
+            </span>
           </Button>
-          <Button variant="secondary" className="h-16 flex-col" onClick={() => setShowBillsModal(true)}>
-            <FileText className="h-5 w-5 mb-1" />
-            View Bills
+          <Button variant="secondary" className="h-16" onClick={() => setShowBillsModal(true)}>
+            <span className="flex flex-col items-center gap-1">
+              <FileText className="h-5 w-5 shrink-0" />
+              View Bills
+            </span>
           </Button>
-          <Button variant="warning" className="h-16 flex-col" onClick={() => navigate('/complaints')}>
-            <MessageSquare className="h-5 w-5 mb-1" />
-            My Complaints
+          <Button variant="warning" className="h-16" onClick={() => navigate('/complaints')}>
+            <span className="flex flex-col items-center gap-1">
+              <MessageSquare className="h-5 w-5 shrink-0" />
+              My Complaints
+            </span>
           </Button>
-          <Button variant="success" className="h-16 flex-col" onClick={() => navigate('/visitors')}>
-            <Users className="h-5 w-5 mb-1" />
-            Visitors
+          <Button variant="success" className="h-16" onClick={() => navigate('/visitors')}>
+            <span className="flex flex-col items-center gap-1">
+              <Users className="h-5 w-5 shrink-0" />
+              Visitors
+            </span>
           </Button>
         </div>
       </Card>
@@ -360,38 +361,38 @@ const ResidentDashboard = () => {
         {billingReport ? (
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-600">Flat</span>
-              <span className="font-medium text-gray-900">{billingReport.flatNumber || '—'}</span>
+              <span className="text-muted">Flat</span>
+              <span className="font-medium text-ink">{billingReport.flatNumber || '—'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Maintenance charges</span>
-              <span className="text-gray-900">{formatCurrency(billingReport.maintenanceCharges)}</span>
+              <span className="text-muted">Maintenance charges</span>
+              <span className="text-ink">{formatCurrency(billingReport.maintenanceCharges)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Pending maintenance</span>
-              <span className="text-gray-900">{formatCurrency(billingReport.pendingMaintenanceAmount)}</span>
+              <span className="text-muted">Pending maintenance</span>
+              <span className="text-ink">{formatCurrency(billingReport.pendingMaintenanceAmount)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Amenity charges</span>
-              <span className="text-gray-900">{formatCurrency(billingReport.amenityCharges)}</span>
+              <span className="text-muted">Amenity charges</span>
+              <span className="text-ink">{formatCurrency(billingReport.amenityCharges)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Pending amenity</span>
-              <span className="text-gray-900">{formatCurrency(billingReport.pendingAmenityAmount)}</span>
+              <span className="text-muted">Pending amenity</span>
+              <span className="text-ink">{formatCurrency(billingReport.pendingAmenityAmount)}</span>
             </div>
-            <hr className="border-gray-200" />
-            <div className="flex justify-between font-semibold text-gray-900">
-              <span>Total</span>
+            <hr className="border-line" />
+            <div className="flex justify-between font-semibold text-ink">
+              <span>Total charges</span>
               <span>{formatCurrency(billingReport.totalAmount)}</span>
             </div>
             <div className="flex justify-between font-semibold text-red-600">
-              <span>Outstanding</span>
+              <span>Outstanding total</span>
               <span>{formatCurrency(billingReport.totalPendingAmount)}</span>
             </div>
-            <p className="text-xs text-gray-500">Online payment is not available yet.</p>
+            <p className="text-xs text-faint">Online payment is not available yet.</p>
           </div>
         ) : (
-          <p className="text-sm text-gray-500">No billing information is available for your flat.</p>
+          <p className="text-sm text-faint">No billing information is available for your flat.</p>
         )}
         <div className="flex justify-end pt-4">
           <Button variant="secondary" onClick={() => setShowBillsModal(false)}>Close</Button>
@@ -402,7 +403,7 @@ const ResidentDashboard = () => {
       <Modal
         isOpen={showComplaintModal}
         onClose={() => setShowComplaintModal(false)}
-        title="Raise New Complaint"
+        title="Raise Complaint"
       >
         <form className="space-y-4" onSubmit={handleSubmitComplaint}>
           <Input
@@ -412,33 +413,30 @@ const ResidentDashboard = () => {
             placeholder="Brief description of the issue"
             required
           />
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Category</label>
-            <select
-              value={newComplaint.category}
-              onChange={(e) => setNewComplaint({ ...newComplaint, category: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="maintenance">Maintenance</option>
-              <option value="plumbing">Plumbing</option>
-              <option value="electrical">Electrical</option>
-              <option value="security">Security</option>
-              <option value="cleaning">Cleaning</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+          <Select
+            label="Category"
+            value={newComplaint.category}
+            onChange={(e) => setNewComplaint({ ...newComplaint, category: e.target.value })}
+          >
+            <option value="maintenance">Maintenance</option>
+            <option value="plumbing">Plumbing</option>
+            <option value="electrical">Electrical</option>
+            <option value="security">Security</option>
+            <option value="cleaning">Cleaning</option>
+            <option value="other">Other</option>
+          </Select>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-ink">Description</label>
             <textarea
               value={newComplaint.description}
               onChange={(e) => setNewComplaint({ ...newComplaint, description: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full resize-y rounded-xl border border-line-strong bg-surface px-3 py-2.5 text-sm text-ink placeholder:text-faint transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="Detailed description of the issue..."
               required
             />
           </div>
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex flex-wrap justify-end gap-3 pt-4">
             <Button type="button" variant="secondary" onClick={() => setShowComplaintModal(false)}>
               Cancel
             </Button>
