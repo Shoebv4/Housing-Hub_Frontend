@@ -168,7 +168,7 @@ const AdminsPage = () => {
 
   return (
     <div className="page-container">
-      <PageHeader title="Admins" subtitle="Manage admin accounts and society assignments" />
+      <PageHeader backTo="/dashboard" title="Admins" subtitle="Manage admin accounts and society assignments" />
       <Card>
         <form onSubmit={handleSubmit} className="form-row">
           <Input label="Name" id="admin-name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />

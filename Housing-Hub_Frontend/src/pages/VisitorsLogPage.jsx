@@ -82,6 +82,7 @@ const VisitorsLogPage = () => {
   return (
     <div className="page-container">
       <PageHeader
+        backTo="/dashboard"
         title={user.role === 'security_staff' ? 'Visitor Log' : 'Visitors'}
         subtitle={
           user.role === 'resident'

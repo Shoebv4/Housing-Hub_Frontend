@@ -7,7 +7,7 @@ const ResidentsPage = () => {
   return (
     <ProtectedRoute requiredRoles={['admin']}>
       <div className="page-container">
-        <PageHeader title="Residents" subtitle="Manage resident accounts and flat assignments" />
+        <PageHeader backTo="/dashboard" title="Residents" subtitle="Manage resident accounts and flat assignments" />
         <Card>
           <ResidentsList />
         </Card>

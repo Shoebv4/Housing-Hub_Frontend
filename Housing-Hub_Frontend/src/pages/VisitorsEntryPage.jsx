@@ -93,6 +93,7 @@ const VisitorsEntryPage = () => {
     return (
         <div className="page-container">
             <PageHeader
+                backTo="/dashboard"
                 title="Visitor Entry"
                 subtitle="Register visitors and record their exit"
                 actions={<Button onClick={() => setShowModal(true)}>Register Visitor</Button>}
